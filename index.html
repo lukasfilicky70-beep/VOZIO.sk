@@ -62,6 +62,20 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="stats"><div class="stat"><strong>01</strong><span>Vozidlá a inzercia</span></div><div class="stat"><strong>02</strong><span>Motoristické služby</span></div><div class="stat"><strong>03</strong><span>Trasy a výlety</span></div><div class="stat"><strong>24/7</strong><span>Inšpirácia na cesty</span></div></div>
 <section id="vozidla">
 <div class="head"><div><h2>Nájdi svoje ďalšie vozidlo</h2><p>Vyhľadávanie a filtre fungujú na ukážkových vozidlách tejto stránky.</p></div><div><span class="accent">VOZIO MARKETPLACE</span><div class="add-listing"><button class="btn primary" id="openAdd">＋ Pridať inzerát</button></div></div></div>
+
+<div class="auth-panel" style="margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+  <strong>Účet predajcu</strong>
+  <p class="modal-note" id="authStatus">Na pridávanie inzerátov sa prihlás alebo si vytvor účet.</p>
+  <div class="listing-form" style="margin-top:10px">
+    <div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" placeholder="tvoj@email.sk"></div>
+    <div class="field"><label for="authPassword">Heslo</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Aspoň 6 znakov"></div>
+  </div>
+  <div class="buttons" style="margin-top:12px">
+    <button class="btn primary" id="registerBtn" type="button">Vytvoriť účet</button>
+    <button class="btn secondary" id="loginBtn" type="button">Prihlásiť sa</button>
+    <button class="btn secondary" id="logoutBtn" type="button" hidden>Odhlásiť sa</button>
+  </div>
+</div>
 <div class="searchbox">
 <div class="field"><label for="q">Čo hľadáš?</label><input id="q" placeholder="Napr. SUV, Yamaha, karavan…"></div>
 <div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky</option><option>Auto</option><option>Motorka</option><option>Karavan</option></select></div>
@@ -132,6 +146,7 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
 <div class="modal-panel"><div class="modal-head"><h2 id="detailTitle">Detail vozidla</h2><button class="close-modal" data-close="detailModal" aria-label="Zavrieť">✕</button></div><div id="detailContent"></div></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 const q=document.getElementById('q'),type=document.getElementById('type'),maxprice=document.getElementById('maxprice'),sort=document.getElementById('sort'),cards=document.getElementById('vehicleCards'),noResults=document.getElementById('noResults');
@@ -157,61 +172,97 @@ document.getElementById('vozidla').scrollIntoView({behavior:'smooth'});
 }));
 document.getElementById('year').textContent=new Date().getFullYear();
 
-const STORAGE_KEY='vozio-listings-v1';
+
+const SUPABASE_URL='https://awuuzsewhswgjtdonoqj.supabase.co';
+const SUPABASE_KEY='sb_publishable_7ZmwDwfiaRY_i-UJPSPLXg_l8AWy8AS';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fallbackVehicleImage='https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80';
-function getSavedListings(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return []}}
+let currentUser=null;
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
-function formatPrice(n){return Number(n).toLocaleString('sk-SK')+' €'}
+function formatPrice(n){return Number(n||0).toLocaleString('sk-SK')+' €'}
+function fromDb(row){return {id:row.id,title:row.title,type:row.category||'Auto',price:Number(row.price||0),year:row.year||'',km:row.mileage||'',engine:row.transmission||row.fuel||'',image:row.image_url||'',location:row.location||'',contact:row.contact_email||row.contact_name||'',description:row.description||'',createdAt:row.created_at}}
 function buildListingCard(item){
-const card=document.createElement('article');card.className='vehicle user-vehicle';card.tabIndex=0;
-card.dataset.type=item.type;card.dataset.price=String(item.price);card.dataset.name=item.title;
-const img=document.createElement('img');img.src=item.image||fallbackVehicleImage;img.alt=item.title;img.loading='lazy';img.onerror=()=>{img.src=fallbackVehicleImage};
-const body=document.createElement('div');body.className='vbody';
-const title=document.createElement('div');title.className='vtitle';
-const h=document.createElement('h3');h.textContent=item.title;
-const price=document.createElement('div');price.className='price';price.textContent=formatPrice(item.price);
-title.append(h,price);
-const details=document.createElement('div');details.className='details';details.textContent=[item.year,item.km?Number(item.km).toLocaleString('sk-SK')+' km':'',item.engine].filter(Boolean).join(' · ')||'Údaje doplní predajca';
-const chips=document.createElement('div');chips.className='chips';
-[item.type,'Inzerát používateľa'].forEach(t=>{const chip=document.createElement('span');chip.className='chip';chip.textContent=t;chips.appendChild(chip)});
-body.append(title,details,chips);card.append(img,body);
-card.addEventListener('click',()=>showListingDetail(item));
-card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showListingDetail(item)}});
-return card;
+ const card=document.createElement('article');card.className='vehicle user-vehicle';card.tabIndex=0;
+ card.dataset.type=item.type;card.dataset.price=String(item.price);card.dataset.name=item.title;
+ const img=document.createElement('img');img.src=item.image||fallbackVehicleImage;img.alt=item.title;img.loading='lazy';img.onerror=()=>{img.src=fallbackVehicleImage};
+ const body=document.createElement('div');body.className='vbody';
+ const title=document.createElement('div');title.className='vtitle';
+ const h=document.createElement('h3');h.textContent=item.title;
+ const price=document.createElement('div');price.className='price';price.textContent=formatPrice(item.price);
+ title.append(h,price);
+ const details=document.createElement('div');details.className='details';details.textContent=[item.year,item.km?Number(item.km).toLocaleString('sk-SK')+' km':'',item.engine].filter(Boolean).join(' · ')||'Údaje doplní predajca';
+ const chips=document.createElement('div');chips.className='chips';
+ [item.type,'Inzerát používateľa'].forEach(t=>{const chip=document.createElement('span');chip.className='chip';chip.textContent=t;chips.appendChild(chip)});
+ body.append(title,details,chips);card.append(img,body);
+ card.addEventListener('click',()=>showListingDetail(item));
+ card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showListingDetail(item)}});
+ return card;
 }
-function renderSavedListings(){
-document.querySelectorAll('.user-vehicle').forEach(el=>el.remove());
-getSavedListings().forEach(item=>cards.prepend(buildListingCard(item)));
-filterVehicles();
+function renderListings(rows){
+ document.querySelectorAll('.user-vehicle').forEach(el=>el.remove());
+ rows.forEach(row=>cards.appendChild(buildListingCard(fromDb(row))));
+ filterVehicles();
+}
+async function loadListings(){
+ const {data,error}=await supabaseClient.from('vehicles').select('*').order('created_at',{ascending:false});
+ if(error){console.error('Supabase load error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa načítať inzeráty. Skontroluj nastavenie databázy.';return}
+ renderListings(data||[]);
 }
 function showListingDetail(item){
-document.getElementById('detailTitle').textContent=item.title;
-const content=document.getElementById('detailContent');
-content.replaceChildren();
-const img=document.createElement('img');img.className='detail-image';img.src=item.image||fallbackVehicleImage;img.alt=item.title;img.onerror=()=>{img.src=fallbackVehicleImage};
-const price=document.createElement('div');price.className='detail-price';price.textContent=formatPrice(item.price);
-const desc=document.createElement('p');desc.style.lineHeight='1.7';desc.textContent=item.description||'Predajca zatiaľ nepridal podrobný popis.';
-const grid=document.createElement('div');grid.className='detail-grid';
-[['Kategória',item.type],['Rok výroby',item.year||'Neuvedené'],['Kilometre',item.km?Number(item.km).toLocaleString('sk-SK')+' km':'Neuvedené'],['Motor / prevodovka',item.engine||'Neuvedené'],['Lokalita',item.location||'Neuvedená'],['Kontakt predajcu',item.contact||'Neuvedený']].forEach(([label,value])=>{
-const box=document.createElement('div');box.className='detail-item';const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);grid.appendChild(box);
-});
-content.append(img,price,grid,desc);
-if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
-openModal('detailModal');
+ document.getElementById('detailTitle').textContent=item.title;
+ const content=document.getElementById('detailContent');content.replaceChildren();
+ const img=document.createElement('img');img.className='detail-image';img.src=item.image||fallbackVehicleImage;img.alt=item.title;img.onerror=()=>{img.src=fallbackVehicleImage};
+ const price=document.createElement('div');price.className='detail-price';price.textContent=formatPrice(item.price);
+ const desc=document.createElement('p');desc.style.lineHeight='1.7';desc.textContent=item.description||'Predajca zatiaľ nepridal podrobný popis.';
+ const grid=document.createElement('div');grid.className='detail-grid';
+ [['Kategória',item.type],['Rok výroby',item.year||'Neuvedené'],['Kilometre',item.km?Number(item.km).toLocaleString('sk-SK')+' km':'Neuvedené'],['Motor / prevodovka',item.engine||'Neuvedené'],['Lokalita',item.location||'Neuvedená'],['Kontakt predajcu',item.contact||'Neuvedený']].forEach(([label,value])=>{
+  const box=document.createElement('div');box.className='detail-item';const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);grid.appendChild(box);
+ });
+ content.append(img,price,grid,desc);
+ if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
+ openModal('detailModal');
 }
-document.getElementById('openAdd').addEventListener('click',()=>openModal('addModal'));
+function updateAuthUI(session){
+ currentUser=session?.user||null;
+ const status=document.getElementById('authStatus');
+ status.textContent=currentUser?'Prihlásený používateľ: '+currentUser.email:'Na pridávanie inzerátov sa prihlás alebo si vytvor účet.';
+ document.getElementById('logoutBtn').hidden=!currentUser;
+ document.getElementById('openAdd').disabled=!currentUser;
+ document.getElementById('openAdd').title=currentUser?'Pridať inzerát':'Najprv sa prihlás alebo vytvor účet';
+}
+async function registerUser(){
+ const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;
+ if(!email||password.length<6){alert('Zadaj platný e-mail a heslo s dĺžkou aspoň 6 znakov.');return}
+ const {error}=await supabaseClient.auth.signUp({email,password});
+ if(error){alert('Registrácia sa nepodarila: '+error.message);return}
+ alert('Registrácia odoslaná. Ak je v Supabase zapnuté potvrdenie e-mailu, otvor správu v e-maile a potvrď účet.');
+}
+async function loginUser(){
+ const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;
+ const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+ if(error){alert('Prihlásenie sa nepodarilo: '+error.message);return}
+ updateAuthUI(data.session);
+}
+document.getElementById('registerBtn').addEventListener('click',registerUser);
+document.getElementById('loginBtn').addEventListener('click',loginUser);
+document.getElementById('logoutBtn').addEventListener('click',async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);updateAuthUI(null)});
+supabaseClient.auth.getSession().then(({data})=>updateAuthUI(data.session));
+supabaseClient.auth.onAuthStateChange((_event,session)=>updateAuthUI(session));
+document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}openModal('addModal')});
 document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
 document.querySelectorAll('.modal').forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal)closeModal(modal.id)}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>closeModal(m.id))});
-document.getElementById('listingForm').addEventListener('submit',e=>{
-e.preventDefault();
-const item={id:Date.now(),title:document.getElementById('listingTitle').value.trim(),type:document.getElementById('listingType').value,price:Number(document.getElementById('listingPrice').value),year:document.getElementById('listingYear').value,km:document.getElementById('listingKm').value,engine:document.getElementById('listingEngine').value.trim(),image:document.getElementById('listingImage').value.trim(),location:document.getElementById('listingLocation').value.trim(),contact:document.getElementById('listingContact').value.trim(),description:document.getElementById('listingDescription').value.trim(),createdAt:new Date().toISOString()};
-try{const list=getSavedListings();list.unshift(item);localStorage.setItem(STORAGE_KEY,JSON.stringify(list));}
-catch(err){alert('Nepodarilo sa uložiť inzerát. Úložisko prehliadača môže byť plné. Skús menšiu fotografiu alebo vymaž dáta stránky.');return}
-document.getElementById('listingForm').reset();closeModal('addModal');renderSavedListings();document.getElementById('vozidla').scrollIntoView({behavior:'smooth'});
+document.getElementById('listingForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!currentUser){alert('Na pridanie inzerátu sa musíš prihlásiť.');return}
+ const contact=document.getElementById('listingContact').value.trim();
+ const item={title:document.getElementById('listingTitle').value.trim(),category:document.getElementById('listingType').value,price:Number(document.getElementById('listingPrice').value),year:document.getElementById('listingYear').value?Number(document.getElementById('listingYear').value):null,mileage:document.getElementById('listingKm').value?Number(document.getElementById('listingKm').value):null,transmission:document.getElementById('listingEngine').value.trim()||null,image_url:document.getElementById('listingImage').value.trim()||null,location:document.getElementById('listingLocation').value.trim()||null,contact_email:contact||null,description:document.getElementById('listingDescription').value.trim()||null};
+ const {error}=await supabaseClient.from('vehicles').insert(item);
+ if(error){alert('Inzerát sa nepodarilo uložiť: '+error.message);return}
+ document.getElementById('listingForm').reset();closeModal('addModal');await loadListings();document.getElementById('vozidla').scrollIntoView({behavior:'smooth'});
 });
-renderSavedListings();
+loadListings();
 
 const routeData={
 alps:{
