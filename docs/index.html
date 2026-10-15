@@ -121,7 +121,8 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="vbody"><div class="vtitle"><h3>Cestovný karavan</h3><div class="price">24 900 €</div></div><div class="details">2020 · 2 lôžka · Pripravený na výlet</div><div class="chips"><span class="chip">Karavan</span><span class="chip">Cestovanie</span><span class="chip">Ukážkový inzerát</span></div></div>
 </article>
 </div>
-<div class="notify-box"><h3>🔔 Upozornenia na nové inzeráty</h3><p class="modal-note">Ulož si hľadaný výraz. VOZIO ťa upozorní v tomto prehliadači, keď pri ďalšej návšteve nájde nové zodpovedajúce inzeráty.</p><form id="savedSearchForm"><input id="savedSearchTerm" maxlength="100" placeholder="Napr. Yamaha, SUV do 20 000 €" required><button class="btn secondary" type="submit">Uložiť hľadanie</button></form><p id="savedSearchStatus" class="modal-note"></p></div>\n<div class="no-results" id="noResults">Nenašli sa vozidlá podľa tvojich filtrov. Skús zmeniť hľadanie.</div>
+<div class="notify-box"><h3>🔔 Upozornenia na nové inzeráty</h3><p class="modal-note">Ulož si hľadaný výraz. VOZIO ťa upozorní v tomto prehliadači, keď pri ďalšej návšteve nájde nové zodpovedajúce inzeráty.</p><form id="savedSearchForm"><input id="savedSearchTerm" maxlength="100" placeholder="Napr. Yamaha, SUV do 20 000 €" required><button class="btn secondary" type="submit">Uložiť hľadanie</button></form><p id="savedSearchStatus" class="modal-note"></p></div>
+<div class="no-results" id="noResults">Nenašli sa vozidlá podľa tvojich filtrov. Skús zmeniť hľadanie.</div>
 </section>
 <section id="kategorie">
 <div class="head"><div><h2>Vyber si svoju kategóriu</h2><p>Vyber kategóriu a filtre sa nastavia automaticky.</p></div></div>
@@ -212,7 +213,8 @@ function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function formatPrice(n){return Number(n||0).toLocaleString('sk-SK')+' €'}
 function isImageUrl(x){return typeof x==='string'&&(x.trim().startsWith('https://')||x.trim().startsWith('http://'))}
-function parseImages(value){if(!value)return [];try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(isImageUrl)}catch(e){}return String(value).split(/[\n,]+/).map(x=>x.trim()).filter(isImageUrl)}
+function parseImages(value){if(!value)return [];try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(isImageUrl)}catch(e){}return String(value).split(/[
+,]+/).map(x=>x.trim()).filter(isImageUrl)}
 function fromDb(row){const images=parseImages(row.image_url||row.image||'');return {id:row.id,title:String(row.title||row.name||'Inzerát bez názvu'),type:String(row.category||row.type||'Auto'),price:Number(row.price||0),year:row.year||'',km:row.mileage??row.km??'',engine:row.transmission||row.fuel||row.engine||'',images,image:images[0]||'',location:row.location||'',contact:row.contact_email||row.contact_name||row.contact||'',description:row.description||'',createdAt:row.created_at,userId:row.user_id}}
 const FAVORITES_KEY='vozio_favorites_v1';
 let showFavoritesOnly=false;
@@ -254,7 +256,9 @@ function initSavedSearches(){
 function checkNewListingAlerts(rows){
  try{const ids=rows.map(r=>String(r.id)),old=JSON.parse(localStorage.getItem(VOZIO_SEEN_KEY)||'[]'),searches=JSON.parse(localStorage.getItem(VOZIO_SEARCHES_KEY)||'[]');if(old.length&&searches.length){const newRows=rows.filter(r=>!old.includes(String(r.id)));const matches=newRows.filter(r=>searches.some(s=>(String(r.title||'')+' '+String(r.category||'')+' '+String(r.description||'')).toLowerCase().includes(s.term.toLowerCase())));if(matches.length)alert('VOZIO: našli sme '+matches.length+' nový inzerát z tvojich uložených hľadaní. Pozri si zoznam vozidiel.')}localStorage.setItem(VOZIO_SEEN_KEY,JSON.stringify(ids))}catch(e){}
 }
-\ninitSavedSearches();\nasync function loadListings(){
+
+initSavedSearches();
+async function loadListings(){
  const {data,error}=await supabaseClient.from('vehicles').select('*').order('created_at',{ascending:false});
  if(error){console.error('Supabase load error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa načítať inzeráty. Skontroluj nastavenie databázy.';return}
  allDbRows=data||[];checkNewListingAlerts(allDbRows);renderListings(allDbRows);updateFavoritesUI();
@@ -293,7 +297,8 @@ function showListingDetail(item){
   const box=document.createElement('div');box.className='detail-item';const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);grid.appendChild(box);
  });
  content.append(img);const gallery=(item.images||[]).slice(1);if(gallery.length){const galleryEl=document.createElement('div');galleryEl.className='gallery';gallery.forEach(src=>{const photo=document.createElement('img');photo.src=src;photo.alt='Fotografia – '+item.title;photo.loading='lazy';photo.onerror=()=>photo.remove();photo.addEventListener('click',()=>{img.src=src;img.scrollIntoView({behavior:'smooth',block:'nearest'})});galleryEl.appendChild(photo)});content.appendChild(galleryEl)}content.append(price,grid,desc);
- renderReviewPanel(item,content);const safety=document.createElement('div');safety.className='safety-note';safety.innerHTML='<strong>Bezpečný nákup</strong><br>Pred platbou si vozidlo osobne prezri, over VIN a doklady. Neposielaj zálohu neznámemu predajcovi a dávaj pozor na odkazy na falošné kuriérske alebo platobné služby.';content.appendChild(safety);\n if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
+ renderReviewPanel(item,content);const safety=document.createElement('div');safety.className='safety-note';safety.innerHTML='<strong>Bezpečný nákup</strong><br>Pred platbou si vozidlo osobne prezri, over VIN a doklady. Neposielaj zálohu neznámemu predajcovi a dávaj pozor na odkazy na falošné kuriérske alebo platobné služby.';content.appendChild(safety);
+ if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
  openModal('detailModal');
 }
 function updateAuthUI(session){
@@ -315,7 +320,8 @@ function renderMyListings(){
 }
 function startEditListing(row){
  editingListingId=row.id;const f=document.getElementById('listingForm');
- document.getElementById('listingTitle').value=row.title||'';document.getElementById('listingType').value=row.category||'Auto';document.getElementById('listingPrice').value=row.price||'';document.getElementById('listingYear').value=row.year||'';document.getElementById('listingKm').value=row.mileage||'';document.getElementById('listingEngine').value=row.transmission||'';document.getElementById('listingImage').value=parseImages(row.image_url||'').join('\n');document.getElementById('listingLocation').value=row.location||'';document.getElementById('listingContact').value=row.contact_email||'';document.getElementById('listingDescription').value=row.description||'';document.getElementById('addTitle').textContent='Upraviť inzerát';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť zmeny';openModal('addModal');
+ document.getElementById('listingTitle').value=row.title||'';document.getElementById('listingType').value=row.category||'Auto';document.getElementById('listingPrice').value=row.price||'';document.getElementById('listingYear').value=row.year||'';document.getElementById('listingKm').value=row.mileage||'';document.getElementById('listingEngine').value=row.transmission||'';document.getElementById('listingImage').value=parseImages(row.image_url||'').join('
+');document.getElementById('listingLocation').value=row.location||'';document.getElementById('listingContact').value=row.contact_email||'';document.getElementById('listingDescription').value=row.description||'';document.getElementById('addTitle').textContent='Upraviť inzerát';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť zmeny';openModal('addModal');
 }
 async function deleteListing(id){
  if(!confirm('Naozaj chceš vymazať tento inzerát?'))return;
@@ -349,7 +355,8 @@ document.getElementById('listingForm').addEventListener('submit',async e=>{
  e.preventDefault();
  if(!currentUser){alert('Na pridanie inzerátu sa musíš prihlásiť.');return}
  const contact=document.getElementById('listingContact').value.trim();
- const imageUrls=document.getElementById('listingImage').value.split(/[\n,]+/).map(x=>x.trim()).filter(isImageUrl);
+ const imageUrls=document.getElementById('listingImage').value.split(/[
+,]+/).map(x=>x.trim()).filter(isImageUrl);
  const files=[...document.getElementById('listingFiles').files];
  const allowedTypes=['image/jpeg','image/png','image/webp'];
  const invalid=files.find(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024);
