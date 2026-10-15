@@ -193,7 +193,8 @@ let editingListingId=null;
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function formatPrice(n){return Number(n||0).toLocaleString('sk-SK')+' €'}
-function parseImages(value){if(!value)return [];try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(x=>typeof x==='string'&&/^https?:\/\/i.test(x))}catch(e){}return String(value).split(/[\n,]+/).map(x=>x.trim()).filter(x=>/^https?:\/\/i.test(x))}
+function isImageUrl(x){return typeof x==='string'&&(x.trim().startsWith('https://')||x.trim().startsWith('http://'))}
+function parseImages(value){if(!value)return [];try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(isImageUrl)}catch(e){}return String(value).split(/[\n,]+/).map(x=>x.trim()).filter(isImageUrl)}
 function fromDb(row){const images=parseImages(row.image_url||row.image||'');return {id:row.id,title:String(row.title||row.name||'Inzerát bez názvu'),type:String(row.category||row.type||'Auto'),price:Number(row.price||0),year:row.year||'',km:row.mileage??row.km??'',engine:row.transmission||row.fuel||row.engine||'',images,image:images[0]||'',location:row.location||'',contact:row.contact_email||row.contact_name||row.contact||'',description:row.description||'',createdAt:row.created_at,userId:row.user_id}}
 function buildListingCard(item){
  const card=document.createElement('article');card.className='vehicle user-vehicle';card.tabIndex=0;
