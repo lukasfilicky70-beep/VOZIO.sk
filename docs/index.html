@@ -144,7 +144,7 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="field"><label for="listingYear">Rok výroby</label><input id="listingYear" type="number" min="1950" max="2027" placeholder="2021"></div>
 <div class="field"><label for="listingKm">Kilometre</label><input id="listingKm" type="number" min="0" placeholder="45000"></div>
 <div class="field"><label for="listingEngine">Motor / prevodovka</label><input id="listingEngine" maxlength="80" placeholder="2.0 diesel, automat"></div>
-<div class="field full"><label for="listingImage">Fotografie (URL obrázkov, každá na novom riadku)</label><textarea id="listingImage" placeholder="https://obrazok1.jpg&#10;https://obrazok2.jpg"></textarea><p class="modal-note">Vlož priame odkazy na fotografie. Prvá fotka bude hlavná, ostatné sa zobrazia v galérii.</p></div>
+<div class="field full"><label for="listingFiles">Nahrať fotografie z mobilu alebo počítača</label><input id="listingFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple style="width:100%;padding:12px;border-radius:8px;background:#080d10;border:1px solid #34434b;color:white"><p class="modal-note">Vyber viac fotografií naraz. Povolené sú JPG, PNG a WebP, maximálne 5 MB na jednu fotografiu. Fotografie sa nahrajú do VOZIO Storage.</p><label for="listingImage">Alebo odkazy na fotografie (voliteľné)</label><textarea id="listingImage" placeholder="https://obrazok1.jpg&#10;https://obrazok2.jpg"></textarea></div>
 <div class="field"><label for="listingLocation">Lokalita</label><input id="listingLocation" maxlength="100" placeholder="Bratislava"></div>
 <div class="field"><label for="listingContact">Kontakt predajcu</label><input id="listingContact" maxlength="120" placeholder="e-mail alebo telefón"></div>
 <div class="field full"><label for="listingDescription">Popis vozidla</label><textarea id="listingDescription" maxlength="2000" placeholder="Napíš stav, výbavu a ďalšie informácie..."></textarea></div>
@@ -291,6 +291,17 @@ document.getElementById('listingForm').addEventListener('submit',async e=>{
  if(!currentUser){alert('Na pridanie inzerátu sa musíš prihlásiť.');return}
  const contact=document.getElementById('listingContact').value.trim();
  const imageUrls=document.getElementById('listingImage').value.split(/[\n,]+/).map(x=>x.trim()).filter(isImageUrl);
+ const files=[...document.getElementById('listingFiles').files];
+ const allowedTypes=['image/jpeg','image/png','image/webp'];
+ const invalid=files.find(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024);
+ if(invalid){alert('Fotografie musia byť JPG, PNG alebo WebP a každá môže mať najviac 5 MB. Problémový súbor: '+invalid.name);return}
+ if(files.length){
+  const submitButton=document.querySelector('#listingForm button[type="submit"]');submitButton.disabled=true;submitButton.textContent='Nahrávam fotografie…';
+  try{
+   for(const file of files){const ext=file.type==='image/jpeg'?'jpg':file.type==='image/png'?'png':'webp';const path=currentUser.id+'/'+crypto.randomUUID()+'.'+ext;const {error:uploadError}=await supabaseClient.storage.from('vehicle-photos').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});if(uploadError)throw uploadError;const {data:urlData}=supabaseClient.storage.from('vehicle-photos').getPublicUrl(path);imageUrls.push(urlData.publicUrl)}
+  }catch(uploadError){alert('Fotografiu sa nepodarilo nahrať: '+uploadError.message+' Skontroluj Storage policies v Supabase.');submitButton.disabled=false;submitButton.textContent='Uložiť inzerát';return}
+  submitButton.disabled=false;submitButton.textContent='Uložiť inzerát';
+ }
  const item={title:document.getElementById('listingTitle').value.trim(),category:document.getElementById('listingType').value,price:Number(document.getElementById('listingPrice').value),year:document.getElementById('listingYear').value?Number(document.getElementById('listingYear').value):null,mileage:document.getElementById('listingKm').value?Number(document.getElementById('listingKm').value):null,transmission:document.getElementById('listingEngine').value.trim()||null,image_url:imageUrls.length?JSON.stringify(imageUrls):null,location:document.getElementById('listingLocation').value.trim()||null,contact_email:contact||currentUser.email,description:document.getElementById('listingDescription').value.trim()||null};
  let result;
  if(editingListingId)result=await supabaseClient.from('vehicles').update(item).eq('id',editingListingId).eq('user_id',currentUser.id);
