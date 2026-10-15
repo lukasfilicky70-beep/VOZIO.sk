@@ -214,9 +214,30 @@ document.getElementById('listingForm').reset();closeModal('addModal');renderSave
 renderSavedListings();
 
 const routeData={
-alps:{center:[46.55,9.8],zoom:7,points:[{name:'Chur',coords:[46.85,9.53]},{name:'St. Moritz',coords:[46.49,9.84]},{name:'Andermatt',coords:[46.64,8.59}]},
-dolomites:{center:[46.48,11.9],zoom:8,points:[{name:'Bolzano',coords:[46.50,11.35]},{name:'Cortina d’Ampezzo',coords:[46.54,12.14]},{name:'Passo Pordoi',coords:[46.49,11.81}]},
-slovakia:{center:[49.15,19.75],zoom:8,points:[{name:'Žilina',coords:[49.22,18.74]},{name:'Liptovský Mikuláš',coords:[49.08,19.61]},{name:'Štrbské Pleso',coords:[49.12,20.08}]}
+alps:{
+center:[46.55,9.8],zoom:7,
+points:[
+{name:'Chur',coords:[46.85,9.53]},
+{name:'St. Moritz',coords:[46.49,9.84]},
+{name:'Andermatt',coords:[46.64,8.59]}
+]
+},
+dolomites:{
+center:[46.48,11.9],zoom:8,
+points:[
+{name:'Bolzano',coords:[46.50,11.35]},
+{name:'Cortina d’Ampezzo',coords:[46.54,12.14]},
+{name:'Passo Pordoi',coords:[46.49,11.81]}
+]
+},
+slovakia:{
+center:[49.15,19.75],zoom:8,
+points:[
+{name:'Žilina',coords:[49.22,18.74]},
+{name:'Liptovský Mikuláš',coords:[49.08,19.61]},
+{name:'Štrbské Pleso',coords:[49.12,20.08]}
+]
+}
 };
 let map=null,markers=[],line=null;
 function showRoute(key){
