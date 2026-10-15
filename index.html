@@ -342,7 +342,6 @@ function updateAuthUI(session){
  document.getElementById('openAdd').title=currentUser?'Pridať inzerát':'Najprv sa prihlás alebo vytvor účet';
 document.getElementById('profilePanel').hidden=!currentUser;
 renderMyListings();
-renderInbox();
 }
 function renderMyListings(){
  const wrap=document.getElementById('myListings');if(!wrap)return;wrap.replaceChildren();
@@ -373,12 +372,13 @@ async function loginUser(){
  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
  if(error){alert('Prihlásenie sa nepodarilo: '+error.message);return}
  updateAuthUI(data.session);
+setTimeout(()=>renderInbox(),0);
 }
 document.getElementById('registerBtn').addEventListener('click',registerUser);
 document.getElementById('loginBtn').addEventListener('click',loginUser);
 document.getElementById('logoutBtn').addEventListener('click',async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);updateAuthUI(null)});
-supabaseClient.auth.getSession().then(({data})=>updateAuthUI(data.session));
-supabaseClient.auth.onAuthStateChange((_event,session)=>updateAuthUI(session));
+supabaseClient.auth.getSession().then(({data})=>{updateAuthUI(data.session);setTimeout(()=>renderInbox(),0)}).catch(error=>{console.error('Supabase session error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa overiť prihlásenie. Obnov stránku.'});
+supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAuthUI(session);setTimeout(()=>renderInbox(),0)});
 document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}editingListingId=null;document.getElementById('listingForm').reset();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
 document.getElementById('showAllListings').addEventListener('click',()=>{document.getElementById('q').value='';document.getElementById('type').value='';document.getElementById('maxprice').value='9999999';document.getElementById('minyear').value='';document.getElementById('maxkm').value='';document.getElementById('engineFilter').value='';filterVehicles()});
 document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
