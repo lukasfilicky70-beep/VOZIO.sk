@@ -362,17 +362,31 @@ async function deleteListing(id){
 }
 async function registerUser(){
  const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;
+ const status=document.getElementById('authStatus');
  if(!email||password.length<6){alert('Zadaj platný e-mail a heslo s dĺžkou aspoň 6 znakov.');return}
- const {error}=await supabaseClient.auth.signUp({email,password});
- if(error){alert('Registrácia sa nepodarila: '+error.message);return}
- alert('Registrácia odoslaná. Ak je v Supabase zapnuté potvrdenie e-mailu, otvor správu v e-maile a potvrď účet.');
+ status.textContent='Registrujem účet…';
+ try{
+  if(!window.supabase){throw new Error('Knižnica Supabase sa nenačítala. Skontroluj internet a obnov stránku.')}
+  const {error}=await supabaseClient.auth.signUp({email,password});
+  if(error)throw error;
+  status.textContent='Registrácia odoslaná. Skontroluj e-mail, ak je potvrdenie účtu zapnuté.';
+  alert('Registrácia odoslaná. Ak je v Supabase zapnuté potvrdenie e-mailu, otvor správu v e-maile a potvrď účet.');
+ }catch(error){status.textContent='Registrácia zlyhala: '+(error.message||String(error));alert('Registrácia zlyhala: '+(error.message||String(error)))}
 }
 async function loginUser(){
  const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;
- const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
- if(error){alert('Prihlásenie sa nepodarilo: '+error.message);return}
- updateAuthUI(data.session);
-setTimeout(()=>renderInbox(),0);
+ const status=document.getElementById('authStatus');
+ if(!email||!password){alert('Zadaj e-mail aj heslo.');return}
+ status.textContent='Prihlasujem…';
+ const button=document.getElementById('loginBtn');button.disabled=true;
+ try{
+  if(!window.supabase){throw new Error('Knižnica Supabase sa nenačítala. Skontroluj internet a obnov stránku.')}
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  updateAuthUI(data.session);status.textContent='Prihlásenie úspešné: '+(data.user?.email||email);
+  setTimeout(()=>renderInbox(),0);
+ }catch(error){status.textContent='Prihlásenie zlyhalo: '+(error.message||String(error));alert('Prihlásenie zlyhalo: '+(error.message||String(error)))}
+ finally{button.disabled=false}
 }
 document.getElementById('registerBtn').addEventListener('click',registerUser);
 document.getElementById('loginBtn').addEventListener('click',loginUser);
