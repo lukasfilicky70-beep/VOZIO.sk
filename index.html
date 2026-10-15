@@ -92,7 +92,7 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
     <button class="btn secondary" id="logoutBtn" type="button" hidden>Odhlásiť sa</button>
   </div>
 </div>
-<div class="profile-panel" id="profilePanel" hidden><div class="head"><div><h3 style="margin:0">Môj profil</h3><p>Spravuj svoje inzeráty na jednom mieste.</p></div><button class="btn secondary" id="showAllListings" type="button">Všetky inzeráty</button></div><div id="myListings" class="cards"></div><p class="modal-note" id="myListingsNote"></p></div>
+<div class="profile-panel" id="profilePanel" hidden><div class="head"><div><h3 style="margin:0">Môj profil</h3><p>Spravuj svoje inzeráty na jednom mieste.</p></div><button class="btn secondary" id="showAllListings" type="button">Všetky inzeráty</button></div><div id="myListings" class="cards"></div><p class="modal-note" id="myListingsNote"></p><h3>Moje správy</h3><div id="myMessages" class="review-list"></div></div>
 <div class="searchbox">
 <div class="field"><label for="q">Čo hľadáš?</label><input id="q" placeholder="Napr. SUV, Yamaha, karavan…"></div>
 <div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky</option><option>Auto</option><option>Motorka</option><option>Karavan</option><option>Príves</option><option>Diely</option><option>Príslušenstvo</option><option>Pneumatiky</option></select></div>
@@ -264,28 +264,58 @@ async function loadListings(){
  allDbRows=data||[];checkNewListingAlerts(allDbRows);renderListings(allDbRows);updateFavoritesUI();
 }
 
-const VOZIO_REVIEWS_KEY='vozio_reviews_v1';
-function readReviews(){try{return JSON.parse(localStorage.getItem(VOZIO_REVIEWS_KEY)||'{}')}catch(e){return {}}}
-function renderReviewPanel(item,container){
- const reviews=readReviews(),key=String(item.id),list=Array.isArray(reviews[key])?reviews[key]:[];
+async function renderReviewPanel(item,container){
+ const key=String(item.id);
  const panel=document.createElement('section');panel.className='community-panel';
  const h=document.createElement('h3');h.textContent='Hodnotenia a recenzie';panel.appendChild(h);
- const summary=document.createElement('p');summary.className='modal-note';
- const avg=list.length?list.reduce((n,r)=>n+Number(r.rating),0)/list.length:0;
- summary.textContent=list.length?'★ '+avg.toFixed(1)+' / 5 · '+list.length+' hodnotení':'Tento inzerát zatiaľ nemá recenzie.';panel.appendChild(summary);
- const reviewList=document.createElement('div');reviewList.className='review-list';
- list.slice().reverse().forEach(r=>{const el=document.createElement('div');el.className='review-item';const stars=document.createElement('div');stars.className='review-stars';stars.textContent='★'.repeat(Number(r.rating))+'☆'.repeat(5-Number(r.rating));const name=document.createElement('strong');name.textContent=r.name||'Návštevník';const comment=document.createElement('p');comment.textContent=r.comment;comment.style.margin='8px 0 0';el.append(stars,name,comment);reviewList.appendChild(el)});
- panel.appendChild(reviewList);
+ const summary=document.createElement('p');summary.className='modal-note';summary.textContent='Načítavam recenzie…';panel.appendChild(summary);
+ const reviewList=document.createElement('div');reviewList.className='review-list';panel.appendChild(reviewList);
  const form=document.createElement('form');form.className='community-form';
- const name=document.createElement('input');name.placeholder='Tvoje meno alebo prezývka';name.maxLength=50;name.required=true;
  const rating=document.createElement('select');rating.setAttribute('aria-label','Počet hviezdičiek');rating.innerHTML='<option value="5">★★★★★ — Výborné</option><option value="4">★★★★☆ — Dobré</option><option value="3">★★★☆☆ — Priemerné</option><option value="2">★★☆☆☆ — Slabé</option><option value="1">★☆☆☆☆ — Zlé</option>';
  const comment=document.createElement('textarea');comment.placeholder='Napíš slušnú a vecnú recenziu…';comment.maxLength=800;comment.required=true;comment.rows=3;
  const submit=document.createElement('button');submit.className='btn secondary';submit.type='submit';submit.textContent='Pridať recenziu';
- form.append(name,rating,comment,submit);form.addEventListener('submit',e=>{e.preventDefault();const all=readReviews();const arr=Array.isArray(all[key])?all[key]:[];arr.push({name:name.value.trim(),rating:Number(rating.value),comment:comment.value.trim(),createdAt:new Date().toISOString()});all[key]=arr;try{localStorage.setItem(VOZIO_REVIEWS_KEY,JSON.stringify(all));renderReviewPanel(item,container)}catch(err){alert('Recenziu sa nepodarilo uložiť v tomto prehliadači.')}});
- panel.appendChild(form);
- const localNote=document.createElement('p');localNote.className='modal-note';localNote.textContent='Upozornenie: recenzie sa zatiaľ ukladajú iba v tomto prehliadači, nie do spoločnej databázy.';panel.appendChild(localNote);
- container.appendChild(panel);
+ form.append(rating,comment,submit);
+ const note=document.createElement('p');note.className='modal-note';note.textContent=currentUser?'Recenzie sa ukladajú do spoločnej databázy VOZIO.':'Na pridanie recenzie sa najprv prihlás.';
+ if(!currentUser){rating.disabled=true;comment.disabled=true;submit.disabled=true}
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();if(!currentUser){alert('Na pridanie recenzie sa musíš prihlásiť.');return}
+  const text=comment.value.trim();if(!text)return;
+  submit.disabled=true;submit.textContent='Ukladám…';
+  const {error}=await supabaseClient.from('vehicle_reviews').insert({vehicle_id:key,reviewer_id:currentUser.id,rating:Number(rating.value),comment:text});
+  submit.disabled=false;submit.textContent='Pridať recenziu';
+  if(error){alert('Recenziu sa nepodarilo uložiť: '+error.message);return}
+  comment.value='';await loadReviews();
+ });
+ panel.append(form,note);container.appendChild(panel);
+ async function loadReviews(){
+  const {data,error}=await supabaseClient.from('vehicle_reviews').select('id,reviewer_id,rating,comment,created_at').eq('vehicle_id',key).order('created_at',{ascending:false});
+  reviewList.replaceChildren();
+  if(error){summary.textContent='Recenzie sa nepodarilo načítať.';console.error(error);return}
+  const list=data||[],avg=list.length?list.reduce((n,r)=>n+Number(r.rating),0)/list.length:0;
+  summary.textContent=list.length?'★ '+avg.toFixed(1)+' / 5 · '+list.length+' hodnotení':'Tento inzerát zatiaľ nemá recenzie.';
+  list.forEach(r=>{const el=document.createElement('div');el.className='review-item';const stars=document.createElement('div');stars.className='review-stars';stars.textContent='★'.repeat(Number(r.rating))+'☆'.repeat(5-Number(r.rating));const name=document.createElement('strong');name.textContent=r.reviewer_id===currentUser?.id?'Ty':('Používateľ '+r.reviewer_id.slice(0,8));const text=document.createElement('p');text.textContent=r.comment;text.style.margin='8px 0 0';el.append(stars,name,text);reviewList.appendChild(el)});
+ }
+ await loadReviews();
 }
+async function renderInbox(){
+ const wrap=document.getElementById('myMessages');if(!wrap)return;wrap.replaceChildren();
+ if(!currentUser){wrap.textContent='Prihlás sa, aby si videl svoje správy.';return}
+ const {data,error}=await supabaseClient.from('user_messages').select('id,sender_id,recipient_id,vehicle_id,message,created_at,read_at').order('created_at',{ascending:false}).limit(50);
+ if(error){wrap.textContent='Správy sa nepodarilo načítať: '+error.message;return}
+ const rows=(data||[]).filter(m=>m.sender_id===currentUser.id||m.recipient_id===currentUser.id);
+ if(!rows.length){wrap.textContent='Zatiaľ nemáš žiadne správy.';return}
+ rows.forEach(m=>{const card=document.createElement('div');card.className='review-item';const head=document.createElement('strong');head.textContent=(m.sender_id===currentUser.id?'Odoslaná správa':'Prijatá správa')+' · '+new Date(m.created_at).toLocaleString('sk-SK');const body=document.createElement('p');body.textContent=m.message;body.style.margin='8px 0';card.append(head,body);if(m.recipient_id===currentUser.id&&!m.read_at){const b=document.createElement('button');b.className='btn secondary';b.type='button';b.textContent='Označiť ako prečítané';b.addEventListener('click',async()=>{const {error:updateError}=await supabaseClient.from('user_messages').update({read_at:new Date().toISOString()}).eq('id',m.id);if(updateError)alert(updateError.message);else renderInbox()});card.appendChild(b)}wrap.appendChild(card)});
+}
+async function sendListingMessage(item,message){
+ if(!currentUser){alert('Na odoslanie správy sa musíš prihlásiť.');return}
+ if(!item.userId){alert('Pri tomto inzeráte sa nepodarilo zistiť účet predajcu. Kontaktuj ho cez uvedený e-mail alebo telefón.');return}
+ if(item.userId===currentUser.id){alert('Nemôžeš poslať správu sám sebe.');return}
+ const {error}=await supabaseClient.from('user_messages').insert({sender_id:currentUser.id,recipient_id:item.userId,vehicle_id:String(item.id),message});
+ if(error){alert('Správu sa nepodarilo odoslať: '+error.message);return}
+ alert('Správa bola odoslaná. Odpoveď si pozrieš v sekcii Môj profil.');
+ renderInbox();
+}
+
 function showListingDetail(item){
  document.getElementById('detailTitle').textContent=item.title;
  const content=document.getElementById('detailContent');content.replaceChildren();
@@ -297,7 +327,9 @@ function showListingDetail(item){
   const box=document.createElement('div');box.className='detail-item';const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);grid.appendChild(box);
  });
  content.append(img);const gallery=(item.images||[]).slice(1);if(gallery.length){const galleryEl=document.createElement('div');galleryEl.className='gallery';gallery.forEach(src=>{const photo=document.createElement('img');photo.src=src;photo.alt='Fotografia – '+item.title;photo.loading='lazy';photo.onerror=()=>photo.remove();photo.addEventListener('click',()=>{img.src=src;img.scrollIntoView({behavior:'smooth',block:'nearest'})});galleryEl.appendChild(photo)});content.appendChild(galleryEl)}content.append(price,grid,desc);
- renderReviewPanel(item,content);const safety=document.createElement('div');safety.className='safety-note';safety.innerHTML='<strong>Bezpečný nákup</strong><br>Pred platbou si vozidlo osobne prezri, over VIN a doklady. Neposielaj zálohu neznámemu predajcovi a dávaj pozor na odkazy na falošné kuriérske alebo platobné služby.';content.appendChild(safety);
+ renderReviewPanel(item,content);
+ const messagePanel=document.createElement('section');messagePanel.className='community-panel';const messageHeading=document.createElement('h3');messageHeading.textContent='Napísať predajcovi';const messageForm=document.createElement('form');messageForm.className='community-form';const messageBox=document.createElement('textarea');messageBox.placeholder='Tvoja správa predajcovi…';messageBox.maxLength=4000;messageBox.required=true;messageBox.rows=3;const messageButton=document.createElement('button');messageButton.className='btn secondary';messageButton.type='submit';messageButton.textContent='Odoslať správu';messageForm.append(messageBox,messageButton);if(!currentUser){messageBox.disabled=true;messageButton.disabled=true}messageForm.addEventListener('submit',async e=>{e.preventDefault();const value=messageBox.value.trim();if(!value)return;messageButton.disabled=true;await sendListingMessage(item,value);messageButton.disabled=false;messageBox.value=''});messagePanel.append(messageHeading,messageForm);content.appendChild(messagePanel);
+ const safety=document.createElement('div');safety.className='safety-note';safety.innerHTML='<strong>Bezpečný nákup</strong><br>Pred platbou si vozidlo osobne prezri, over VIN a doklady. Neposielaj zálohu neznámemu predajcovi a dávaj pozor na odkazy na falošné kuriérske alebo platobné služby.';content.appendChild(safety);
  if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
  openModal('detailModal');
 }
@@ -310,6 +342,7 @@ function updateAuthUI(session){
  document.getElementById('openAdd').title=currentUser?'Pridať inzerát':'Najprv sa prihlás alebo vytvor účet';
 document.getElementById('profilePanel').hidden=!currentUser;
 renderMyListings();
+renderInbox();
 }
 function renderMyListings(){
  const wrap=document.getElementById('myListings');if(!wrap)return;wrap.replaceChildren();
