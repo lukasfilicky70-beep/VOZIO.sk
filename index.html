@@ -1,173 +1,800 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b0d12">
-  <meta name="description" content="Vozio — moje projekty, nápady a digitálna tvorba.">
-  <title>Vozio — Moje projekty</title>
-  <style>
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #0b0d12;
-      color: #f5f7ff;
-      line-height: 1.6;
-    }
-    a { color: inherit; text-decoration: none; }
-    .container { width: min(1080px, 90%); margin: auto; }
-    header {
-      height: 80px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #252936;
-    }
-    nav { display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 27px; font-weight: 850; letter-spacing: -1.5px; }
-    .logo span { color: #7c83ff; }
-    .links { display: flex; gap: 26px; color: #b5bacb; font-size: 14px; }
-    .links a:hover { color: white; }
-    .hero { padding: 110px 0 100px; }
-    .tag {
-      display: inline-block;
-      color: #aeb2ff;
-      background: #1b1c35;
-      border: 1px solid #33345a;
-      padding: 7px 13px;
-      border-radius: 30px;
-      font-size: 13px;
-    }
-    h1 {
-      font-size: clamp(43px, 7vw, 76px);
-      line-height: 1.06;
-      letter-spacing: -4px;
-      max-width: 780px;
-      margin: 25px 0;
-    }
-    h1 span {
-      background: linear-gradient(90deg, #9a8cff, #65d5ff);
-      color: transparent;
-      background-clip: text;
-    }
-    .intro { color: #a9afc1; max-width: 570px; font-size: 18px; }
-    .button {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 13px 20px;
-      border-radius: 10px;
-      background: #7774f8;
-      color: white;
-      font-weight: 700;
-    }
-    .button:hover { background: #625fe0; }
-    section { padding: 55px 0 85px; }
-    .eyebrow { color: #9699ff; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
-    h2 { font-size: 34px; letter-spacing: -1px; margin: 8px 0 12px; }
-    .muted { color: #a9afc1; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 18px;
-      margin-top: 32px;
-    }
-    .card {
-      background: #12151e;
-      border: 1px solid #282c3a;
-      border-radius: 16px;
-      padding: 25px;
-      transition: transform .2s, border-color .2s;
-    }
-    .card:hover { transform: translateY(-4px); border-color: #7774f8; }
-    .symbol { font-size: 28px; }
-    .card h3 { margin-bottom: 8px; }
-    .card p { color: #a9afc1; font-size: 14px; }
-    .about {
-      background: #12151e;
-      border: 1px solid #282c3a;
-      padding: 30px;
-      border-radius: 16px;
-      max-width: 760px;
-    }
-    footer { border-top: 1px solid #252936; padding: 25px 0; color: #8d93a6; font-size: 13px; }
-    @media (max-width: 550px) {
-      .links { gap: 13px; font-size: 12px; }
-      .logo { font-size: 23px; }
-      .hero { padding: 75px 0 60px; }
-      h1 { letter-spacing: -2px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d10">
+<title>VOZIO — Všetko pre motoristov</title>
+<meta name="description" content="VOZIO — všetko pre motoristov. Vozidlá, služby, trasy a miesta na jednom mieste.">
+<style>
+:root {
+  --bg:#070b0e;
+  --panel:#10171b;
+  --panel2:#151e23;
+  --line:#2a353b;
+  --yellow:#ffdf00;
+  --white:#f5f7f8;
+  --muted:#aab5ba;
+  --green:#18d99a;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Inter,Arial,Helvetica,sans-serif;
+}
+a { color:inherit; text-decoration:none; }
+button { font:inherit; }
+.wrap {
+  width:min(1240px,calc(100% - 32px));
+  margin:auto;
+}
+.hero {
+  position:relative;
+  isolation:isolate;
+  min-height:410px;
+  display:flex;
+  align-items:end;
+  overflow:hidden;
+  border-bottom:1px solid #3c474c;
+  background:#111;
+}
+.hero:before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    linear-gradient(90deg,rgba(3,7,10,.95),rgba(3,7,10,.55) 55%,rgba(3,7,10,.22)),
+    url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85')
+    center 48%/cover;
+}
+.hero:after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(0deg,var(--bg),transparent 58%);
+}
+.top {
+  display:flex;
+  align-items:center;
+  gap:24px;
+  padding:24px 0 18px;
+  align-self:start;
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:270px;
+}
+.logo {
+  width:66px;
+  height:66px;
+  display:grid;
+  place-items:center;
+  border-radius:19px;
+  background:var(--yellow);
+  color:#080b0d;
+  font-size:34px;
+  font-weight:900;
+  box-shadow:0 0 28px #ffdf0030;
+}
+.brandname {
+  font-size:clamp(35px,5vw,57px);
+  font-weight:1000;
+  letter-spacing:1px;
+  line-height:.9;
+}
+.tagline {
+  color:var(--yellow);
+  font-weight:900;
+  font-size:13px;
+  letter-spacing:.5px;
+  margin-top:8px;
+}
+.nav {
+  display:flex;
+  flex:1;
+  justify-content:space-between;
+  gap:8px;
+}
+.nav a {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
+  min-width:58px;
+  color:#f5f7f8;
+  font-size:11px;
+  font-weight:800;
+  text-align:center;
+}
+.nav .ico {
+  font-size:25px;
+  color:var(--yellow);
+}
+.nav a:hover { color:var(--yellow); }
+.hero-copy {
+  padding:150px 0 42px;
+  max-width:760px;
+}
+.eyebrow {
+  color:var(--yellow);
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.hero h1 {
+  font-size:clamp(38px,6vw,72px);
+  line-height:.98;
+  margin:12px 0 16px;
+  letter-spacing:-2px;
+}
+.hero h1 span { color:var(--yellow); }
+.hero p {
+  font-size:clamp(15px,2vw,19px);
+  color:#d4dcdf;
+  line-height:1.6;
+  max-width:610px;
+}
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:24px;
+}
+.btn {
+  border:0;
+  border-radius:10px;
+  padding:13px 18px;
+  font-weight:900;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:.2s;
+}
+.btn.primary {
+  background:var(--yellow);
+  color:#080b0d;
+}
+.btn.secondary {
+  background:#111a20dd;
+  border:1px solid #536168;
+  color:#fff;
+}
+.btn:hover {
+  filter:brightness(1.08);
+  transform:translateY(-1px);
+}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:-1px;
+  padding:18px 0 30px;
+}
+.stat {
+  background:linear-gradient(140deg,#172126,#0d1317);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:16px;
+}
+.stat strong {
+  display:block;
+  color:var(--yellow);
+  font-size:22px;
+}
+.stat span {
+  color:var(--muted);
+  font-size:12px;
+}
+section { padding:28px 0; }
+.section-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:18px;
+  margin-bottom:18px;
+}
+.section-head h2 {
+  margin:0;
+  font-size:clamp(23px,3vw,32px);
+}
+.section-head p {
+  color:var(--muted);
+  margin:8px 0 0;
+  font-size:14px;
+}
+.small-link {
+  color:var(--yellow);
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.categories {
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:10px;
+}
+.category {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:18px 8px;
+  text-align:center;
+  transition:.2s;
+}
+.category:hover {
+  border-color:var(--yellow);
+  transform:translateY(-3px);
+}
+.category b {
+  display:block;
+  font-size:26px;
+  margin-bottom:9px;
+}
+.category span {
+  font-size:12px;
+  font-weight:800;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.feature {
+  position:relative;
+  overflow:hidden;
+  min-height:225px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,#18242a,#0d1215);
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.feature:before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 100% 0%,#ffdf0018,transparent 55%);
+  pointer-events:none;
+}
+.feature>* { position:relative; }
+.feature .number {
+  display:inline-grid;
+  place-items:center;
+  width:33px;
+  height:33px;
+  background:var(--yellow);
+  color:#080b0d;
+  border-radius:50%;
+  font-weight:1000;
+}
+.feature h3 {
+  margin:14px 0 7px;
+  font-size:21px;
+}
+.feature p {
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+.feature .feature-icon {
+  font-size:38px;
+  margin-top:18px;
+}
+.feature .text-link {
+  margin-top:18px;
+  color:var(--yellow);
+  font-weight:900;
+  font-size:13px;
+}
+.listings {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.listing {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+}
+.listing-img {
+  height:155px;
+  display:grid;
+  place-items:center;
+  font-size:62px;
+  background:linear-gradient(145deg,#273941,#11191e);
+}
+.listing-content { padding:16px; }
+.listing h3 {
+  margin:0 0 7px;
+  font-size:17px;
+}
+.muted {
+  color:var(--muted);
+  font-size:13px;
+}
+.price {
+  color:var(--yellow);
+  font-weight:1000;
+  font-size:22px;
+  margin:14px 0;
+}
+.chips {
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.chip {
+  background:#202a30;
+  border:1px solid #354149;
+  border-radius:7px;
+  padding:5px 8px;
+  color:#d8e0e3;
+  font-size:11px;
+}
+.banner {
+  margin:26px 0 40px;
+  border:1px solid #665d1b;
+  border-radius:18px;
+  padding:28px;
+  background:linear-gradient(110deg,#25230d,#111a1e 70%);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.banner h2 {
+  margin:0 0 8px;
+  font-size:clamp(23px,3vw,34px);
+}
+.banner p {
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+}
+footer {
+  border-top:1px solid var(--line);
+  padding:24px 0 34px;
+  color:var(--muted);
+  font-size:13px;
+}
+.footer-row {
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.footer-brand {
+  font-size:18px;
+  font-weight:1000;
+  color:white;
+}
+.footer-brand span { color:var(--yellow); }
+
+input,select { font:inherit; }
+
+@media(max-width:1000px) {
+  .top {
+    align-items:flex-start;
+    flex-direction:column;
+    gap:16px;
+  }
+  .nav {
+    width:100%;
+    overflow-x:auto;
+    justify-content:flex-start;
+    padding-bottom:5px;
+  }
+  .nav a { min-width:76px; }
+  .hero-copy { padding-top:245px; }
+  .categories { grid-template-columns:repeat(4,1fr); }
+}
+@media(max-width:680px) {
+  .wrap { width:min(100% - 22px,1240px); }
+  .hero { min-height:530px; }
+  .top { padding-top:15px; }
+  .brand { min-width:0; }
+  .logo {
+    width:52px;
+    height:52px;
+    border-radius:14px;
+    font-size:27px;
+  }
+  .brandname { font-size:39px; }
+  .tagline { font-size:10px; }
+  .nav a {
+    font-size:10px;
+    min-width:67px;
+  }
+  .nav .ico { font-size:22px; }
+  .hero-copy {
+    padding-top:270px;
+    padding-bottom:28px;
+  }
+  .hero h1 { letter-spacing:-1px; }
+  .stats {
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    padding-top:12px;
+  }
+  .stat { padding:13px; }
+  .stat strong { font-size:19px; }
+  .section-head {
+    align-items:start;
+    flex-direction:column;
+  }
+  .categories {
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+  }
+  .category {
+    display:flex;
+    align-items:center;
+    text-align:left;
+    gap:10px;
+    padding:13px;
+  }
+  .category b {
+    margin:0;
+    font-size:23px;
+  }
+  .grid,.listings { grid-template-columns:1fr; }
+  .feature { min-height:185px; }
+  .listing-img { height:135px; }
+  .banner {
+    align-items:flex-start;
+    flex-direction:column;
+    padding:22px;
+  }
+  .actions .btn { flex:1; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <nav class="container">
-      <a class="logo" href="#">VOZIO<span>.</span></a>
-      <div class="links">
-        <a href="#projekty">Projekty</a>
-        <a href="#om mne">O mne</a>
-        <a href="#kontakt">Kontakt</a>
-      </div>
-    </nav>
-  </header>
 
-  <main>
-    <div class="container hero">
-      <span class="tag">Osobné portfólio · 2026</span>
-      <h1>Nápady, ktoré sa menia na <span>projekty.</span></h1>
-      <p class="intro">
-        Vitaj na Vozio. Toto je môj digitálny priestor,
-        kde predstavujem svoje projekty, experimenty a nové nápady.
-      </p>
-      <a class="button" href="#projekty">Preskúmať projekty ↗</a>
+<header class="hero" id="domov">
+  <div class="top wrap">
+    <a class="brand" href="#domov" aria-label="VOZIO domov">
+      <div class="logo">🚘</div>
+      <div>
+        <div class="brandname">VOZIO</div>
+        <div class="tagline">VŠETKO PRE MOTORISTOV</div>
+      </div>
+    </a>
+
+    <nav class="nav" aria-label="Hlavná navigácia">
+      <a href="#kategorie"><span class="ico">🚘</span>AUTÁ</a>
+      <a href="#kategorie"><span class="ico">🏍️</span>MOTORKY</a>
+      <a href="#sluzby"><span class="ico">🚐</span>KARAVANY</a>
+      <a href="#sluzby"><span class="ico">🛞</span>PRÍVESY</a>
+      <a href="#sluzby"><span class="ico">⚙️</span>DIELY</a>
+      <a href="#sluzby"><span class="ico">💳</span>LEASING</a>
+      <a href="#trasy"><span class="ico">🧭</span>NAVIGÁCIA</a>
+      <a href="#sluzby"><span class="ico">🛠️</span>SERVIS</a>
+    </nav>
+  </div>
+
+  <div class="wrap hero-copy">
+    <div class="eyebrow">Tvoja cesta začína tu</div>
+    <h1>Viac než portál.<br><span>Tvoj svet na cestách.</span></h1>
+    <p>
+      Vozidlá, služby, trasy a užitočné miesta pre každého motoristu.
+      Všetko, čo potrebuješ na cestách, na jednom mieste.
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="#kategorie">⚡ Preskúmať VOZIO →</a>
+      <a class="btn secondary" href="#sluzby">Objaviť funkcie</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stats">
+    <div class="stat"><strong>01</strong><span>Marketplace vozidiel</span></div>
+    <div class="stat"><strong>02</strong><span>Pomoc na cestách</span></div>
+    <div class="stat"><strong>03</strong><span>Trasy a objavovanie</span></div>
+    <div class="stat"><strong>24/7</strong><span>Motoristický svet</span></div>
+  </div>
+
+  <section id="kategorie">
+    <div class="section-head">
+      <div>
+        <h2>Všetko pre motoristov</h2>
+        <p>Vyber si kategóriu a objav, čo VOZIO pripravuje.</p>
+      </div>
+      <a class="small-link" href="#sluzby">Všetky kategórie →</a>
     </div>
 
-    <section class="container" id="projekty">
-      <div class="eyebrow">Čo tvorím</div>
-      <h2>Moje projekty</h2>
-      <p class="muted">Tu postupne pribudnú moje práce a nápady.</p>
-      <div class="grid">
-        <article class="card">
-          <div class="symbol">✦</div>
-          <h3>Projekt 01</h3>
-          <p>Moje prvé projekty a digitálne experimenty.</p>
-        </article>
-        <article class="card">
-          <div class="symbol">⌘</div>
-          <h3>Projekt 02</h3>
-          <p>Nápady, aplikácie a veci, ktoré práve vytváram.</p>
-        </article>
-        <article class="card">
-          <div class="symbol">↗</div>
-          <h3>Čoskoro</h3>
-          <p>Ďalšie projekty sú na ceste. Zostaň v obraze.</p>
-        </article>
+    <div class="categories">
+      <a class="category" href="#inzercia"><b>🚘</b><span>Autá</span></a>
+      <a class="category" href="#inzercia"><b>🏍️</b><span>Motorky</span></a>
+      <a class="category" href="#inzercia"><b>🚐</b><span>Karavany</span></a>
+      <a class="category" href="#inzercia"><b>🚚</b><span>Prívesy</span></a>
+      <a class="category" href="#sluzby"><b>⚙️</b><span>Diely</span></a>
+      <a class="category" href="#sluzby"><b>🧰</b><span>Príslušenstvo</span></a>
+      <a class="category" href="#sluzby"><b>🛞</b><span>Pneumatiky</span></a>
+      <a class="category" href="#sluzby"><b>📍</b><span>Služby</span></a>
+    </div>
+  </section>
+
+  <section id="sluzby">
+    <div class="section-head">
+      <div>
+        <h2>Jedna platforma. Viac možností.</h2>
+        <p>Prehľad funkcií inšpirovaný tvojím návrhom.</p>
       </div>
-    </section>
+    </div>
 
-    <section class="container" id="om mne">
-      <div class="eyebrow">Niečo o mne</div>
-      <h2>Za značkou Vozio</h2>
-      <div class="about">
-        <p class="muted">
-          Som tvorca, ktorého baví skúšať nové veci a premieňať
-          nápady na skutočné projekty. Toto portfólio je miesto,
-          kde budem zdieľať svoju cestu a to, na čom pracujem.
-        </p>
+    <div class="grid">
+      <article class="feature">
+        <div>
+          <span class="number">1</span>
+          <h3>VOZIO Marketplace</h3>
+          <p>Priestor pre autá, motorky, karavany a ďalšie vozidlá.</p>
+        </div>
+        <div class="feature-icon">🚘 🏍️ 🚐</div>
+        <a class="text-link" href="#inzercia">Pozrieť ukážkové inzeráty →</a>
+      </article>
+
+      <article class="feature" id="kalkulacka">
+        <div>
+          <span class="number">2</span>
+          <h3>Leasingová kalkulačka</h3>
+          <p>Prehľadná ukážka výpočtu mesačnej splátky a financovania.</p>
+        </div>
+        <div class="feature-icon">💳 📊</div>
+        <a class="text-link" href="#leasing">Vyskúšať kalkulačku ↓</a>
+      </article>
+
+      <article class="feature" id="trasy">
+        <div>
+          <span class="number">3</span>
+          <h3>Trasy a objavovanie</h3>
+          <p>Motorkárske cesty, výhľady, zaujímavé miesta a zastávky na výlete.</p>
+        </div>
+        <div class="feature-icon">🏔️ 🧭</div>
+        <a class="text-link" href="#miesta">Objavovať miesta →</a>
+      </article>
+
+      <article class="feature">
+        <div>
+          <span class="number">4</span>
+          <h3>Hraničné priechody</h3>
+          <p>Užitočné informácie pred cestou cez hranice.</p>
+        </div>
+        <div class="feature-icon">🛣️ 🌍</div>
+        <span class="text-link">Informačná sekcia — pripravujeme</span>
+      </article>
+
+      <article class="feature">
+        <div>
+          <span class="number">5</span>
+          <h3>Servis a obchody</h3>
+          <p>Miesto pre autoservisy, pneuservisy, odťahové služby a predajne.</p>
+        </div>
+        <div class="feature-icon">🛠️ 🛞</div>
+        <span class="text-link">Katalóg služieb — pripravujeme</span>
+      </article>
+
+      <article class="feature" id="sos">
+        <div>
+          <span class="number">6</span>
+          <h3>VOZIO SOS</h3>
+          <p>Rýchly prístup k núdzovým informáciám a pomoci na cestách.</p>
+        </div>
+        <div class="feature-icon">🆘 📞</div>
+        <a class="text-link" href="#pomoc">Zobraziť dôležité čísla ↓</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="inzercia">
+    <div class="section-head">
+      <div>
+        <h2>Vybrané vozidlá</h2>
+        <p>Vizuálna ukážka inzercie podľa dizajnu VOZIO.</p>
       </div>
-    </section>
+      <span class="small-link">Ukážkový obsah</span>
+    </div>
 
-    <section class="container" id="kontakt">
-      <div class="eyebrow">Spojme sa</div>
-      <h2>Máš nápad?</h2>
-      <p class="muted">Doplň sem svoj kontaktný e-mail a ľudia ťa budú môcť osloviť.</p>
-      <a class="button" href="mailto:tvoj@email.sk">Napíš mi ✉</a>
-    </section>
-  </main>
+    <div class="listings">
+      <article class="listing">
+        <div class="listing-img">🏍️</div>
+        <div class="listing-content">
+          <h3>Adventure motocykel</h3>
+          <div class="muted">2021 · 28 000 km · 1 250 cm³</div>
+          <div class="price">18 900 €</div>
+          <div class="chips">
+            <span class="chip">Benzín</span>
+            <span class="chip">Manuál</span>
+            <span class="chip">Ukážkový inzerát</span>
+          </div>
+        </div>
+      </article>
 
-  <footer>
-    <div class="container">© 2026 Vozio. Vytvorené s nadšením.</div>
-  </footer>
+      <article class="listing">
+        <div class="listing-img">🚙</div>
+        <div class="listing-content">
+          <h3>Športové SUV</h3>
+          <div class="muted">2022 · 34 000 km · Automat</div>
+          <div class="price">32 500 €</div>
+          <div class="chips">
+            <span class="chip">SUV</span>
+            <span class="chip">Automat</span>
+            <span class="chip">Ukážkový inzerát</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="listing">
+        <div class="listing-img">🚐</div>
+        <div class="listing-content">
+          <h3>Cestovný karavan</h3>
+          <div class="muted">2020 · 2 lôžka · Pripravený na výlet</div>
+          <div class="price">24 900 €</div>
+          <div class="chips">
+            <span class="chip">Karavan</span>
+            <span class="chip">Cestovanie</span>
+            <span class="chip">Ukážkový inzerát</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="leasing">
+    <div class="section-head">
+      <div>
+        <h2>Leasingová kalkulačka</h2>
+        <p>Orientačný výpočet pre predstavu — nie je to ponuka financovania.</p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div>
+        <h3>Vypočítaj si približnú splátku</h3>
+        <p>Zmeň cenu, akontáciu a dobu splácania.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:20px">
+        <label>
+          Cena vozidla (€)
+          <input id="price" type="number" min="1" value="18900" style="display:block;width:100%;margin-top:8px;padding:12px;border-radius:8px;border:1px solid var(--line);background:#080d10;color:white">
+        </label>
+        <label>
+          Akontácia (%)
+          <input id="down" type="number" min="0" max="90" value="20" style="display:block;width:100%;margin-top:8px;padding:12px;border-radius:8px;border:1px solid var(--line);background:#080d10;color:white">
+        </label>
+        <label>
+          Doba splácania (roky)
+          <select id="years" style="display:block;width:100%;margin-top:8px;padding:12px;border-radius:8px;border:1px solid var(--line);background:#080d10;color:white">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option selected>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="price" id="monthly" aria-live="polite">— € / mesiac</div>
+    </div>
+  </section>
+
+  <section id="miesta">
+    <div class="section-head">
+      <div>
+        <h2>Objav nové cesty s VOZIO</h2>
+        <p>Inšpirácia na ďalší výlet.</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="feature">
+        <div>
+          <span class="number">A</span>
+          <h3>Horské serpentíny</h3>
+          <p>Pre jazdcov, ktorí majú radi zákruty, výhľady a otvorenú cestu.</p>
+        </div>
+        <div class="feature-icon">🏍️ 🏔️</div>
+      </article>
+
+      <article class="feature">
+        <div>
+          <span class="number">B</span>
+          <h3>Miesta na zastavenie</h3>
+          <p>Plánuj si prestávky, vyhliadky a zaujímavé body na trase.</p>
+        </div>
+        <div class="feature-icon">📍 🌄</div>
+      </article>
+
+      <article class="feature" id="pomoc">
+        <div>
+          <span class="number">C</span>
+          <h3>Pomoc v núdzi</h3>
+          <p>V naliehavej situácii na Slovensku volaj 112. Jazdi bezpečne.</p>
+        </div>
+        <div class="feature-icon">🆘 <span style="color:var(--yellow)">112</span></div>
+        <a class="text-link" href="tel:112">Volať 112 z telefónu →</a>
+      </article>
+    </div>
+  </section>
+
+  <div class="banner">
+    <div>
+      <h2>Pripravený vyraziť?</h2>
+      <p>VOZIO — tvoj motoristický svet sa začína tu.</p>
+    </div>
+    <a class="btn primary" href="#domov">Späť na začiatok ↑</a>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <div>
+      <div class="footer-brand">VOZ<span>IO</span></div>
+      <p>VŠETKO PRE MOTORISTOV</p>
+    </div>
+    <div>© <span id="year"></span> VOZIO · Osobný projekt</div>
+    <div>
+      <a href="#domov">Domov</a> ·
+      <a href="#sluzby">Funkcie</a> ·
+      <a href="#inzercia">Vozidlá</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const price = document.getElementById('price');
+const down = document.getElementById('down');
+const years = document.getElementById('years');
+const monthly = document.getElementById('monthly');
+
+function calc() {
+  const p = Math.max(0, Number(price.value) || 0);
+  const d = Math.min(90, Math.max(0, Number(down.value) || 0));
+  const n = Math.max(1, Number(years.value) || 1) * 12;
+  const loan = p * (1 - d / 100);
+  const r = 0.059 / 12;
+  const payment = r
+    ? loan * r / (1 - Math.pow(1 + r, -n))
+    : loan / n;
+
+  monthly.textContent =
+    new Intl.NumberFormat('sk-SK', {
+      style:'currency',
+      currency:'EUR',
+      maximumFractionDigits:0
+    }).format(payment) + ' / mesiac (orientačne)';
+}
+
+[price, down, years].forEach(el => {
+  el.addEventListener('input', calc);
+});
+
+calc();
+document.getElementById('year').textContent =
+  new Date().getFullYear();
+</script>
 </body>
 </html>
