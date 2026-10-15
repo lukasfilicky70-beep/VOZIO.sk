@@ -53,6 +53,10 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 .my-listing-actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
 @media(max-width:760px){.wrap{width:calc(100% - 24px)}header{min-height:auto;padding-bottom:28px}.hero{padding-top:48px;padding-bottom:32px}.hero h1{font-size:clamp(2.2rem,10vw,3.5rem)}.top{align-items:flex-start;gap:14px;flex-wrap:wrap}.nav{width:100%;overflow-x:auto;white-space:nowrap;padding-bottom:6px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.head{align-items:flex-start;gap:14px;flex-direction:column}.searchbox,.advanced-filters{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.vehicle img{height:220px}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.features{grid-template-columns:1fr}.routes{grid-template-columns:1fr}.banner{gap:18px;align-items:flex-start;flex-direction:column}.foot{gap:18px;align-items:flex-start;flex-direction:column}.modal{padding:10px}.modal-panel{padding:16px;max-height:92vh}.listing-form{grid-template-columns:1fr}.listing-form .field.full{grid-column:auto}.detail-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:420px){.detail-grid{grid-template-columns:1fr}.buttons .btn{max-width:100%}.vtitle .price{font-size:1.1rem}}
+
+/* Community features */
+.community-panel{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.community-panel h3{margin:0 0 8px}.review-list{display:grid;gap:10px;margin:12px 0}.review-item{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)}.review-stars{color:var(--yellow);letter-spacing:2px}.community-form{display:grid;gap:10px;margin-top:12px}.community-form input,.community-form textarea,.community-form select{width:100%;background:#080d10;color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px}.safety-note{margin-top:14px;padding:14px;border:1px solid #79632b;background:#211d10;border-radius:10px;color:#f3e4b3;line-height:1.55}.notify-box{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.notify-box form{display:flex;gap:10px;flex-wrap:wrap}.notify-box input{flex:1;min-width:180px;background:#080d10;color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px}
 </style>
 </head>
 <body>
@@ -117,7 +121,7 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="vbody"><div class="vtitle"><h3>Cestovný karavan</h3><div class="price">24 900 €</div></div><div class="details">2020 · 2 lôžka · Pripravený na výlet</div><div class="chips"><span class="chip">Karavan</span><span class="chip">Cestovanie</span><span class="chip">Ukážkový inzerát</span></div></div>
 </article>
 </div>
-<div class="no-results" id="noResults">Nenašli sa vozidlá podľa tvojich filtrov. Skús zmeniť hľadanie.</div>
+<div class="notify-box"><h3>🔔 Upozornenia na nové inzeráty</h3><p class="modal-note">Ulož si hľadaný výraz. VOZIO ťa upozorní v tomto prehliadači, keď pri ďalšej návšteve nájde nové zodpovedajúce inzeráty.</p><form id="savedSearchForm"><input id="savedSearchTerm" maxlength="100" placeholder="Napr. Yamaha, SUV do 20 000 €" required><button class="btn secondary" type="submit">Uložiť hľadanie</button></form><p id="savedSearchStatus" class="modal-note"></p></div>\n<div class="no-results" id="noResults">Nenašli sa vozidlá podľa tvojich filtrov. Skús zmeniť hľadanie.</div>
 </section>
 <section id="kategorie">
 <div class="head"><div><h2>Vyber si svoju kategóriu</h2><p>Vyber kategóriu a filtre sa nastavia automaticky.</p></div></div>
@@ -239,10 +243,44 @@ function renderListings(rows){
  rows.forEach(row=>cards.appendChild(buildListingCard(fromDb(row))));
  filterVehicles();
 }
-async function loadListings(){
+
+const VOZIO_SEARCHES_KEY='vozio_saved_searches_v1',VOZIO_SEEN_KEY='vozio_seen_listing_ids_v1';
+function initSavedSearches(){
+ const form=document.getElementById('savedSearchForm'),input=document.getElementById('savedSearchTerm'),status=document.getElementById('savedSearchStatus');if(!form)return;
+ function refresh(){try{const arr=JSON.parse(localStorage.getItem(VOZIO_SEARCHES_KEY)||'[]');status.textContent=arr.length?'Uložené hľadania: '+arr.map(x=>x.term).join(' · '):'Zatiaľ nemáš uložené hľadanie.'}catch(e){status.textContent='Uložené hľadania nie sú dostupné.'}}
+ form.addEventListener('submit',e=>{e.preventDefault();const term=input.value.trim();if(!term)return;try{const arr=JSON.parse(localStorage.getItem(VOZIO_SEARCHES_KEY)||'[]');if(!arr.some(x=>x.term.toLowerCase()===term.toLowerCase()))arr.push({term,createdAt:new Date().toISOString()});localStorage.setItem(VOZIO_SEARCHES_KEY,JSON.stringify(arr));input.value='';refresh();alert('Hľadanie je uložené v tomto prehliadači. Pri ďalšej návšteve skontrolujeme nové zhody.')}catch(e){alert('Uloženie sa nepodarilo. Skontroluj nastavenia prehliadača.')}});
+ refresh();
+}
+function checkNewListingAlerts(rows){
+ try{const ids=rows.map(r=>String(r.id)),old=JSON.parse(localStorage.getItem(VOZIO_SEEN_KEY)||'[]'),searches=JSON.parse(localStorage.getItem(VOZIO_SEARCHES_KEY)||'[]');if(old.length&&searches.length){const newRows=rows.filter(r=>!old.includes(String(r.id)));const matches=newRows.filter(r=>searches.some(s=>(String(r.title||'')+' '+String(r.category||'')+' '+String(r.description||'')).toLowerCase().includes(s.term.toLowerCase())));if(matches.length)alert('VOZIO: našli sme '+matches.length+' nový inzerát z tvojich uložených hľadaní. Pozri si zoznam vozidiel.')}localStorage.setItem(VOZIO_SEEN_KEY,JSON.stringify(ids))}catch(e){}
+}
+\ninitSavedSearches();\nasync function loadListings(){
  const {data,error}=await supabaseClient.from('vehicles').select('*').order('created_at',{ascending:false});
  if(error){console.error('Supabase load error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa načítať inzeráty. Skontroluj nastavenie databázy.';return}
- allDbRows=data||[];renderListings(allDbRows);updateFavoritesUI();
+ allDbRows=data||[];checkNewListingAlerts(allDbRows);renderListings(allDbRows);updateFavoritesUI();
+}
+
+const VOZIO_REVIEWS_KEY='vozio_reviews_v1';
+function readReviews(){try{return JSON.parse(localStorage.getItem(VOZIO_REVIEWS_KEY)||'{}')}catch(e){return {}}}
+function renderReviewPanel(item,container){
+ const reviews=readReviews(),key=String(item.id),list=Array.isArray(reviews[key])?reviews[key]:[];
+ const panel=document.createElement('section');panel.className='community-panel';
+ const h=document.createElement('h3');h.textContent='Hodnotenia a recenzie';panel.appendChild(h);
+ const summary=document.createElement('p');summary.className='modal-note';
+ const avg=list.length?list.reduce((n,r)=>n+Number(r.rating),0)/list.length:0;
+ summary.textContent=list.length?'★ '+avg.toFixed(1)+' / 5 · '+list.length+' hodnotení':'Tento inzerát zatiaľ nemá recenzie.';panel.appendChild(summary);
+ const reviewList=document.createElement('div');reviewList.className='review-list';
+ list.slice().reverse().forEach(r=>{const el=document.createElement('div');el.className='review-item';const stars=document.createElement('div');stars.className='review-stars';stars.textContent='★'.repeat(Number(r.rating))+'☆'.repeat(5-Number(r.rating));const name=document.createElement('strong');name.textContent=r.name||'Návštevník';const comment=document.createElement('p');comment.textContent=r.comment;comment.style.margin='8px 0 0';el.append(stars,name,comment);reviewList.appendChild(el)});
+ panel.appendChild(reviewList);
+ const form=document.createElement('form');form.className='community-form';
+ const name=document.createElement('input');name.placeholder='Tvoje meno alebo prezývka';name.maxLength=50;name.required=true;
+ const rating=document.createElement('select');rating.setAttribute('aria-label','Počet hviezdičiek');rating.innerHTML='<option value="5">★★★★★ — Výborné</option><option value="4">★★★★☆ — Dobré</option><option value="3">★★★☆☆ — Priemerné</option><option value="2">★★☆☆☆ — Slabé</option><option value="1">★☆☆☆☆ — Zlé</option>';
+ const comment=document.createElement('textarea');comment.placeholder='Napíš slušnú a vecnú recenziu…';comment.maxLength=800;comment.required=true;comment.rows=3;
+ const submit=document.createElement('button');submit.className='btn secondary';submit.type='submit';submit.textContent='Pridať recenziu';
+ form.append(name,rating,comment,submit);form.addEventListener('submit',e=>{e.preventDefault();const all=readReviews();const arr=Array.isArray(all[key])?all[key]:[];arr.push({name:name.value.trim(),rating:Number(rating.value),comment:comment.value.trim(),createdAt:new Date().toISOString()});all[key]=arr;try{localStorage.setItem(VOZIO_REVIEWS_KEY,JSON.stringify(all));renderReviewPanel(item,container)}catch(err){alert('Recenziu sa nepodarilo uložiť v tomto prehliadači.')}});
+ panel.appendChild(form);
+ const localNote=document.createElement('p');localNote.className='modal-note';localNote.textContent='Upozornenie: recenzie sa zatiaľ ukladajú iba v tomto prehliadači, nie do spoločnej databázy.';panel.appendChild(localNote);
+ container.appendChild(panel);
 }
 function showListingDetail(item){
  document.getElementById('detailTitle').textContent=item.title;
@@ -255,7 +293,7 @@ function showListingDetail(item){
   const box=document.createElement('div');box.className='detail-item';const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);grid.appendChild(box);
  });
  content.append(img);const gallery=(item.images||[]).slice(1);if(gallery.length){const galleryEl=document.createElement('div');galleryEl.className='gallery';gallery.forEach(src=>{const photo=document.createElement('img');photo.src=src;photo.alt='Fotografia – '+item.title;photo.loading='lazy';photo.onerror=()=>photo.remove();photo.addEventListener('click',()=>{img.src=src;img.scrollIntoView({behavior:'smooth',block:'nearest'})});galleryEl.appendChild(photo)});content.appendChild(galleryEl)}content.append(price,grid,desc);
- if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
+ renderReviewPanel(item,content);const safety=document.createElement('div');safety.className='safety-note';safety.innerHTML='<strong>Bezpečný nákup</strong><br>Pred platbou si vozidlo osobne prezri, over VIN a doklady. Neposielaj zálohu neznámemu predajcovi a dávaj pozor na odkazy na falošné kuriérske alebo platobné služby.';content.appendChild(safety);\n if(item.contact){const link=document.createElement('a');link.className='btn primary';link.textContent='Kontaktovať predajcu';if(item.contact.includes('@'))link.href='mailto:'+item.contact;else link.href='tel:'+item.contact.replace(/[^\d+]/g,'');content.appendChild(link)}
  openModal('detailModal');
 }
 function updateAuthUI(session){
