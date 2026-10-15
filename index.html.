@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="Vozio — moje projekty, nápady a digitálna tvorba.">
+  <title>Vozio — Moje projekty</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: #0b0d12;
+      color: #f5f7ff;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1080px, 90%); margin: auto; }
+    header {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #252936;
+    }
+    nav { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 27px; font-weight: 850; letter-spacing: -1.5px; }
+    .logo span { color: #7c83ff; }
+    .links { display: flex; gap: 26px; color: #b5bacb; font-size: 14px; }
+    .links a:hover { color: white; }
+    .hero { padding: 110px 0 100px; }
+    .tag {
+      display: inline-block;
+      color: #aeb2ff;
+      background: #1b1c35;
+      border: 1px solid #33345a;
+      padding: 7px 13px;
+      border-radius: 30px;
+      font-size: 13px;
+    }
+    h1 {
+      font-size: clamp(43px, 7vw, 76px);
+      line-height: 1.06;
+      letter-spacing: -4px;
+      max-width: 780px;
+      margin: 25px 0;
+    }
+    h1 span {
+      background: linear-gradient(90deg, #9a8cff, #65d5ff);
+      color: transparent;
+      background-clip: text;
+    }
+    .intro { color: #a9afc1; max-width: 570px; font-size: 18px; }
+    .button {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 13px 20px;
+      border-radius: 10px;
+      background: #7774f8;
+      color: white;
+      font-weight: 700;
+    }
+    .button:hover { background: #625fe0; }
+    section { padding: 55px 0 85px; }
+    .eyebrow { color: #9699ff; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+    h2 { font-size: 34px; letter-spacing: -1px; margin: 8px 0 12px; }
+    .muted { color: #a9afc1; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+      margin-top: 32px;
+    }
+    .card {
+      background: #12151e;
+      border: 1px solid #282c3a;
+      border-radius: 16px;
+      padding: 25px;
+      transition: transform .2s, border-color .2s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: #7774f8; }
+    .symbol { font-size: 28px; }
+    .card h3 { margin-bottom: 8px; }
+    .card p { color: #a9afc1; font-size: 14px; }
+    .about {
+      background: #12151e;
+      border: 1px solid #282c3a;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 760px;
+    }
+    footer { border-top: 1px solid #252936; padding: 25px 0; color: #8d93a6; font-size: 13px; }
+    @media (max-width: 550px) {
+      .links { gap: 13px; font-size: 12px; }
+      .logo { font-size: 23px; }
+      .hero { padding: 75px 0 60px; }
+      h1 { letter-spacing: -2px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <a class="logo" href="#">VOZIO<span>.</span></a>
+      <div class="links">
+        <a href="#projekty">Projekty</a>
+        <a href="#om mne">O mne</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container hero">
+      <span class="tag">Osobné portfólio · 2026</span>
+      <h1>Nápady, ktoré sa menia na <span>projekty.</span></h1>
+      <p class="intro">
+        Vitaj na Vozio. Toto je môj digitálny priestor,
+        kde predstavujem svoje projekty, experimenty a nové nápady.
+      </p>
+      <a class="button" href="#projekty">Preskúmať projekty ↗</a>
+    </div>
+
+    <section class="container" id="projekty">
+      <div class="eyebrow">Čo tvorím</div>
+      <h2>Moje projekty</h2>
+      <p class="muted">Tu postupne pribudnú moje práce a nápady.</p>
+      <div class="grid">
+        <article class="card">
+          <div class="symbol">✦</div>
+          <h3>Projekt 01</h3>
+          <p>Moje prvé projekty a digitálne experimenty.</p>
+        </article>
+        <article class="card">
+          <div class="symbol">⌘</div>
+          <h3>Projekt 02</h3>
+          <p>Nápady, aplikácie a veci, ktoré práve vytváram.</p>
+        </article>
+        <article class="card">
+          <div class="symbol">↗</div>
+          <h3>Čoskoro</h3>
+          <p>Ďalšie projekty sú na ceste. Zostaň v obraze.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="container" id="om mne">
+      <div class="eyebrow">Niečo o mne</div>
+      <h2>Za značkou Vozio</h2>
+      <div class="about">
+        <p class="muted">
+          Som tvorca, ktorého baví skúšať nové veci a premieňať
+          nápady na skutočné projekty. Toto portfólio je miesto,
+          kde budem zdieľať svoju cestu a to, na čom pracujem.
+        </p>
+      </div>
+    </section>
+
+    <section class="container" id="kontakt">
+      <div class="eyebrow">Spojme sa</div>
+      <h2>Máš nápad?</h2>
+      <p class="muted">Doplň sem svoj kontaktný e-mail a ľudia ťa budú môcť osloviť.</p>
+      <a class="button" href="mailto:tvoj@email.sk">Napíš mi ✉</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Vozio. Vytvorené s nadšením.</div>
+  </footer>
+</body>
+</html>
