@@ -96,15 +96,15 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="buttons" style="margin-bottom:14px"><button class="btn secondary" id="favoritesToggle" type="button" aria-pressed="false">♡ Zobraziť obľúbené</button><span class="modal-note" id="favoritesCount">0 obľúbených inzerátov</span></div>
 <div class="cards" id="vehicleCards">
 <article class="vehicle" data-type="Motorka" data-price="18900" data-name="Adventure motocykel Yamaha" data-favorite-id="demo-moto">
-<img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80" alt="Motocykel na ceste" loading="lazy"><button class="favorite-btn" type="button" data-favorite-id="demo-moto" aria-label="Pridať medzi obľúbené">♡</button>
+<img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80" alt="Motocykel na ceste" loading="lazy"><button class="favorite-btn" type="button" onclick="window.toggleFavoriteId(this.dataset.favoriteId)" data-favorite-id="demo-moto" aria-label="Pridať medzi obľúbené">♡</button>
 <div class="vbody"><div class="vtitle"><h3>Adventure motocykel</h3><div class="price">18 900 €</div></div><div class="details">2021 · 28 000 km · 1 250 cm³</div><div class="chips"><span class="chip">Motorka</span><span class="chip">Manuál</span><span class="chip">Ukážkový inzerát</span></div></div>
 </article>
 <article class="vehicle" data-type="Auto" data-price="32500" data-name="Športové SUV auto" data-favorite-id="demo-suv">
-<img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80" alt="SUV na horskej ceste" loading="lazy"><button class="favorite-btn" type="button" data-favorite-id="demo-suv" aria-label="Pridať medzi obľúbené">♡</button>
+<img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80" alt="SUV na horskej ceste" loading="lazy"><button class="favorite-btn" type="button" onclick="window.toggleFavoriteId(this.dataset.favoriteId)" data-favorite-id="demo-suv" aria-label="Pridať medzi obľúbené">♡</button>
 <div class="vbody"><div class="vtitle"><h3>Športové SUV</h3><div class="price">32 500 €</div></div><div class="details">2022 · 34 000 km · Automat</div><div class="chips"><span class="chip">Auto</span><span class="chip">Automat</span><span class="chip">Ukážkový inzerát</span></div></div>
 </article>
 <article class="vehicle" data-type="Karavan" data-price="24900" data-name="Cestovný karavan camper" data-favorite-id="demo-camper">
-<img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80" alt="Cestovanie a príroda" loading="lazy"><button class="favorite-btn" type="button" data-favorite-id="demo-camper" aria-label="Pridať medzi obľúbené">♡</button>
+<img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80" alt="Cestovanie a príroda" loading="lazy"><button class="favorite-btn" type="button" onclick="window.toggleFavoriteId(this.dataset.favoriteId)" data-favorite-id="demo-camper" aria-label="Pridať medzi obľúbené">♡</button>
 <div class="vbody"><div class="vtitle"><h3>Cestovný karavan</h3><div class="price">24 900 €</div></div><div class="details">2020 · 2 lôžka · Pripravený na výlet</div><div class="chips"><span class="chip">Karavan</span><span class="chip">Cestovanie</span><span class="chip">Ukážkový inzerát</span></div></div>
 </article>
 </div>
@@ -205,7 +205,7 @@ const FAVORITES_KEY='vozio_favorites_v1';
 let showFavoritesOnly=false;
 function getFavorites(){try{return JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]').map(String)}catch(e){return []}}
 function updateFavoritesUI(){const ids=getFavorites();const count=document.getElementById('favoritesCount');if(count)count.textContent=ids.length+' obľúbených inzerátov';const toggle=document.getElementById('favoritesToggle');if(toggle){toggle.textContent=showFavoritesOnly?'Zobraziť všetky inzeráty':'♡ Zobraziť obľúbené';toggle.setAttribute('aria-pressed',String(showFavoritesOnly));}document.querySelectorAll('.favorite-btn[data-favorite-id]').forEach(btn=>{const active=ids.includes(String(btn.dataset.favoriteId));btn.classList.toggle('active',active);btn.textContent=active?'♥':'♡';btn.setAttribute('aria-label',active?'Odobrať z obľúbených':'Pridať medzi obľúbené');btn.title=active?'Odobrať z obľúbených':'Pridať medzi obľúbené'});}
-function toggleFavoriteId(id){id=String(id);const ids=getFavorites();const next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(next))}catch(e){alert('Obľúbené sa nepodarilo uložiť v tomto prehliadači.');return}updateFavoritesUI();if(showFavoritesOnly)filterVehicles();}
+window.toggleFavoriteId=function(id){id=String(id);const ids=getFavorites();const next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(next))}catch(e){alert('Obľúbené sa nepodarilo uložiť v tomto prehliadači.');return}updateFavoritesUI();if(showFavoritesOnly)filterVehicles();};
 function toggleFavorite(item){if(!item||item.id===undefined||item.id===null){return}toggleFavoriteId(item.id);}
 function buildListingCard(item){
  const card=document.createElement('article');card.className='vehicle user-vehicle';card.tabIndex=0;
