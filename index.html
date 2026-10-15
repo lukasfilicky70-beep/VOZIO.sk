@@ -87,8 +87,8 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
     <div class="field"><label for="authPassword">Heslo</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Aspoň 6 znakov"></div>
   </div>
   <div class="buttons" style="margin-top:12px">
-    <button class="btn primary" id="registerBtn" type="button">Vytvoriť účet</button>
-    <button class="btn secondary" id="loginBtn" type="button">Prihlásiť sa</button>
+    <button class="btn primary" id="registerBtn" type="button" onclick="if(typeof registerUser==='function'){registerUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Vytvoriť účet</button>
+    <button class="btn secondary" id="loginBtn" type="button" onclick="if(typeof loginUser==='function'){loginUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Prihlásiť sa</button>
     <button class="btn secondary" id="logoutBtn" type="button" hidden>Odhlásiť sa</button>
   </div>
 </div>
