@@ -44,6 +44,15 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 .detail-item{background:#080d10;border:1px solid #2b383f;border-radius:9px;padding:12px}.detail-item small{display:block;color:#a8b4ba;margin-bottom:5px}
 .favorite-btn{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:auto;min-width:42px;max-width:48px;height:40px;border:1px solid #46545b;background:#11181de8;color:white;border-radius:9px;padding:7px 10px;cursor:pointer;font-size:22px;line-height:1}.favorite-btn.active{color:#ff7185;border-color:#ff7185;background:#301a20}.vtitle{align-items:flex-start}
 @media(max-width:650px){.listing-form{grid-template-columns:1fr}.listing-form .field.full{grid-column:auto}.detail-grid{grid-template-columns:1fr}}
+
+/* VOZIO responsive polish */
+.favorite-btn{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:42px;min-width:42px;height:40px;border:1px solid #46545b;background:#11181de8;color:white;border-radius:9px;padding:6px;cursor:pointer;font-size:22px;line-height:1}
+.vtitle{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.vtitle h3{flex:1 1 130px;margin:0}.vtitle .price{flex:0 0 auto}
+.detail-image{width:100%;max-height:440px;object-fit:contain;background:#080d10;border-radius:12px}
+.gallery{display:flex;gap:10px;overflow-x:auto;padding:12px 0}.gallery img{width:110px;height:85px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--line)}
+.my-listing-actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
+@media(max-width:760px){.wrap{width:calc(100% - 24px)}header{min-height:auto;padding-bottom:28px}.hero{padding-top:48px;padding-bottom:32px}.hero h1{font-size:clamp(2.2rem,10vw,3.5rem)}.top{align-items:flex-start;gap:14px;flex-wrap:wrap}.nav{width:100%;overflow-x:auto;white-space:nowrap;padding-bottom:6px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.head{align-items:flex-start;gap:14px;flex-direction:column}.searchbox,.advanced-filters{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.vehicle img{height:220px}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.features{grid-template-columns:1fr}.routes{grid-template-columns:1fr}.banner{gap:18px;align-items:flex-start;flex-direction:column}.foot{gap:18px;align-items:flex-start;flex-direction:column}.modal{padding:10px}.modal-panel{padding:16px;max-height:92vh}.listing-form{grid-template-columns:1fr}.listing-form .field.full{grid-column:auto}.detail-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.detail-grid{grid-template-columns:1fr}.buttons .btn{max-width:100%}.vtitle .price{font-size:1.1rem}}
 </style>
 </head>
 <body>
@@ -82,7 +91,7 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 <div class="profile-panel" id="profilePanel" hidden><div class="head"><div><h3 style="margin:0">Môj profil</h3><p>Spravuj svoje inzeráty na jednom mieste.</p></div><button class="btn secondary" id="showAllListings" type="button">Všetky inzeráty</button></div><div id="myListings" class="cards"></div><p class="modal-note" id="myListingsNote"></p></div>
 <div class="searchbox">
 <div class="field"><label for="q">Čo hľadáš?</label><input id="q" placeholder="Napr. SUV, Yamaha, karavan…"></div>
-<div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky</option><option>Auto</option><option>Motorka</option><option>Karavan</option></select></div>
+<div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky</option><option>Auto</option><option>Motorka</option><option>Karavan</option><option>Príves</option><option>Diely</option><option>Príslušenstvo</option><option>Pneumatiky</option></select></div>
 <div class="field"><label for="maxprice">Maximálna cena</label><select id="maxprice"><option value="9999999">Bez limitu</option><option value="10000">10 000 €</option><option value="20000">20 000 €</option><option value="30000">30 000 €</option><option value="40000">40 000 €</option></select></div>
 <div class="field"><label for="sort">Zoradiť</label><select id="sort"><option value="recommended">Odporúčané</option><option value="low">Cena: od najnižšej</option><option value="high">Cena: od najvyššej</option></select></div>
 <button class="btn primary search-action" id="searchBtn">Hľadať</button>
@@ -233,7 +242,7 @@ function renderListings(rows){
 async function loadListings(){
  const {data,error}=await supabaseClient.from('vehicles').select('*').order('created_at',{ascending:false});
  if(error){console.error('Supabase load error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa načítať inzeráty. Skontroluj nastavenie databázy.';return}
- renderListings(data||[]);updateFavoritesUI();
+ allDbRows=data||[];renderListings(allDbRows);updateFavoritesUI();
 }
 function showListingDetail(item){
  document.getElementById('detailTitle').textContent=item.title;
