@@ -181,17 +181,17 @@ let currentUser=null;
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function formatPrice(n){return Number(n||0).toLocaleString('sk-SK')+' €'}
-function fromDb(row){return {id:row.id,title:row.title,type:row.category||'Auto',price:Number(row.price||0),year:row.year||'',km:row.mileage||'',engine:row.transmission||row.fuel||'',image:row.image_url||'',location:row.location||'',contact:row.contact_email||row.contact_name||'',description:row.description||'',createdAt:row.created_at}}
+function fromDb(row){return {id:row.id,title:String(row.title||row.name||'Inzerát bez názvu'),type:String(row.category||row.type||'Auto'),price:Number(row.price||0),year:row.year||'',km:row.mileage??row.km??'',engine:row.transmission||row.fuel||row.engine||'',image:row.image_url||row.image||'',location:row.location||'',contact:row.contact_email||row.contact_name||row.contact||'',description:row.description||'',createdAt:row.created_at}}
 function buildListingCard(item){
  const card=document.createElement('article');card.className='vehicle user-vehicle';card.tabIndex=0;
  card.dataset.type=item.type;card.dataset.price=String(item.price);card.dataset.name=item.title;
  const img=document.createElement('img');img.src=item.image||fallbackVehicleImage;img.alt=item.title;img.loading='lazy';img.onerror=()=>{img.src=fallbackVehicleImage};
  const body=document.createElement('div');body.className='vbody';
  const title=document.createElement('div');title.className='vtitle';
- const h=document.createElement('h3');h.textContent=item.title;
+ const h=document.createElement('h3');h.textContent=item.title||'Inzerát bez názvu';h.style.color='var(--white)';h.style.display='block';h.style.visibility='visible';
  const price=document.createElement('div');price.className='price';price.textContent=formatPrice(item.price);
  title.append(h,price);
- const details=document.createElement('div');details.className='details';details.textContent=[item.year,item.km?Number(item.km).toLocaleString('sk-SK')+' km':'',item.engine].filter(Boolean).join(' · ')||'Údaje doplní predajca';
+ const details=document.createElement('div');details.className='details';details.textContent=[item.year||'',item.km!==''&&item.km!==null?Number(item.km).toLocaleString('sk-SK')+' km':'',item.engine||''].filter(Boolean).join(' · ')||'Ďalšie údaje zatiaľ neboli vyplnené';
  const chips=document.createElement('div');chips.className='chips';
  [item.type,'Inzerát používateľa'].forEach(t=>{const chip=document.createElement('span');chip.className='chip';chip.textContent=t;chips.appendChild(chip)});
  body.append(title,details,chips);card.append(img,body);
