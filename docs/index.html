@@ -290,7 +290,7 @@ document.getElementById('listingForm').addEventListener('submit',async e=>{
  e.preventDefault();
  if(!currentUser){alert('Na pridanie inzerátu sa musíš prihlásiť.');return}
  const contact=document.getElementById('listingContact').value.trim();
- const imageUrls=document.getElementById('listingImage').value.split(/[\n,]+/).map(x=>x.trim()).filter(x=>/^https?:\/\/i.test(x));
+ const imageUrls=document.getElementById('listingImage').value.split(/[\n,]+/).map(x=>x.trim()).filter(isImageUrl);
  const item={title:document.getElementById('listingTitle').value.trim(),category:document.getElementById('listingType').value,price:Number(document.getElementById('listingPrice').value),year:document.getElementById('listingYear').value?Number(document.getElementById('listingYear').value):null,mileage:document.getElementById('listingKm').value?Number(document.getElementById('listingKm').value):null,transmission:document.getElementById('listingEngine').value.trim()||null,image_url:imageUrls.length?JSON.stringify(imageUrls):null,location:document.getElementById('listingLocation').value.trim()||null,contact_email:contact||currentUser.email,description:document.getElementById('listingDescription').value.trim()||null};
  let result;
  if(editingListingId)result=await supabaseClient.from('vehicles').update(item).eq('id',editingListingId).eq('user_id',currentUser.id);
