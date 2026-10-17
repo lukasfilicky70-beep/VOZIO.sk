@@ -133,7 +133,7 @@ section{padding:28px 0}
 .vehicle,.feature,.route{background:#111;border-color:#292929}
 .price,.accent{color:#ffc900}
 #kategorie{padding-top:30px}
-#vozidla .head{margin-top:18px}
+#vozidla .head{margin-top:18px}#vozidla .head .add-listing{display:none}
 @media(max-width:1200px){.nav{overflow-x:auto}.categories{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:760px){header{min-height:auto}.top{flex-direction:row;align-items:center;flex-wrap:wrap}.nav{width:100%;order:3}.hero{padding:48px 0 90px}.searchbox{grid-template-columns:1fr 1fr;margin-top:-60px}.searchbox .field{padding:8px 10px;border-right:0;border-bottom:1px solid #303030}.searchbox .search-action{grid-column:1/-1;margin:10px 0 0}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.cat{min-height:94px}}
 
@@ -471,6 +471,7 @@ document.getElementById('loginBtn').addEventListener('click',loginUser);
 document.getElementById('logoutBtn').addEventListener('click',async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);updateAuthUI(null)});
 supabaseClient.auth.getSession().then(({data})=>{updateAuthUI(data.session);setTimeout(()=>renderInbox(),0)}).catch(error=>{console.error('Supabase session error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa overiť prihlásenie. Obnov stránku.'});
 supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAuthUI(session);setTimeout(()=>renderInbox(),0)});
+document.getElementById('navAdd').addEventListener('click',()=>document.getElementById('openAdd').click());
 document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}editingListingId=null;document.getElementById('listingForm').reset();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
 document.getElementById('showAllListings').addEventListener('click',()=>{document.getElementById('q').value='';document.getElementById('type').value='';document.getElementById('maxprice').value='9999999';document.getElementById('minyear').value='';document.getElementById('maxkm').value='';document.getElementById('engineFilter').value='';filterVehicles()});
 document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
