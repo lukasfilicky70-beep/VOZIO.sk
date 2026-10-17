@@ -57,6 +57,42 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 /* Community features */
 .community-panel{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
 .community-panel h3{margin:0 0 8px}.review-list{display:grid;gap:10px;margin:12px 0}.review-item{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)}.review-stars{color:var(--yellow);letter-spacing:2px}.community-form{display:grid;gap:10px;margin-top:12px}.community-form input,.community-form textarea,.community-form select{width:100%;background:#080d10;color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px}.safety-note{margin-top:14px;padding:14px;border:1px solid #79632b;background:#211d10;border-radius:10px;color:#f3e4b3;line-height:1.55}.notify-box{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.notify-box form{display:flex;gap:10px;flex-wrap:wrap}.notify-box input{flex:1;min-width:180px;background:#080d10;color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px}
+
+/* VOZIO redesign: black + yellow marketplace visual */
+:root{--bg:#050505;--panel:#111111;--panel2:#181818;--line:#292929;--yellow:#ffc900;--white:#f7f7f7;--muted:#b5b5b5;--green:#32d6a0}
+body{background:#050505;color:#f7f7f7}
+header{min-height:590px;border:0}
+header:before{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2200&q=90');background-position:center 55%;filter:saturate(1.08)}
+header:after{background:linear-gradient(90deg,#050505f5 0%,#050505bd 37%,#05050524 78%),linear-gradient(0deg,#050505 0%,transparent 38%)}
+.top{padding:17px 0;gap:20px;border-bottom:1px solid #222}
+.brand{gap:9px}.logo{width:48px;height:48px;border-radius:10px;background:#ffc900;font-size:26px}
+.brandname{font-size:38px;letter-spacing:-1px}.tagline{font-size:8px;letter-spacing:1.4px}
+.nav{gap:1px;flex-wrap:nowrap}.nav a{font-size:12px;padding:10px 9px;white-space:nowrap}
+.hero{padding:75px 0 92px;max-width:700px}
+.eyebrow{display:none}
+.hero h1{font-size:clamp(44px,6.2vw,76px);line-height:1.02;letter-spacing:-2px;text-transform:uppercase;margin:10px 0 18px}
+.hero h1 span{color:#ffc900}
+.hero p{font-size:17px;color:#f0f0f0;max-width:480px}
+.btn{border-radius:10px;padding:15px 20px}.primary{background:#ffc900;color:#080808}.secondary{background:#090909d9;border-color:#555}
+.stats{display:none}
+section{padding:30px 0}
+.head h2{font-size:26px}
+.searchbox{background:#111111eF;border-color:#303030;border-radius:13px;padding:14px;grid-template-columns:1.6fr 1fr .8fr .8fr auto;gap:0;box-shadow:0 15px 38px #0008}
+.searchbox .field{padding:0 14px;border-right:1px solid #303030}
+.searchbox .field:first-child{padding-left:8px}
+.searchbox .field label{font-weight:500;color:#c6c6c6}
+.field input,.field select{background:transparent;border:0;border-radius:0;padding:8px 0;color:#fff}
+.search-action{margin-left:12px;align-self:center}
+.categories{grid-template-columns:repeat(10,minmax(0,1fr));gap:9px}
+.cat{background:linear-gradient(145deg,#171717,#101010);border-color:#292929;border-radius:12px;padding:15px 7px}
+.cat b{color:#ffc900;font-size:30px}
+.cat span{font-size:11px}
+.cat.active,.cat:hover{background:#211d0c;border-color:#ffc900}
+.vehicle,.feature,.route{background:#111;border-color:#292929}
+.price,.accent{color:#ffc900}
+@media(max-width:1100px){.nav{overflow-x:auto}.categories{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:760px){header{min-height:auto}.top{flex-direction:row;align-items:center;flex-wrap:wrap}.nav{width:100%;order:3}.hero{padding:50px 0 65px}.searchbox{grid-template-columns:1fr 1fr}.searchbox .field{padding:8px 10px;border-right:0;border-bottom:1px solid #303030}.searchbox .search-action{grid-column:1/-1;margin:10px 0 0}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
