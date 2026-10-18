@@ -137,6 +137,17 @@ section{padding:28px 0}
 @media(max-width:1200px){.nav{overflow-x:auto}.categories{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:760px){header{min-height:auto}.top{flex-direction:row;align-items:center;flex-wrap:wrap}.nav{width:100%;order:3}.hero{padding:48px 0 90px}.searchbox{grid-template-columns:1fr 1fr;margin-top:-60px}.searchbox .field{padding:8px 10px;border-right:0;border-bottom:1px solid #303030}.searchbox .search-action{grid-column:1/-1;margin:10px 0 0}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.cat{min-height:94px}}
 
+
+/* Improve hero readability while letting the Porsche photo show through */
+header:after{background:linear-gradient(90deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.43) 42%,rgba(5,5,5,.08) 82%),linear-gradient(0deg,rgba(5,5,5,.42) 0%,transparent 38%)}
+.hero p{text-shadow:0 2px 10px rgba(0,0,0,.55)}
+
+
+/* Icons: thin yellow frame with yellow-white lettering */
+.cat b,.feature .emoji{display:inline-grid;place-items:center;background:transparent!important;filter:none;opacity:1;text-shadow:none;box-shadow:none;border:1px solid #ffc900;border-radius:9px;color:#fff!important;padding:7px;line-height:1.1}
+.cat b{color:#ffc900!important}
+.feature .emoji{color:#fff!important;border-color:#ffc900}
+
 </style>
 </head>
 <body>
@@ -550,13 +561,3 @@ if(window.L){showRoute('alps')}else{document.getElementById('map').innerHTML='<p
 </script>
 </body>
 </html>
-
-/* Improve hero readability while letting the Porsche photo show through */
-header:after{background:linear-gradient(90deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.43) 42%,rgba(5,5,5,.08) 82%),linear-gradient(0deg,rgba(5,5,5,.42) 0%,transparent 38%)}
-.hero p{text-shadow:0 2px 10px rgba(0,0,0,.55)}
-
-
-/* Icons: thin yellow frame with yellow-white lettering */
-.cat b,.feature .emoji{display:inline-grid;place-items:center;background:transparent!important;filter:none;opacity:1;text-shadow:none;box-shadow:none;border:1px solid #ffc900;border-radius:9px;color:#fff!important;padding:7px;line-height:1.1}
-.cat b{color:#ffc900!important}
-.feature .emoji{color:#fff!important;border-color:#ffc900}
