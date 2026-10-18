@@ -540,24 +540,42 @@ points:[
 }
 };
 let map=null,markers=[],line=null;
-function showRoute(key){
-const data=routeData[key];
-if(!map){
-map=L.map('map').setView(data.center,data.zoom);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+function mapsDirectionsUrl(points){
+ const origin=points[0].name, destination=points[points.length-1].name;
+ const waypoints=points.slice(1,-1).map(p=>p.name).join('|');
+ return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(destination)+(waypoints?'&waypoints='+encodeURIComponent(waypoints):'');
 }
-map.setView(data.center,data.zoom);
-markers.forEach(m=>map.removeLayer(m));markers=[];
-if(line)map.removeLayer(line);
-data.points.forEach(p=>markers.push(L.marker(p.coords).addTo(map).bindPopup('<strong>'+p.name+'</strong><br>Ukážkový bod VOZIO')));
-line=L.polyline(data.points.map(p=>p.coords),{color:'#ffdf00',weight:4,dashArray:'8 8'}).addTo(map);
-setTimeout(()=>map.invalidateSize(),100);
+function showRoute(key){
+ const data=routeData[key];
+ const navUrl=mapsDirectionsUrl(data.points);
+ document.querySelectorAll('.route').forEach(btn=>{
+  let link=btn.querySelector('.route-nav-link');
+  if(!link){link=document.createElement('a');link.className='btn primary route-nav-link';link.textContent='Spustiť navigáciu ↗';link.target='_blank';link.rel='noopener';link.style.cssText='display:inline-flex;margin-top:12px;font-size:12px;padding:9px 12px';btn.appendChild(link)}
+  link.href=mapsDirectionsUrl(routeData[btn.dataset.route].points);
+ });
+ const mapEl=document.getElementById('map');
+ if(!window.L){mapEl.innerHTML='<div style="padding:22px;color:#eee"><strong>Mapa sa nepodarilo načítať.</strong><p>Skús obnoviť stránku alebo použi navigáciu v tlačidle trasy.</p><a class="btn primary" href="'+navUrl+'" target="_blank" rel="noopener">Otvoriť trasu v Google Maps ↗</a></div>';return}
+ try{
+  if(!map){
+   map=L.map('map').setView(data.center,data.zoom);
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  }
+  map.setView(data.center,data.zoom);
+  markers.forEach(m=>map.removeLayer(m));markers=[];
+  if(line)map.removeLayer(line);
+  data.points.forEach(p=>markers.push(L.marker(p.coords).addTo(map).bindPopup('<strong>'+p.name+'</strong><br>Ukážkový bod VOZIO')));
+  line=L.polyline(data.points.map(p=>p.coords),{color:'#ffdf00',weight:4,dashArray:'8 8'}).addTo(map);
+  setTimeout(()=>map.invalidateSize(),250);
+ }catch(err){
+  console.error('Map initialization failed:',err);
+  mapEl.innerHTML='<div style="padding:22px;color:#eee"><strong>Mapa sa nepodarilo načítať.</strong><p>Navigáciu môžeš spustiť cez Google Maps.</p><a class="btn primary" href="'+navUrl+'" target="_blank" rel="noopener">Otvoriť trasu v Google Maps ↗</a></div>';
+ }
 }
 document.querySelectorAll('.route').forEach(btn=>btn.addEventListener('click',()=>{
-document.querySelectorAll('.route').forEach(x=>x.classList.remove('active'));
-btn.classList.add('active');showRoute(btn.dataset.route);
+ document.querySelectorAll('.route').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');showRoute(btn.dataset.route);
 }));
-if(window.L){showRoute('alps')}else{document.getElementById('map').innerHTML='<p style="padding:20px;color:#a8b4ba">Interaktívna mapa sa nenačítala. Skontroluj internetové pripojenie.</p>'}
+showRoute('alps');
 </script>
 </body>
 </html>
