@@ -160,7 +160,12 @@ header:after{background:linear-gradient(90deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.43)
 #kategorie .cat.active b{background:#ffc900!important;color:#080808!important;border-color:#ffc900}
 @media(max-width:1050px){#kategorie .categories{grid-template-columns:repeat(3,minmax(0,1fr)}}
 @media(max-width:650px){#kategorie .categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#kategorie .cat{min-height:76px;padding:11px;gap:10px}#kategorie .cat b{flex-basis:36px;width:36px;height:36px;font-size:19px}#kategorie .cat span{font-size:12px}#kategorie .cat small{font-size:10px}}
- .brandname .brand-white{color:#fff}.brandname .brand-yellow{color:var(--yellow)}</style>
+ .brandname .brand-white{color:#fff}.brandname .brand-yellow{color:var(--yellow)}
+/* Hero composition: keep headline on the left and truck on the right */
+header{position:relative;}
+header:before{transform:scaleX(-1);background-position:center center;}
+header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#05050512 72%,#05050500 100%),linear-gradient(0deg,#050505 0%,transparent 38%);}
+</style>
 </head>
 <body>
 <header id="domov">
