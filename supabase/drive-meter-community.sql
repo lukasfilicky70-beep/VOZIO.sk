@@ -30,5 +30,5 @@ select country, city, road_type, driving_style,
        round(avg(average_speed_kmh),1) as avg_speed_kmh
 from public.drive_meter_trips
 group by country, city, road_type, driving_style
-having count(*) >= 1;
+having count(*) >= 3;
 grant select on public.drive_meter_public_stats to anon, authenticated;
