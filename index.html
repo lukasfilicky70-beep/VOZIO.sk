@@ -165,14 +165,27 @@ header:after{background:linear-gradient(90deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.43)
 header{position:relative;}
 header:before{background-position:center center;}
 header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#05050512 72%,#05050500 100%),linear-gradient(0deg,#050505 0%,transparent 38%);}
- .market-subtitle{margin:22px 0 10px;font-size:1rem;color:var(--text);font-weight:700}.market-actions{align-items:center;gap:12px}.searchbox{gap:14px}.advanced-filters{margin-top:10px;gap:12px}.profile-tools{display:flex;align-items:center;gap:8px}.profile-icon{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:20px;cursor:pointer;display:grid;place-items:center}.profile-icon[aria-expanded="true"]{background:var(--accent);color:#111}.profile-hint{font-size:.82rem;color:var(--muted)}.profile-content{margin-top:12px}</style>
+ .market-subtitle{margin:22px 0 10px;font-size:1rem;color:var(--text);font-weight:700}.market-actions{align-items:center;gap:12px}.searchbox{gap:14px}.advanced-filters{margin-top:10px;gap:12px}.profile-tools{display:flex;align-items:center;gap:8px}.profile-icon{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:20px;cursor:pointer;display:grid;place-items:center}.profile-icon[aria-expanded="true"]{background:var(--accent);color:#111}.profile-hint{font-size:.82rem;color:var(--muted)}.profile-content{margin-top:12px}
+
+/* Search area in a clean white frame */
+#quick-search{background:#fff;color:#111;border:1px solid #e5e5e5;border-radius:18px;padding:24px;margin:28px auto 34px;box-shadow:0 14px 36px #0005}
+#quick-search .market-subtitle{color:#111;margin:0 0 14px;font-size:24px}
+#quick-search .searchbox{margin-top:0;background:#fff;border-color:#dedede;box-shadow:none;padding:14px}
+#quick-search .searchbox .field{border-color:#e5e5e5}
+#quick-search .searchbox .field label,#quick-search .advanced-filters .field label{color:#555}
+#quick-search .searchbox .field input,#quick-search .searchbox .field select,#quick-search .advanced-filters input{color:#111;background:#fff;border:1px solid #d8d8d8;border-radius:8px;padding:11px}
+#quick-search .searchbox .field input::placeholder,#quick-search .advanced-filters input::placeholder{color:#888}
+#quick-search .advanced-filters{margin-top:14px}
+@media(max-width:760px){#quick-search{padding:16px;margin:20px auto 28px}#quick-search .searchbox .field{border:0;padding:8px 6px}}
+
+</style>
 </head>
 <body>
 <header id="domov">
 <div class="wrap">
 <div class="top">
 <a class="brand" href="#domov"><div class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#ffc900"/><path d="M13 10h10l9 17 9-17h10L35 34h-6z" fill="#101010"/><text x="32" y="51" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="900" letter-spacing="-.5" fill="#101010">OZIO</text></svg></div><div><div class="brandname"><span class="brand-white">VOZ</span><span class="brand-yellow">IO</span></div><div class="tagline">RIDE • DRIVE • DISCOVER</div></div></a>
-<nav class="nav"><a href="#vozidla">Marketplace</a><a href="#offroad">Offroad</a><a href="#trasy">Drive</a><a href="#sluzby">Charge</a><a href="#trasy">Camping</a><a href="#trasy">Race &amp; Tracks</a><a href="#sluzby">Service &amp; Shops</a><a href="#sluzby">Dokumenty</a><a href="#sluzby">Leasing</a><a href="#sluzby">Photo Guide</a><a href="#sluzby">Nehoda / SOS</a><button class="btn primary" id="openAdd">＋ Pridať inzerát</button><a href="#vozidla" aria-label="Obľúbené">♡</a><a href="#vozidla" aria-label="Správy">▱</a><a href="#vozidla" aria-label="Upozornenia">♧</a></nav>
+<nav class="nav"><a href="#vozidla">Marketplace</a><a href="#offroad">Offroad</a><a href="#trasy">Drive</a><a href="#sluzby">Charge</a><a href="#trasy">Camping</a><a href="#trasy">Race &amp; Tracks</a><a href="#sluzby">Service &amp; Shops</a><a href="#sluzby">Dokumenty</a><a href="#sluzby">Leasing</a><a href="#sluzby">Photo Guide</a><a href="#sluzby">Nehoda / SOS</a><button class="btn primary" id="navAdd">＋ Pridať inzerát</button><a href="#vozidla" aria-label="Obľúbené">♡</a><a href="#vozidla" aria-label="Správy">▱</a><a href="#vozidla" aria-label="Upozornenia">♧</a></nav>
 </div>
 <div class="hero">
 <div class="eyebrow">Všetko pre tvoju jazdu</div>
@@ -621,14 +634,3 @@ showRoute('alps');
 </script>
 </body>
 </html>
-
-/* Search area in a clean white frame */
-#quick-search{background:#fff;color:#111;border:1px solid #e5e5e5;border-radius:18px;padding:24px;margin:28px auto 34px;box-shadow:0 14px 36px #0005}
-#quick-search .market-subtitle{color:#111;margin:0 0 14px;font-size:24px}
-#quick-search .searchbox{margin-top:0;background:#fff;border-color:#dedede;box-shadow:none;padding:14px}
-#quick-search .searchbox .field{border-color:#e5e5e5}
-#quick-search .searchbox .field label,#quick-search .advanced-filters .field label{color:#555}
-#quick-search .searchbox .field input,#quick-search .searchbox .field select,#quick-search .advanced-filters input{color:#111;background:#fff;border:1px solid #d8d8d8;border-radius:8px;padding:11px}
-#quick-search .searchbox .field input::placeholder,#quick-search .advanced-filters input::placeholder{color:#888}
-#quick-search .advanced-filters{margin-top:14px}
-@media(max-width:760px){#quick-search{padding:16px;margin:20px auto 28px}#quick-search .searchbox .field{border:0;padding:8px 6px}}
