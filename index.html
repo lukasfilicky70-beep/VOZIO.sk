@@ -178,6 +178,16 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 #quick-search .advanced-filters{margin-top:14px}
 @media(max-width:760px){#quick-search{padding:16px;margin:20px auto 28px}#quick-search .searchbox .field{border:0;padding:8px 6px}}
 
+
+/* Listing photo preview and crop controls */
+.photo-workbench{grid-column:1/-1;border:1px solid #3a3a3a;background:#090909;border-radius:12px;padding:14px;margin-top:8px}
+.photo-workbench h3{margin:0 0 8px;font-size:16px}.photo-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(230px,.85fr);gap:14px}
+.photo-stage{position:relative;background:#151515;border:1px solid #333;border-radius:10px;overflow:hidden;aspect-ratio:4/3;display:grid;place-items:center}
+.photo-stage img{width:100%;height:100%;object-fit:cover;display:block}.photo-empty{color:#aaa;text-align:center;padding:20px}
+.photo-tools{display:grid;gap:10px;align-content:start}.photo-tools label{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#c9c9c9}.photo-tools input[type=range]{width:100%;accent-color:#ffc900}
+.photo-buttons{display:flex;gap:7px;flex-wrap:wrap}.photo-buttons button{font-size:12px;padding:8px 10px}.photo-strip{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px}.photo-thumb{position:relative;flex:0 0 92px;width:92px;height:72px;border:2px solid #333;border-radius:8px;overflow:hidden;background:#151515;padding:0;cursor:pointer}.photo-thumb img{width:100%;height:100%;object-fit:cover}.photo-thumb.active{border-color:#ffc900}.photo-thumb .cover-tag{position:absolute;left:3px;bottom:3px;background:#ffc900;color:#080808;font-size:9px;font-weight:900;padding:3px 5px;border-radius:4px}
+.listing-preview{border:1px solid #333;border-radius:10px;overflow:hidden;background:#111;margin-top:12px}.listing-preview img{width:100%;height:155px;object-fit:cover;display:block;background:#191919}.listing-preview .preview-caption{padding:10px;font-size:12px;color:#ddd}.preview-caption strong{display:block;color:#ffc900;margin-bottom:4px}
+@media(max-width:650px){.photo-layout{grid-template-columns:1fr}.photo-stage{aspect-ratio:4/3}.photo-workbench{padding:10px}}
 </style>
 </head>
 <body>
@@ -287,7 +297,7 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 <div class="field"><label for="listingYear">Rok výroby</label><input id="listingYear" type="number" min="1950" max="2027" placeholder="2021"></div>
 <div class="field"><label for="listingKm">Kilometre</label><input id="listingKm" type="number" min="0" placeholder="45000"></div>
 <div class="field"><label for="listingEngine">Motor / prevodovka</label><input id="listingEngine" maxlength="80" placeholder="2.0 diesel, automat"></div>
-<div class="field full"><label for="listingFiles">Nahrať fotografie z mobilu alebo počítača</label><input id="listingFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple style="width:100%;padding:12px;border-radius:8px;background:#080d10;border:1px solid #34434b;color:white"><p class="modal-note">Vyber viac fotografií naraz. Povolené sú JPG, PNG a WebP, maximálne 5 MB na jednu fotografiu. Fotografie sa nahrajú do VOZIO Storage.</p><label for="listingImage">Alebo odkazy na fotografie (voliteľné)</label><textarea id="listingImage" placeholder="https://obrazok1.jpg&#10;https://obrazok2.jpg"></textarea></div>
+<div class="field full"><label for="listingFiles">Nahrať fotografie z mobilu alebo počítača</label><input id="listingFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple style="width:100%;padding:12px;border-radius:8px;background:#080d10;border:1px solid #34434b;color:white"><div class="photo-workbench" id="photoWorkbench" hidden><h3>Upraviť fotky inzerátu</h3><p class="modal-note">Vyber titulnú fotku, zmeň poradie a uprav výrez. Náhľad sa použije aj pri ukladaní fotky.</p><div class="photo-layout"><div><div class="photo-stage"><img id="photoStageImage" alt="Náhľad výrezu fotografie" hidden><div class="photo-empty" id="photoEmpty">Najprv vyber fotografie vyššie.</div></div><div class="photo-strip" id="photoStrip"></div></div><div class="photo-tools"><label for="photoZoom">Priblíženie <span id="photoZoomValue">1×</span></label><input id="photoZoom" type="range" min="1" max="2.5" step=".05" value="1"><label for="photoX">Vodorovný výrez <span id="photoXValue">50 %</span></label><input id="photoX" type="range" min="0" max="100" value="50"><label for="photoY">Zvislý výrez <span id="photoYValue">50 %</span></label><input id="photoY" type="range" min="0" max="100" value="50"><div class="photo-buttons"><button class="btn secondary" type="button" id="photoCover">Nastaviť ako titulnú</button><button class="btn secondary" type="button" id="photoUp">← Posunúť</button><button class="btn secondary" type="button" id="photoDown">Posunúť →</button></div><div class="listing-preview"><img id="listingPreviewImage" alt="Náhľad titulnej fotografie inzerátu"><div class="preview-caption"><strong>Takto bude vyzerať inzerát</strong><span id="previewListingTitle">Názov vozidla</span></div></div></div></div></div><p class="modal-note">Vyber viac fotografií naraz. Povolené sú JPG, PNG a WebP, maximálne 5 MB na jednu fotografiu. Fotografie sa nahrajú do VOZIO Storage.</p><label for="listingImage">Alebo odkazy na fotografie (voliteľné)</label><textarea id="listingImage" placeholder="https://obrazok1.jpg&#10;https://obrazok2.jpg"></textarea></div>
 <div class="field"><label for="listingLocation">Lokalita</label><input id="listingLocation" maxlength="100" placeholder="Bratislava"></div>
 <div class="field"><label for="listingContact">Kontakt predajcu</label><input id="listingContact" maxlength="120" placeholder="e-mail alebo telefón"></div>
 <div class="field full"><label for="listingDescription">Popis vozidla</label><textarea id="listingDescription" maxlength="2000" placeholder="Napíš stav, výbavu a ďalšie informácie..."></textarea></div>
@@ -537,25 +547,50 @@ document.getElementById('logoutBtn').addEventListener('click',async()=>{const {e
 supabaseClient.auth.getSession().then(({data})=>{updateAuthUI(data.session);setTimeout(()=>renderInbox(),0)}).catch(error=>{console.error('Supabase session error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa overiť prihlásenie. Obnov stránku.'});
 supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAuthUI(session);setTimeout(()=>renderInbox(),0)});
 document.getElementById('navAdd').addEventListener('click',()=>document.getElementById('openAdd').click());
-document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}editingListingId=null;document.getElementById('listingForm').reset();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
+document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}editingListingId=null;document.getElementById('listingForm').reset();listingPhotoItems.forEach(i=>{if(i.objectUrl)URL.revokeObjectURL(i.objectUrl)});listingPhotoItems=[];listingPhotoActive=0;renderListingPhotoWorkbench();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
 document.getElementById("profileToggle").addEventListener("click",()=>{const box=document.getElementById("profileContent"),open=box.hidden;box.hidden=!open;document.getElementById("profileToggle").setAttribute("aria-expanded",String(open));document.getElementById("messagesContent").hidden=true;document.getElementById("messagesToggle").setAttribute("aria-expanded","false");});document.getElementById("messagesToggle").addEventListener("click",()=>{const box=document.getElementById("profileContent"),msg=document.getElementById("messagesContent"),open=msg.hidden;box.hidden=false;msg.hidden=!open;document.getElementById("messagesToggle").setAttribute("aria-expanded",String(open));document.getElementById("profileToggle").setAttribute("aria-expanded","true");});
 document.getElementById('showAllListings').addEventListener('click',()=>{document.getElementById('q').value='';document.getElementById('type').value='';document.getElementById('maxprice').value='9999999';document.getElementById('minyear').value='';document.getElementById('maxkm').value='';document.getElementById('engineFilter').value='';filterVehicles()});
 document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
 document.querySelectorAll('.modal').forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal)closeModal(modal.id)}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>closeModal(m.id))});
-document.getElementById('listingForm').addEventListener('submit',async e=>{
+
+// Photo preview, cover selection, ordering and crop controls (before upload)
+let listingPhotoItems=[],listingPhotoActive=0;
+const photoControls={zoom:document.getElementById('photoZoom'),x:document.getElementById('photoX'),y:document.getElementById('photoY')};
+function photoCropValues(item){return item.crop||{zoom:1,x:50,y:50}}
+function photoPreviewUrl(item){return item.url||item.objectUrl}
+function renderListingPhotoWorkbench(){
+ const wb=document.getElementById('photoWorkbench'),strip=document.getElementById('photoStrip'),stage=document.getElementById('photoStageImage'),empty=document.getElementById('photoEmpty');
+ wb.hidden=!listingPhotoItems.length;strip.replaceChildren();
+ listingPhotoItems.forEach((item,index)=>{const b=document.createElement('button');b.type='button';b.className='photo-thumb'+(index===listingPhotoActive?' active':'');b.title='Fotografia '+(index+1);const im=document.createElement('img');im.src=photoPreviewUrl(item);im.alt='Fotografia '+(index+1);b.appendChild(im);if(index===0){const tag=document.createElement('span');tag.className='cover-tag';tag.textContent='TITULNÁ';b.appendChild(tag)}b.addEventListener('click',()=>{listingPhotoActive=index;renderListingPhotoWorkbench()});strip.appendChild(b)});
+ if(!listingPhotoItems.length){stage.hidden=true;empty.hidden=false;return}
+ const item=listingPhotoItems[listingPhotoActive],crop=photoCropValues(item);stage.src=photoPreviewUrl(item);stage.hidden=false;empty.hidden=true;
+ for(const k of ['zoom','x','y'])photoControls[k].value=crop[k];
+ applyPhotoCrop(stage,item);document.getElementById('photoZoomValue').textContent=Number(crop.zoom).toFixed(2)+'×';document.getElementById('photoXValue').textContent=crop.x+' %';document.getElementById('photoYValue').textContent=crop.y+' %';
+ document.getElementById('listingPreviewImage').src=photoPreviewUrl(listingPhotoItems[0]);applyPhotoCrop(document.getElementById('listingPreviewImage'),listingPhotoItems[0]);
+ document.getElementById('previewListingTitle').textContent=document.getElementById('listingTitle').value.trim()||'Názov vozidla';
+}
+function applyPhotoCrop(img,item){const c=photoCropValues(item);img.style.objectFit='cover';img.style.objectPosition=c.x+'% '+c.y+'%';img.style.transform='scale('+c.zoom+')';img.style.transformOrigin=c.x+'% '+c.y+'%';}
+document.getElementById('listingFiles').addEventListener('change',e=>{listingPhotoItems.forEach(i=>{if(i.objectUrl)URL.revokeObjectURL(i.objectUrl)});listingPhotoItems=[...e.target.files].map(file=>({file,objectUrl:URL.createObjectURL(file),crop:{zoom:1,x:50,y:50}}));listingPhotoActive=0;renderListingPhotoWorkbench()});
+for(const k of ['zoom','x','y'])photoControls[k].addEventListener('input',()=>{const item=listingPhotoItems[listingPhotoActive];if(!item)return;item.crop[k]=k==='zoom'?Number(photoControls[k].value):Number(photoControls[k].value);renderListingPhotoWorkbench()});
+document.getElementById('photoCover').addEventListener('click',()=>{if(!listingPhotoItems.length)return;const item=listingPhotoItems.splice(listingPhotoActive,1)[0];listingPhotoItems.unshift(item);listingPhotoActive=0;renderListingPhotoWorkbench()});
+function moveListingPhoto(delta){const next=listingPhotoActive+delta;if(next<0||next>=listingPhotoItems.length)return;[listingPhotoItems[listingPhotoActive],listingPhotoItems[next]]=[listingPhotoItems[next],listingPhotoItems[listingPhotoActive]];listingPhotoActive=next;renderListingPhotoWorkbench()}
+document.getElementById('photoUp').addEventListener('click',()=>moveListingPhoto(-1));document.getElementById('photoDown').addEventListener('click',()=>moveListingPhoto(1));
+document.getElementById('listingTitle').addEventListener('input',()=>{const t=document.getElementById('previewListingTitle');if(t)t.textContent=document.getElementById('listingTitle').value.trim()||'Názov vozidla'});
+async function croppedListingPhotoBlob(item){if(!item.crop||!item.file)return item.file;const image=new Image();image.src=item.objectUrl;await image.decode();const c=item.crop,canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d');const scale=Math.max(canvas.width/Math.max(1,canvas.width),canvas.height/Math.max(1,canvas.height))*c.zoom;const sw=canvas.width/c.zoom,sh=canvas.height/c.zoom;const sx=(canvas.width-sw)*c.x/100,sy=(canvas.height-sh)*c.y/100;ctx.drawImage(image,Math.max(0,Math.min(canvas.width-sw,sx)),Math.max(0,Math.min(canvas.height-sh,sy)),sw,sh,0,0,canvas.width,canvas.height);return await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Výrez fotky sa nepodarilo pripraviť.')),item.file.type||'image/jpeg',.92))}
+\ndocument.getElementById('listingForm').addEventListener('submit',async e=>{
  e.preventDefault();
  if(!currentUser){alert('Na pridanie inzerátu sa musíš prihlásiť.');return}
  const contact=document.getElementById('listingContact').value.trim();
  const imageUrls=document.getElementById('listingImage').value.split(/[\\n,]+/).map(x=>x.trim()).filter(isImageUrl);
- const files=[...document.getElementById('listingFiles').files];
+ const files=listingPhotoItems.length?listingPhotoItems.map(i=>i.file):[...document.getElementById('listingFiles').files];
  const allowedTypes=['image/jpeg','image/png','image/webp'];
  const invalid=files.find(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024);
  if(invalid){alert('Fotografie musia byť JPG, PNG alebo WebP a každá môže mať najviac 5 MB. Problémový súbor: '+invalid.name);return}
  if(files.length){
   const submitButton=document.querySelector('#listingForm button[type="submit"]');submitButton.disabled=true;submitButton.textContent='Nahrávam fotografie…';
   try{
-   for(const file of files){const ext=file.type==='image/jpeg'?'jpg':file.type==='image/png'?'png':'webp';const path=currentUser.id+'/'+crypto.randomUUID()+'.'+ext;const {error:uploadError}=await supabaseClient.storage.from('vehicle-photos').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});if(uploadError)throw uploadError;const {data:urlData}=supabaseClient.storage.from('vehicle-photos').getPublicUrl(path);imageUrls.push(urlData.publicUrl)}
+   for(let index=0;index<files.length;index++){const original=files[index],item=listingPhotoItems[index],file=item?await croppedListingPhotoBlob(item):original;const ext=original.type==='image/jpeg'?'jpg':original.type==='image/png'?'png':'webp';const path=currentUser.id+'/'+crypto.randomUUID()+'.'+ext;const {error:uploadError}=await supabaseClient.storage.from('vehicle-photos').upload(path,file,{cacheControl:'3600',upsert:false,contentType:original.type});if(uploadError)throw uploadError;const {data:urlData}=supabaseClient.storage.from('vehicle-photos').getPublicUrl(path);imageUrls.push(urlData.publicUrl)}
   }catch(uploadError){alert('Fotografiu sa nepodarilo nahrať: '+uploadError.message+' Skontroluj Storage policies v Supabase.');submitButton.disabled=false;submitButton.textContent='Uložiť inzerát';return}
   submitButton.disabled=false;submitButton.textContent='Uložiť inzerát';
  }
