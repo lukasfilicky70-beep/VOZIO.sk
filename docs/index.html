@@ -12,7 +12,7 @@
 <style>
 :root{--bg:#080b0e;--panel:#11181d;--panel2:#172127;--line:#2b383f;--yellow:#ffdf00;--white:#f5f7f8;--muted:#a8b4ba;--green:#32d6a0}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,Arial,sans-serif}a{color:inherit;text-decoration:none}button,input,select{font:inherit}.wrap{width:min(1240px,calc(100% - 32px));margin:auto}
-header{min-height:570px;position:relative;isolation:isolate;overflow:hidden;border-bottom:1px solid var(--line)}header:before{content:"";position:absolute;inset:0;z-index:-2;background:url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2000&q=85') center 48%/cover}header:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#070b0ef2 0%,#070b0eb8 50%,#070b0e50 100%),linear-gradient(0deg,var(--bg),transparent 70%)}
+header{min-height:570px;position:relative;isolation:isolate;overflow:hidden;border-bottom:1px solid var(--line)}header:before{content:"";position:absolute;inset:0;z-index:-2;background:url('https://images.unsplash.com/photo-1590325273980-0698c528f253?auto=format&fit=crop&w=2000&q=85') center 48%/cover}header:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#070b0ef2 0%,#070b0eb8 50%,#070b0e50 100%),linear-gradient(0deg,var(--bg),transparent 70%)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:22px 0}.brand{display:flex;align-items:center;gap:12px}.logo{display:grid;place-items:center;width:57px;height:57px;border-radius:15px;background:var(--yellow);color:#070b0e;font-size:30px}.brandname{font-size:42px;font-weight:1000;letter-spacing:1px;line-height:1}.tagline{color:var(--yellow);font-size:11px;font-weight:900;letter-spacing:1px;margin-top:6px}.nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{font-size:12px;font-weight:800;padding:10px 12px;border:1px solid transparent;border-radius:8px}.nav a:hover{border-color:var(--yellow);color:var(--yellow)}
 .hero{padding:65px 0 55px;max-width:800px}.eyebrow{color:var(--yellow);font-size:12px;letter-spacing:2px;font-weight:900;text-transform:uppercase}.hero h1{font-size:clamp(42px,7vw,78px);letter-spacing:-2px;line-height:.98;margin:14px 0}.hero h1 span{color:var(--yellow)}.hero p{color:#d2dbdf;line-height:1.65;font-size:18px;max-width:610px}.buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;padding:13px 18px;font-weight:900;cursor:pointer}.primary{background:var(--yellow);color:#090c0e}.secondary{background:#11181de8;border:1px solid #59676d;color:white}.btn:hover{filter:brightness(1.08)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px 0 12px}.stat{border:1px solid var(--line);border-radius:12px;background:linear-gradient(140deg,#182229,#10161a);padding:16px}.stat strong{display:block;color:var(--yellow);font-size:23px}.stat span{color:var(--muted);font-size:12px}
@@ -57,24 +57,133 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 /* Community features */
 .community-panel{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
 .community-panel h3{margin:0 0 8px}.review-list{display:grid;gap:10px;margin:12px 0}.review-item{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)}.review-stars{color:var(--yellow);letter-spacing:2px}.community-form{display:grid;gap:10px;margin-top:12px}.community-form input,.community-form textarea,.community-form select{width:100%;background:#080d10;color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px}.safety-note{margin-top:14px;padding:14px;border:1px solid #79632b;background:#211d10;border-radius:10px;color:#f3e4b3;line-height:1.55}.notify-box{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.notify-box form{display:flex;gap:10px;flex-wrap:wrap}.notify-box input{flex:1;min-width:180px;background:#080d10;color:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px}
-</style>
+
+/* VOZIO redesign: black + yellow marketplace visual */
+:root{--bg:#050505;--panel:#111111;--panel2:#181818;--line:#292929;--yellow:#ffc900;--white:#f7f7f7;--muted:#b5b5b5;--green:#32d6a0}
+body{background:#050505;color:#f7f7f7}
+header{min-height:590px;border:0}
+header:before{background-image:url('https://images.unsplash.com/photo-1771387401938-ab14728f152b?auto=format&fit=crop&w=2200&q=90');background-position:center 55%;filter:saturate(1.08)}
+header:after{background:linear-gradient(90deg,#050505f5 0%,#050505bd 37%,#05050524 78%),linear-gradient(0deg,#050505 0%,transparent 38%)}
+.top{padding:17px 0;gap:20px;border-bottom:1px solid #222}
+.brand{gap:9px}.logo{width:48px;height:48px;border-radius:10px;background:#ffc900;font-size:26px}
+.brandname{font-size:38px;letter-spacing:-1px}.tagline{font-size:8px;letter-spacing:1.4px}
+.nav{gap:1px;flex-wrap:nowrap}.nav a{font-size:12px;padding:10px 9px;white-space:nowrap}
+.hero{padding:75px 0 92px;max-width:700px}
+.eyebrow{display:none}
+.hero h1{font-size:clamp(44px,6.2vw,76px);line-height:1.02;letter-spacing:-2px;text-transform:uppercase;margin:10px 0 18px}
+.hero h1 span{color:#ffc900}
+.hero p{font-size:17px;color:#f0f0f0;max-width:480px}
+.btn{border-radius:10px;padding:15px 20px}.primary{background:#ffc900;color:#080808}.secondary{background:#090909d9;border-color:#555}
+.stats{display:none}
+section{padding:30px 0}
+.head h2{font-size:26px}
+.searchbox{background:#111111eF;border-color:#303030;border-radius:13px;padding:14px;grid-template-columns:1.6fr 1fr .8fr .8fr auto;gap:0;box-shadow:0 15px 38px #0008}
+.searchbox .field{padding:0 14px;border-right:1px solid #303030}
+.searchbox .field:first-child{padding-left:8px}
+.searchbox .field label{font-weight:500;color:#c6c6c6}
+.field input,.field select{background:transparent;border:0;border-radius:0;padding:8px 0;color:#fff}
+.search-action{margin-left:12px;align-self:center}
+.categories{grid-template-columns:repeat(10,minmax(0,1fr));gap:9px}
+.cat{background:linear-gradient(145deg,#171717,#101010);border-color:#292929;border-radius:12px;padding:15px 7px}
+.cat b{color:#ffc900;font-size:30px}
+.cat span{font-size:11px}
+.cat.active,.cat:hover{background:#211d0c;border-color:#ffc900}
+.vehicle,.feature,.route{background:#111;border-color:#292929}
+.price,.accent{color:#ffc900}
+@media(max-width:1100px){.nav{overflow-x:auto}.categories{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:760px){header{min-height:auto}.top{flex-direction:row;align-items:center;flex-wrap:wrap}.nav{width:100%;order:3}.hero{padding:50px 0 65px}.searchbox{grid-template-columns:1fr 1fr}.searchbox .field{padding:8px 10px;border-right:0;border-bottom:1px solid #303030}.searchbox .search-action{grid-column:1/-1;margin:10px 0 0}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Screenshot-matched VOZIO landing layout */\n.logo svg{width:37px;height:37px;display:block}\n.brand{flex-shrink:0}
+:root{--bg:#050505;--panel:#111;--panel2:#181818;--line:#292929;--yellow:#ffc900;--white:#f7f7f7;--muted:#b5b5b5}
+body{background:#050505}
+header{min-height:610px;border-bottom:0}
+header:before{background-image:url('https://images.unsplash.com/photo-1771387401938-ab14728f152b?auto=format&fit=crop&w=2200&q=90');background-position:center 56%;filter:saturate(1.15) contrast(1.05)}
+header:after{background:linear-gradient(90deg,#050505f5 0%,#050505b5 35%,#05050515 78%),linear-gradient(0deg,#050505 0%,transparent 34%)}
+.top{padding:16px 0;border-bottom:1px solid #222;gap:16px}
+.logo{background:#ffc900;color:#050505;border-radius:8px;width:48px;height:48px}
+.brandname{font-size:38px}.tagline{font-size:8px}
+.nav{align-items:center;gap:0;flex-wrap:nowrap;overflow-x:auto;max-width:100%}
+.nav a{font-size:11px;padding:9px 8px;white-space:nowrap}
+.nav .btn{white-space:nowrap;padding:11px 13px;margin:0 5px}
+.hero{padding:85px 0 110px;max-width:670px}
+.hero h1{font-size:clamp(46px,6.4vw,80px);line-height:1.02;letter-spacing:-2px;margin:8px 0 18px;text-transform:uppercase}
+.hero h1 span{color:#ffc900}
+.hero p{font-size:17px;max-width:470px;color:#f0f0f0}
+.buttons{gap:12px}
+.btn{border-radius:10px;padding:15px 19px}
+.primary{background:#ffc900;color:#080808}
+.secondary{background:#080808d9;border-color:#555}
+.stats{display:none}
+section{padding:28px 0}
+.head h2{font-size:26px}
+.searchbox{background:#111111f2;border-color:#303030;border-radius:14px;padding:12px;grid-template-columns:1.55fr 1fr .8fr .8fr auto;gap:0;position:relative;margin-top:-72px;z-index:3;box-shadow:0 12px 35px #0008}
+.searchbox .field{padding:0 13px;border-right:1px solid #303030}
+.searchbox .field:first-child{padding-left:8px}
+.searchbox .field label{font-weight:500;color:#c6c6c6}
+.searchbox .field input,.searchbox .field select{background:transparent;border:0;border-radius:0;padding:8px 0;color:#fff}
+.searchbox .search-action{margin-left:12px;align-self:center}
+.advanced-filters{margin-top:12px}
+.categories{grid-template-columns:repeat(10,minmax(0,1fr));gap:9px}
+.cat{background:linear-gradient(145deg,#171717,#101010);border-color:#292929;border-radius:12px;padding:15px 7px;min-height:112px}
+.cat b{display:block;color:#ffc900;font-size:29px;margin-bottom:8px}
+.cat span{font-size:11px;line-height:1.35}
+.cat small{display:block;font-size:10px;font-weight:400;color:#c4c4c4;margin-top:5px}
+.cat.active,.cat:hover{background:#211d0c;border-color:#ffc900}
+.vehicle,.feature,.route{background:#111;border-color:#292929}
+.price,.accent{color:#ffc900}
+#kategorie{padding-top:30px}
+#vozidla .head{margin-top:18px}#vozidla .head .add-listing{display:none}
+@media(max-width:1200px){.nav{overflow-x:auto}.categories{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:760px){header{min-height:auto}.top{flex-direction:row;align-items:center;flex-wrap:wrap}.nav{width:100%;order:3}.hero{padding:48px 0 90px}.searchbox{grid-template-columns:1fr 1fr;margin-top:-60px}.searchbox .field{padding:8px 10px;border-right:0;border-bottom:1px solid #303030}.searchbox .search-action{grid-column:1/-1;margin:10px 0 0}.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.cat{min-height:94px}}
+
+
+/* Improve hero readability while letting the Porsche photo show through */
+header:after{background:linear-gradient(90deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.43) 42%,rgba(5,5,5,.08) 82%),linear-gradient(0deg,rgba(5,5,5,.42) 0%,transparent 38%)}
+.hero p{text-shadow:0 2px 10px rgba(0,0,0,.55)}
+
+
+/* Icons: thin yellow frame with yellow-white lettering */
+.cat b,.feature .emoji{display:inline-grid;place-items:center;background:transparent!important;filter:none;opacity:1;text-shadow:none;box-shadow:none;border:1px solid #ffc900;border-radius:9px;color:#fff!important;padding:7px;line-height:1.1}
+.cat b{color:#ffc900!important}
+.feature .emoji{color:#fff!important;border-color:#ffc900}
+
+
+/* Category chooser: clearer, calmer card hierarchy */
+#kategorie .head{margin-bottom:20px}
+#kategorie .categories{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+#kategorie .cat{display:flex;align-items:center;gap:13px;min-height:86px;padding:15px 16px;text-align:left;background:#101010;border:1px solid #292929;border-radius:12px;transition:background .18s,border-color .18s,transform .18s}
+#kategorie .cat b{flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;padding:0;margin:0;border:1px solid #3a3a3a;border-radius:10px;background:#1a1a1a!important;color:#ffc900!important;font-size:22px}
+#kategorie .cat span{display:block;font-size:13px;font-weight:750;line-height:1.2;color:#f5f5f5}
+#kategorie .cat small{margin-top:5px;font-size:11px;font-weight:400;color:#a9a9a9;line-height:1.25}
+#kategorie .cat:hover,#kategorie .cat.active{background:#191607;border-color:#ffc900;transform:translateY(-1px)}
+#kategorie .cat.active b{background:#ffc900!important;color:#080808!important;border-color:#ffc900}
+@media(max-width:1050px){#kategorie .categories{grid-template-columns:repeat(3,minmax(0,1fr)}}
+@media(max-width:650px){#kategorie .categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#kategorie .cat{min-height:76px;padding:11px;gap:10px}#kategorie .cat b{flex-basis:36px;width:36px;height:36px;font-size:19px}#kategorie .cat span{font-size:12px}#kategorie .cat small{font-size:10px}}
+ .brandname .brand-white{color:#fff}.brandname .brand-yellow{color:var(--yellow)}</style>
 </head>
 <body>
 <header id="domov">
 <div class="wrap">
 <div class="top">
-<a class="brand" href="#domov"><div class="logo">🚘</div><div><div class="brandname">VOZIO</div><div class="tagline">VŠETKO PRE MOTORISTOV</div></div></a>
-<nav class="nav"><a href="#vozidla">Vozidlá</a><a href="#kategorie">Kategórie</a><a href="#trasy">Mototrasy</a><a href="#sluzby">Služby</a></nav>
+<a class="brand" href="#domov"><div class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 2 60 12v19c0 15-11 25-28 31C15 56 4 46 4 31V12L32 2z" fill="#ffc900"/><path d="M32 8 54 16v15c0 12-9 21-22 26C20 52 10 43 10 31V16L32 8z" fill="#101010"/><path d="M17 25l12 8 17-14-5-5-12 10-7-4z" fill="#ffc900"/><path d="M18 35l10 7 17-14-5-5-12 10-6-4z" fill="#f5f5f5"/><path d="M23 19l9-4 9 4-9 4z" fill="#ffc900"/></svg></div><div><div class="brandname"><span class="brand-white">VOZ</span><span class="brand-yellow">IO</span></div><div class="tagline">RIDE • DRIVE • DISCOVER</div></div></a>
+<nav class="nav"><a href="#vozidla">Marketplace</a><a href="#trasy">Drive</a><a href="#sluzby">Charge</a><a href="#trasy">Camping</a><a href="#trasy">Race &amp; Tracks</a><a href="#sluzby">Service &amp; Shops</a><a href="#sluzby">Dokumenty</a><a href="#sluzby">Leasing</a><a href="#sluzby">Photo Guide</a><a href="#sluzby">Nehoda / SOS</a><button class="btn primary" id="openAdd">＋ Pridať inzerát</button><a href="#vozidla" aria-label="Obľúbené">♡</a><a href="#vozidla" aria-label="Správy">▱</a><a href="#vozidla" aria-label="Upozornenia">♧</a></nav>
 </div>
 <div class="hero">
-<div class="eyebrow">Tvoja cesta začína tu</div>
-<h1>Viac než portál.<br><span>Tvoj svet na cestách.</span></h1>
-<p>Objav vozidlá, nájdi služby a plánuj ďalšie dobrodružstvo. VOZIO spája motoristický svet na jednom mieste.</p>
-<div class="buttons"><a class="btn primary" href="#vozidla">Nájsť vozidlo →</a><a class="btn secondary" href="#trasy">Objaviť trasy</a></div>
+<div class="eyebrow">Všetko pre tvoju jazdu</div>
+<h1>VŠETKO PRE<br><span>TVOJU JAZDU</span></h1>
+<p>Marketplace vozidiel, výlety, nabíjanie, kempy, okruhy, servisy a všetko, čo potrebuješ na cestách.</p>
+<div class="buttons"><a class="btn primary" href="#vozidla">▣ &nbsp; Prezrieť inzeráty</a><a class="btn secondary" href="#trasy">♧ &nbsp; Naplánovať výlet</a></div>
 </div>
 </div>
 </header>
-<main class="wrap">
+<main class="wrap">\n<section id="kategorie">
+<div class="head"><div><h2>Preskúmaj <span class="accent">VOZIO</span></h2></div></div>
+<div class="categories">
+<button class="cat" data-cat="Auto"><b>🚘</b><span>Marketplace<small>Vozidlá na predaj</small></span></button><button class="cat" data-cat=""><b>🛣️</b><span>Drive<small>Trasy a výlety</small></span></button><button class="cat" data-cat=""><b>🔌</b><span>Charge<small>Nabíjacie stanice</small></span></button><button class="cat" data-cat=""><b>🏕️</b><span>Camping<small>Kempy a stellplatzy</small></span></button><button class="cat" data-cat=""><b>🏁</b><span>Race &amp; Tracks<small>Okruhy a podujatia</small></span></button><button class="cat" data-cat=""><b>🔧</b><span>Service &amp; Shops<small>Servisy a obchody</small></span></button><button class="cat" data-cat=""><b>▤</b><span>Dokumenty<small>Zmluvy a formuláre</small></span></button><button class="cat" data-cat=""><b>▦</b><span>Leasing<small>Kalkulačka splátok</small></span></button><button class="cat" data-cat=""><b>📷</b><span>Photo Guide<small>Návod na fotenie</small></span></button><button class="cat" data-cat=""><b>⚠️</b><span>Nehoda / SOS<small>Záznam nehody</small></span></button>
+</div>
+</section>
+\n
 <div class="stats"><div class="stat"><strong>01</strong><span>Vozidlá a inzercia</span></div><div class="stat"><strong>02</strong><span>Motoristické služby</span></div><div class="stat"><strong>03</strong><span>Trasy a výlety</span></div><div class="stat"><strong>24/7</strong><span>Inšpirácia na cesty</span></div></div>
 <section id="vozidla">
 <div class="head"><div><h2>Nájdi svoje ďalšie vozidlo</h2><p>Vyhľadávaj medzi verejnými inzerátmi a zúž výber podľa parametrov.</p></div><div><span class="accent">VOZIO MARKETPLACE</span><div class="add-listing"><button class="btn primary" id="openAdd">＋ Pridať inzerát</button></div></div></div>
@@ -123,12 +232,6 @@ section{padding:34px 0}.head{display:flex;justify-content:space-between;align-it
 </div>
 <div class="notify-box"><h3>🔔 Upozornenia na nové inzeráty</h3><p class="modal-note">Ulož si hľadaný výraz. VOZIO ťa upozorní v tomto prehliadači, keď pri ďalšej návšteve nájde nové zodpovedajúce inzeráty.</p><form id="savedSearchForm"><input id="savedSearchTerm" maxlength="100" placeholder="Napr. Yamaha, SUV do 20 000 €" required><button class="btn secondary" type="submit">Uložiť hľadanie</button></form><p id="savedSearchStatus" class="modal-note"></p></div>
 <div class="no-results" id="noResults">Nenašli sa vozidlá podľa tvojich filtrov. Skús zmeniť hľadanie.</div>
-</section>
-<section id="kategorie">
-<div class="head"><div><h2>Vyber si svoju kategóriu</h2><p>Vyber kategóriu a filtre sa nastavia automaticky.</p></div></div>
-<div class="categories">
-<button class="cat" data-cat="Auto"><b>🚘</b><span>Autá</span></button><button class="cat" data-cat="Motorka"><b>🏍️</b><span>Motorky</span></button><button class="cat" data-cat="Karavan"><b>🚐</b><span>Karavany</span></button><button class="cat" data-cat=""><b>🚚</b><span>Prívesy</span></button><button class="cat" data-cat=""><b>⚙️</b><span>Diely</span></button><button class="cat" data-cat=""><b>🧰</b><span>Príslušenstvo</span></button><button class="cat" data-cat=""><b>🛞</b><span>Pneumatiky</span></button><button class="cat" data-cat=""><b>🛠️</b><span>Servisy</span></button>
-</div>
 </section>
 <section id="trasy">
 <div class="head"><div><h2>Mototrasy a miesta na objavovanie</h2><p>Interaktívna mapa s ukážkovými bodmi v Alpách a okolí.</p></div><span class="accent">MAPA VOZIO</span></div>
@@ -391,6 +494,7 @@ document.getElementById('loginBtn').addEventListener('click',loginUser);
 document.getElementById('logoutBtn').addEventListener('click',async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);updateAuthUI(null)});
 supabaseClient.auth.getSession().then(({data})=>{updateAuthUI(data.session);setTimeout(()=>renderInbox(),0)}).catch(error=>{console.error('Supabase session error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa overiť prihlásenie. Obnov stránku.'});
 supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAuthUI(session);setTimeout(()=>renderInbox(),0)});
+document.getElementById('navAdd').addEventListener('click',()=>document.getElementById('openAdd').click());
 document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}editingListingId=null;document.getElementById('listingForm').reset();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
 document.getElementById('showAllListings').addEventListener('click',()=>{document.getElementById('q').value='';document.getElementById('type').value='';document.getElementById('maxprice').value='9999999';document.getElementById('minyear').value='';document.getElementById('maxkm').value='';document.getElementById('engineFilter').value='';filterVehicles()});
 document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
@@ -448,24 +552,42 @@ points:[
 }
 };
 let map=null,markers=[],line=null;
-function showRoute(key){
-const data=routeData[key];
-if(!map){
-map=L.map('map').setView(data.center,data.zoom);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+function mapsDirectionsUrl(points){
+ const origin=points[0].name, destination=points[points.length-1].name;
+ const waypoints=points.slice(1,-1).map(p=>p.name).join('|');
+ return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(destination)+(waypoints?'&waypoints='+encodeURIComponent(waypoints):'');
 }
-map.setView(data.center,data.zoom);
-markers.forEach(m=>map.removeLayer(m));markers=[];
-if(line)map.removeLayer(line);
-data.points.forEach(p=>markers.push(L.marker(p.coords).addTo(map).bindPopup('<strong>'+p.name+'</strong><br>Ukážkový bod VOZIO')));
-line=L.polyline(data.points.map(p=>p.coords),{color:'#ffdf00',weight:4,dashArray:'8 8'}).addTo(map);
-setTimeout(()=>map.invalidateSize(),100);
+function showRoute(key){
+ const data=routeData[key];
+ const navUrl=mapsDirectionsUrl(data.points);
+ document.querySelectorAll('.route').forEach(btn=>{
+  let link=btn.querySelector('.route-nav-link');
+  if(!link){link=document.createElement('a');link.className='btn primary route-nav-link';link.textContent='Spustiť navigáciu ↗';link.target='_blank';link.rel='noopener';link.style.cssText='display:inline-flex;margin-top:12px;font-size:12px;padding:9px 12px';btn.appendChild(link)}
+  link.href=mapsDirectionsUrl(routeData[btn.dataset.route].points);
+ });
+ const mapEl=document.getElementById('map');
+ if(!window.L){mapEl.innerHTML='<div style="padding:22px;color:#eee"><strong>Mapa sa nepodarilo načítať.</strong><p>Skús obnoviť stránku alebo použi navigáciu v tlačidle trasy.</p><a class="btn primary" href="'+navUrl+'" target="_blank" rel="noopener">Otvoriť trasu v Google Maps ↗</a></div>';return}
+ try{
+  if(!map){
+   map=L.map('map').setView(data.center,data.zoom);
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  }
+  map.setView(data.center,data.zoom);
+  markers.forEach(m=>map.removeLayer(m));markers=[];
+  if(line)map.removeLayer(line);
+  data.points.forEach(p=>markers.push(L.marker(p.coords).addTo(map).bindPopup('<strong>'+p.name+'</strong><br>Ukážkový bod VOZIO')));
+  line=L.polyline(data.points.map(p=>p.coords),{color:'#ffdf00',weight:4,dashArray:'8 8'}).addTo(map);
+  setTimeout(()=>map.invalidateSize(),250);
+ }catch(err){
+  console.error('Map initialization failed:',err);
+  mapEl.innerHTML='<div style="padding:22px;color:#eee"><strong>Mapa sa nepodarilo načítať.</strong><p>Navigáciu môžeš spustiť cez Google Maps.</p><a class="btn primary" href="'+navUrl+'" target="_blank" rel="noopener">Otvoriť trasu v Google Maps ↗</a></div>';
+ }
 }
 document.querySelectorAll('.route').forEach(btn=>btn.addEventListener('click',()=>{
-document.querySelectorAll('.route').forEach(x=>x.classList.remove('active'));
-btn.classList.add('active');showRoute(btn.dataset.route);
+ document.querySelectorAll('.route').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');showRoute(btn.dataset.route);
 }));
-if(window.L){showRoute('alps')}else{document.getElementById('map').innerHTML='<p style="padding:20px;color:#a8b4ba">Interaktívna mapa sa nenačítala. Skontroluj internetové pripojenie.</p>'}
+showRoute('alps');
 </script>
 </body>
 </html>
