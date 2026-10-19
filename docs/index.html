@@ -165,7 +165,7 @@ header:after{background:linear-gradient(90deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.43)
 header{position:relative;}
 header:before{background-position:center center;}
 header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#05050512 72%,#05050500 100%),linear-gradient(0deg,#050505 0%,transparent 38%);}
-</style>
+ .market-subtitle{margin:22px 0 10px;font-size:1rem;color:var(--text);font-weight:700}.market-actions{align-items:center;gap:12px}.searchbox{gap:14px}.advanced-filters{margin-top:10px;gap:12px}</style>
 </head>
 <body>
 <header id="domov">
@@ -193,34 +193,21 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 <section id="vozidla">
 <div class="head"><div><h2>Nájdi svoje ďalšie vozidlo</h2><p>Vyhľadávaj medzi verejnými inzerátmi a zúž výber podľa parametrov.</p></div><div><span class="accent">VOZIO MARKETPLACE</span><div class="add-listing"><button class="btn primary" id="openAdd">＋ Pridať inzerát</button></div></div></div>
 
-<div class="auth-panel" style="margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
-  <strong>Účet predajcu</strong>
-  <p class="modal-note" id="authStatus">Na pridávanie inzerátov sa prihlás alebo si vytvor účet.</p>
-  <div class="listing-form" style="margin-top:10px">
-    <div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" placeholder="tvoj@email.sk"></div>
-    <div class="field"><label for="authPassword">Heslo</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Aspoň 6 znakov"></div>
-  </div>
-  <div class="buttons" style="margin-top:12px">
-    <button class="btn primary" id="registerBtn" type="button" onclick="if(typeof registerUser==='function'){registerUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Vytvoriť účet</button>
-    <button class="btn secondary" id="loginBtn" type="button" onclick="if(typeof loginUser==='function'){loginUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Prihlásiť sa</button>
-    <button class="btn secondary" id="logoutBtn" type="button" hidden>Odhlásiť sa</button>
-  </div>
-</div>
 <div class="profile-panel" id="profilePanel" hidden><div class="head"><div><h3 style="margin:0">Môj profil</h3><p>Spravuj svoje inzeráty na jednom mieste.</p></div><button class="btn secondary" id="showAllListings" type="button">Všetky inzeráty</button></div><div id="myListings" class="cards"></div><p class="modal-note" id="myListingsNote"></p><h3>Moje správy</h3><div id="myMessages" class="review-list"></div></div>
-<div class="searchbox">
+<h3 class="market-subtitle">Vyhľadávanie</h3><div class="searchbox">
 <div class="field"><label for="q">Čo hľadáš?</label><input id="q" placeholder="Napr. SUV, Yamaha, karavan…"></div>
 <div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky</option><option>Auto</option><option>Motorka</option><option>Karavan</option><option>Príves</option><option>Diely</option><option>Offroad auto</option><option>Offroad diely</option><option>Príslušenstvo</option><option>Pneumatiky</option></select></div>
 <div class="field"><label for="maxprice">Maximálna cena</label><select id="maxprice"><option value="9999999">Bez limitu</option><option value="10000">10 000 €</option><option value="20000">20 000 €</option><option value="30000">30 000 €</option><option value="40000">40 000 €</option></select></div>
 <div class="field"><label for="sort">Zoradiť</label><select id="sort"><option value="recommended">Odporúčané</option><option value="low">Cena: od najnižšej</option><option value="high">Cena: od najvyššej</option></select></div>
 <button class="btn primary search-action" id="searchBtn">Hľadať</button>
 </div>
-<div class="advanced-filters">
+<h3 class="market-subtitle">Podrobnejšie filtre</h3><div class="advanced-filters">
 <div class="field"><label for="minyear">Rok od</label><input id="minyear" type="number" min="1950" max="2027" placeholder="Napr. 2018"></div>
 <div class="field"><label for="maxkm">Max. kilometre</label><input id="maxkm" type="number" min="0" placeholder="Napr. 150000"></div>
 <div class="field"><label for="engineFilter">Palivo / prevodovka / motor</label><input id="engineFilter" placeholder="Napr. diesel, automat"></div>
 </div>
 <div style="height:18px"></div>
-<div class="buttons" style="margin-bottom:14px"><button class="btn secondary" id="favoritesToggle" type="button" aria-pressed="false">♡ Zobraziť obľúbené</button><span class="modal-note" id="favoritesCount">0 obľúbených inzerátov</span></div>
+<div class="buttons market-actions" style="margin-bottom:14px"><button class="btn secondary" id="favoritesToggle" type="button" aria-pressed="false">♡ Zobraziť obľúbené</button><span class="modal-note" id="favoritesCount">0 obľúbených inzerátov</span></div>
 <div class="cards" id="vehicleCards">
 <article class="vehicle" data-type="Motorka" data-price="18900" data-name="Adventure motocykel Yamaha" data-favorite-id="demo-moto">
 <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80" alt="Motocykel na ceste" loading="lazy"><button class="favorite-btn" type="button" onclick="event.preventDefault();event.stopPropagation();try{const k='vozio_favorites_v1',id=String(this.dataset.favoriteId),a=JSON.parse(localStorage.getItem(k)||'[]').map(String),n=a.includes(id)?a.filter(x=>x!==id):[...a,id];localStorage.setItem(k,JSON.stringify(n));this.textContent=n.includes(id)?'♥':'♡';this.classList.toggle('active',n.includes(id));const c=document.getElementById('favoritesCount');if(c)c.textContent=n.length+' obľúbených inzerátov';if(typeof updateFavoritesUI==='function')updateFavoritesUI();if(typeof filterVehicles==='function'&&showFavoritesOnly)filterVehicles()}catch(e){alert('Obľúbené sa nepodarilo uložiť. Skús iný prehliadač.')}" data-favorite-id="demo-moto" aria-label="Pridať medzi obľúbené">♡</button>
@@ -237,6 +224,21 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 </div>
 <div class="notify-box"><h3>🔔 Upozornenia na nové inzeráty</h3><p class="modal-note">Ulož si hľadaný výraz. VOZIO ťa upozorní v tomto prehliadači, keď pri ďalšej návšteve nájde nové zodpovedajúce inzeráty.</p><form id="savedSearchForm"><input id="savedSearchTerm" maxlength="100" placeholder="Napr. Yamaha, SUV do 20 000 €" required><button class="btn secondary" type="submit">Uložiť hľadanie</button></form><p id="savedSearchStatus" class="modal-note"></p></div>
 <div class="no-results" id="noResults">Nenašli sa vozidlá podľa tvojich filtrov. Skús zmeniť hľadanie.</div>
+
+<div class="auth-panel" style="margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)">
+  <strong>Účet predajcu</strong>
+  <p class="modal-note" id="authStatus">Na pridávanie inzerátov sa prihlás alebo si vytvor účet.</p>
+  <div class="listing-form" style="margin-top:10px">
+    <div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" placeholder="tvoj@email.sk"></div>
+    <div class="field"><label for="authPassword">Heslo</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Aspoň 6 znakov"></div>
+  </div>
+  <div class="buttons" style="margin-top:12px">
+    <button class="btn primary" id="registerBtn" type="button" onclick="if(typeof registerUser==='function'){registerUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Vytvoriť účet</button>
+    <button class="btn secondary" id="loginBtn" type="button" onclick="if(typeof loginUser==='function'){loginUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Prihlásiť sa</button>
+    <button class="btn secondary" id="logoutBtn" type="button" hidden>Odhlásiť sa</button>
+  </div>
+</div>
+
 </section>
 <section id="trasy">
 <div class="head"><div><h2>Mototrasy a miesta na objavovanie</h2><p>Interaktívna mapa s ukážkovými bodmi v Alpách a okolí.</p></div><span class="accent">MAPA VOZIO</span></div>
