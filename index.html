@@ -287,7 +287,7 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 </div>
 </section>
 
-<section id="vehicle-start" class="wrap" aria-label="Vyber kategóriu vozidla">
+<section id="vehicle-start" class="wrap" aria-label="Vyber kategóriu VOZIO">
 <style>
 #vehicle-start{padding:28px 0 14px}
 #vehicle-start .start-title{font-size:clamp(25px,3vw,34px);font-weight:900;margin:0 0 8px}
@@ -298,20 +298,32 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 #vehicle-start .start-card .emoji{font-size:30px;display:block;margin-bottom:8px}
 #vehicle-start .start-card strong{display:block;font-size:15px}
 #vehicle-start .start-card small{display:block;color:#aeb9be;margin-top:5px}
-@media(max-width:760px){#vehicle-start .start-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#vehicle-start .start-card:last-child{grid-column:1/-1}}
+@media(max-width:760px){#vehicle-start .start-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#vehicle-start .start-card:last-child{grid-column:auto}}
+#quick-search .category-search-title{font-size:22px;font-weight:900;color:#ffdf00;margin:0 0 14px}
+#quick-search .field.category-hidden{display:none!important}
+#quick-search .unified-search{background:transparent!important;border:1px solid #ffdf00!important;box-shadow:0 10px 28px #0005}
+#quick-search .unified-search>.field{background:transparent!important;border-color:#363d41!important}
+#quick-search .unified-search>.field label{color:#f4f4f4!important}
+#quick-search .unified-search>.field input,#quick-search .unified-search>.field select{background:#171c20!important;color:#fff!important;border-color:#4b555b!important}
 </style>
-<h2 class="start-title">Čo hľadáš?</h2>
-<p class="start-copy">Najprv si vyber kategóriu a zobrazia sa ti vhodné značky a modely.</p>
+<h2 class="start-title">Vyber si kategóriu</h2>
+<p class="start-copy">Každá kategória má vlastné prispôsobené vyhľadávanie.</p>
 <div class="start-grid">
-<button class="start-card active" type="button" data-start-category=""><span class="emoji">🚘</span><strong>Všetko</strong><small>Všetky kategórie</small></button>
+<button class="start-card active" type="button" data-start-category=""><span class="emoji">🔎</span><strong>Všetky kategórie</strong><small>Celá ponuka VOZIO</small></button>
 <button class="start-card" type="button" data-start-category="Auto"><span class="emoji">🚗</span><strong>Autá</strong><small>Osobné a úžitkové</small></button>
 <button class="start-card" type="button" data-start-category="Motorka"><span class="emoji">🏍️</span><strong>Motorky</strong><small>Motocykle a skútre</small></button>
-<button class="start-card" type="button" data-start-category="Karavan"><span class="emoji">🚐</span><strong>Karavany</strong><small>Obytné a cestovné</small></button>
-<button class="start-card" type="button" data-start-category="Offroad auto"><span class="emoji">🛻</span><strong>Offroad</strong><small>4×4 a terénne vozidlá</small></button>
+<button class="start-card" type="button" data-start-category="Karavan"><span class="emoji">🚐</span><strong>Karavany</strong><small>Obytné vozidlá</small></button>
+<button class="start-card" type="button" data-start-category="Príves"><span class="emoji">🚛</span><strong>Prívesy</strong><small>Prívesné vozíky</small></button>
+<button class="start-card" type="button" data-start-category="Diely"><span class="emoji">⚙️</span><strong>Diely</strong><small>Náhradné diely</small></button>
+<button class="start-card" type="button" data-start-category="Offroad auto"><span class="emoji">🛻</span><strong>Offroad autá</strong><small>Terénne vozidlá 4×4</small></button>
+<button class="start-card" type="button" data-start-category="Offroad diely"><span class="emoji">🧰</span><strong>Offroad diely</strong><small>Výbava a úpravy 4×4</small></button>
+<button class="start-card" type="button" data-start-category="Veterán"><span class="emoji">🏁</span><strong>Veterány</strong><small>Historické vozidlá</small></button>
+<button class="start-card" type="button" data-start-category="Príslušenstvo"><span class="emoji">🪖</span><strong>Príslušenstvo</strong><small>Doplnky pre vozidlá</small></button>
+<button class="start-card" type="button" data-start-category="Pneumatiky"><span class="emoji">🛞</span><strong>Pneumatiky</strong><small>Letné, zimné a celoročné</small></button>
 </div>
 </section>
 \n<section id="quick-search" class="wrap">
-<h3 class="market-subtitle">Vyhľadávanie vozidiel</h3>
+<h3 class="market-subtitle" id="categorySearchTitle">Vyhľadávanie vozidiel</h3><p class="category-search-title" id="categorySearchSubtitle">Všetky kategórie – vyber si filtre</p>
 <div class="searchbox unified-search">
   <div class="field"><label for="makeFilter">Značka</label><select id="makeFilter"><option value="">Načítavam všetky značky…</option></select></div>
   <div class="field"><label for="modelFilter">Model</label><select id="modelFilter" disabled><option value="">Najprv vyber značku</option></select></div>
@@ -876,20 +888,47 @@ showRoute('alps');
 })();
 </script>
 
-<script id="vehicle-start-picker-script">
+
+\n<script id="vehicle-start-picker-script">
 (function(){
- const start=document.getElementById('vehicle-start'), category=document.getElementById('type');
- if(!start||!category)return;
+ const start=document.getElementById('vehicle-start'), category=document.getElementById('type'), search=document.getElementById('quick-search');
+ if(!start||!category||!search)return;
  const buttons=[...start.querySelectorAll('[data-start-category]')];
+ const title=document.getElementById('categorySearchTitle'),subtitle=document.getElementById('categorySearchSubtitle');
+ const fields=[...search.querySelectorAll('.unified-search>.field')];
+ const labels={ '':'Všetky kategórie','Auto':'Vyhľadávanie áut','Motorka':'Vyhľadávanie motoriek','Karavan':'Vyhľadávanie karavanov','Príves':'Vyhľadávanie prívesov','Diely':'Vyhľadávanie dielov','Offroad auto':'Vyhľadávanie offroad áut','Offroad diely':'Vyhľadávanie offroad dielov','Veterán':'Vyhľadávanie veteránov','Príslušenstvo':'Vyhľadávanie príslušenstva','Pneumatiky':'Vyhľadávanie pneumatík'};
+ const configs={
+  'Auto':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','maxkm','fuelFilter','gearFilter','engineFilter','sort'],
+  'Motorka':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','maxkm','engineFilter','sort'],
+  'Karavan':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','sort'],
+  'Príves':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','sort'],
+  'Diely':['makeFilter','modelFilter','q','minprice','maxprice','sort'],
+  'Offroad auto':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','maxkm','fuelFilter','gearFilter','engineFilter','sort'],
+  'Offroad diely':['makeFilter','modelFilter','q','minprice','maxprice','sort'],
+  'Veterán':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','sort'],
+  'Príslušenstvo':['makeFilter','modelFilter','q','minprice','maxprice','sort'],
+  'Pneumatiky':['q','minprice','maxprice','sort']
+ };
  function sync(){
   const selected=category.value;
   buttons.forEach(b=>{const active=b.dataset.startCategory===selected;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+  const label=labels[selected]||'Vyhľadávanie podľa kategórie';
+  if(title)title.textContent=label;
+  if(subtitle)subtitle.textContent=selected?'Filtre prispôsobené kategórii: '+selected:'Vyber si filtre a zobraz všetky kategórie';
+  const shown=configs[selected]||['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','maxkm','fuelFilter','gearFilter','engineFilter','sort'];
+  fields.forEach(field=>{
+    const control=field.querySelector('input,select');
+    if(!control)return;
+    const visible=control.id==='type'||shown.includes(control.id);
+    field.classList.toggle('category-hidden',!visible);
+  });
  }
  buttons.forEach(b=>b.addEventListener('click',()=>{
   category.value=b.dataset.startCategory;
   category.dispatchEvent(new Event('change',{bubbles:true}));
   sync();
-  document.getElementById('quick-search')?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(typeof filterVehicles==='function')filterVehicles();
+  search.scrollIntoView({behavior:'smooth',block:'start'});
  }));
  category.addEventListener('change',sync);
  sync();
