@@ -818,7 +818,10 @@ document.getElementById('loginBtn').addEventListener('click',loginUser);
 document.getElementById('logoutBtn').addEventListener('click',async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);updateAuthUI(null)});
 supabaseClient.auth.getSession().then(({data})=>{updateAuthUI(data.session);setTimeout(()=>renderInbox(),0)}).catch(error=>{console.error('Supabase session error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa overiť prihlásenie. Obnov stránku.'});
 supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAuthUI(session);setTimeout(()=>renderInbox(),0)});
-document.getElementById('navAdd').addEventListener('click',()=>document.getElementById('openAdd').click());
+document.getElementById('navAdd').addEventListener('click',()=>{
+ if(!currentUser){const auth=document.querySelector('.auth-panel');if(auth){auth.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('authEmail')?.focus({preventScroll:true});document.getElementById('authStatus').textContent='Pre pridanie inzerátu sa najprv prihlás alebo si vytvor účet.';}return;}
+ document.getElementById('openAdd').click();
+});
 document.getElementById('openAdd').addEventListener('click',()=>{if(!currentUser){alert('Najprv sa prihlás alebo vytvor účet.');return}editingListingId=null;document.getElementById('listingForm').reset();listingPhotoItems.forEach(i=>{if(i.objectUrl)URL.revokeObjectURL(i.objectUrl)});listingPhotoItems=[];listingPhotoActive=0;renderListingPhotoWorkbench();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
 document.getElementById("profileToggle").addEventListener("click",()=>{const box=document.getElementById("profileContent"),open=box.hidden;box.hidden=!open;document.getElementById("profileToggle").setAttribute("aria-expanded",String(open));document.getElementById("messagesContent").hidden=true;document.getElementById("messagesToggle").setAttribute("aria-expanded","false");});document.getElementById("messagesToggle").addEventListener("click",()=>{const box=document.getElementById("profileContent"),msg=document.getElementById("messagesContent"),open=msg.hidden;box.hidden=false;msg.hidden=!open;document.getElementById("messagesToggle").setAttribute("aria-expanded",String(open));document.getElementById("profileToggle").setAttribute("aria-expanded","true");});
 document.getElementById('showAllListings').addEventListener('click',()=>{document.getElementById('q').value='';document.getElementById('type').value='';document.getElementById('maxprice').value='9999999';document.getElementById('minyear').value='';document.getElementById('maxkm').value='';document.getElementById('engineFilter').value='';filterVehicles()});
@@ -1216,14 +1219,16 @@ showRoute('alps');
 
 <script id="home-add-listing-cta-handler">
 (function(){
+ function handleAdd(){
+  if(window.currentUser){const button=document.getElementById('openAdd');if(button&&!button.disabled){button.click();return}}
+  const auth=document.querySelector('.auth-panel');
+  const status=document.getElementById('authStatus');
+  if(auth){auth.scrollIntoView({behavior:'smooth',block:'center'});if(status)status.textContent='Pre pridanie inzerátu sa najprv prihlás alebo si vytvor účet. Po prihlásení klikni znova na „Pridať inzerát“.';setTimeout(()=>document.getElementById('authEmail')?.focus({preventScroll:true}),350);return}
+  const listings=document.getElementById('vozidla');if(listings)listings.scrollIntoView({behavior:'smooth'});
+ }
  document.addEventListener('click',function(e){
   if(!e.target.closest('#homeAddListing'))return;
-  e.preventDefault();
-  const button=document.getElementById('openAdd')||document.getElementById('navAdd');
-  if(button){button.click();return}
-  const modal=document.getElementById('addModal');
-  if(modal){modal.classList.add('open');modal.style.display='';return}
-  location.hash='vozidla';
+  e.preventDefault();handleAdd();
  });
 })();
 </script>
