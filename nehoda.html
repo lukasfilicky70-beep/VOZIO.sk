@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505">
+<title>VOZIO — Nehoda / SOS a dokumenty</title>
+<style>
+:root{color-scheme:dark;--bg:#050505;--panel:#111;--line:#303030;--yellow:#ffc900;--muted:#bdbdbd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f7f7f7;font:16px/1.55 Arial,sans-serif}.wrap{max-width:980px;width:calc(100% - 28px);margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}.brand{font-size:28px;font-weight:900;letter-spacing:1px}.brand span{color:var(--yellow)}a{color:var(--yellow)}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:9px;background:var(--yellow);color:#080808;text-decoration:none;font-weight:800;border:0;cursor:pointer}.btn.secondary{background:#191919;color:#fff;border:1px solid #444}.hero{padding:35px 0 20px}.hero h1{font-size:clamp(32px,6vw,52px);line-height:1.05;margin:0 0 12px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin:16px 0}.danger{border-color:#7b3030;background:#1b1010}.card h2{margin-top:0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.notice{padding:12px;border:1px solid #6b591c;background:#211d0c;border-radius:9px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}.field input,.field textarea,.field select{width:100%;padding:10px;background:#080808;border:1px solid #414141;border-radius:7px;color:#fff}.field textarea{min-height:72px}.full{grid-column:1/-1}.checklist label{display:block;margin:8px 0}.footer{padding:24px 0;color:var(--muted);font-size:13px}
+@media(max-width:650px){.grid,.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.top{align-items:flex-start;flex-direction:column}}
+@media print{body{background:#fff;color:#111;font-size:12px}.top,.hero .actions,.no-print,.footer,.danger{display:none!important}.wrap{width:100%;max-width:none}.card{background:#fff;color:#111;border:1px solid #999;break-inside:avoid;padding:12px;margin:8px 0}.muted,.field label{color:#333}.field input,.field textarea,.field select{background:#fff;color:#111;border:1px solid #888;padding:5px}.field textarea{min-height:45px}.hero{padding:0}.hero h1{font-size:24px}.notice{background:#fff;color:#111;border:1px solid #777}.grid{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand">VO<span>ZIO</span> <small style="font-size:13px;color:#bbb;font-weight:600">/ NEHODA & DOKUMENTY</small></div><a class="btn secondary" href="./index.html">← Späť na VOZIO</a></header>
+<section class="hero" id="sos"><h1>Nehoda / SOS</h1><p class="muted">Rýchly prístup k tiesňovému volaniu a formuláru na zaznamenanie nehody. Použi bezpečne, až keď vozidlo stojí.</p>
+<div class="notice"><strong>Ak je niekto zranený alebo hrozí bezprostredné nebezpečenstvo, volaj tiesňovú linku.</strong> V krajinách EÚ a vo Švajčiarsku je všeobecné tiesňové číslo <strong>112</strong>. Najprv zabezpeč miesto nehody a riaď sa pokynmi operátora.</div>
+<div class="actions no-print"><a class="btn" href="tel:112">☎ Volaj 112</a><a class="btn secondary" href="#dokumenty">Otvoriť dokumenty k nehode ↓</a><button class="btn secondary" type="button" onclick="window.print()">Tlačiť / Uložiť ako PDF</button></div></section>
+<div class="grid">
+<section class="card danger"><h2>Čo urobiť po nehode</h2><div class="checklist"><label><input type="checkbox"> Zastav na bezpečnom mieste a zapni výstražné svetlá.</label><label><input type="checkbox"> Obleč si reflexnú vestu a označ miesto podľa miestnych pravidiel.</label><label><input type="checkbox"> Skontroluj zranenia; pri potrebe volaj 112.</label><label><input type="checkbox"> Odfoť polohu vozidiel, škody, evidenčné čísla a miesto.</label><label><input type="checkbox"> Vymeň si údaje s druhým účastníkom a svedkami.</label><label><input type="checkbox"> Nepodpisuj nič, čomu nerozumieš; kontaktuj poisťovňu.</label></div><p class="muted">Tento zoznam je orientačný a nenahrádza pokyny záchranných zložiek ani miestne právne predpisy.</p></section>
+<section class="card"><h2>Užitočné údaje</h2><p>Zapíš si údaje druhého účastníka, vozidla a svedkov. Citlivé údaje zdieľaj iba s poisťovňou, políciou alebo oprávnenými osobami.</p><div class="actions no-print"><button class="btn secondary" onclick="document.getElementById('dokumenty').scrollIntoView({behavior:'smooth'})">Vyplniť záznam nehody</button><button class="btn secondary" onclick="window.print()">Tlačiť / Uložiť PDF</button></div></section>
+</div>
+<section class="card" id="dokumenty"><h2>Dokument k nehode — záznam udalosti</h2><p class="muted">Vyplň formulár a stlač „Tlačiť / Uložiť ako PDF“. V dialógu tlače vyber možnosť „Uložiť ako PDF“. Formulár sa neodosiela na server a zostáva v tomto otvorenom prehliadači.</p>
+<form id="incidentForm">
+<div class="formgrid">
+<div class="field"><label for="date">Dátum nehody</label><input id="date" type="date"></div>
+<div class="field"><label for="time">Čas nehody</label><input id="time" type="time"></div>
+<div class="field full"><label for="place">Miesto nehody (adresa / cesta / mesto)</label><input id="place"></div>
+<div class="field"><label for="weather">Počasie a stav cesty</label><input id="weather"></div>
+<div class="field"><label for="police">Polícia / číslo prípadu (ak je známe)</label><input id="police"></div>
+<div class="field"><label for="driverA">Účastník A — meno a kontakt</label><textarea id="driverA"></textarea></div>
+<div class="field"><label for="vehicleA">Účastník A — vozidlo, ŠPZ, poisťovňa</label><textarea id="vehicleA"></textarea></div>
+<div class="field"><label for="driverB">Účastník B — meno a kontakt</label><textarea id="driverB"></textarea></div>
+<div class="field"><label for="vehicleB">Účastník B — vozidlo, ŠPZ, poisťovňa</label><textarea id="vehicleB"></textarea></div>
+<div class="field full"><label for="witnesses">Svedkovia a kontakt</label><textarea id="witnesses"></textarea></div>
+<div class="field full"><label for="damage">Viditeľné poškodenie vozidiel / majetku</label><textarea id="damage"></textarea></div>
+<div class="field full"><label for="description">Opis priebehu nehody (iba fakty)</label><textarea id="description" style="min-height:110px"></textarea></div>
+<div class="field full"><label for="photos">Poznámky k fotografiám alebo dôkazom (samotné fotky prilož zvlášť)</label><textarea id="photos"></textarea></div>
+<div class="field full"><label for="signature">Meno osoby, ktorá záznam vyplnila</label><input id="signature"></div>
+</div>
+<div class="actions no-print"><button class="btn" type="button" onclick="window.print()">Tlačiť / Uložiť ako PDF</button><button class="btn secondary" type="reset">Vymazať formulár</button></div>
+</form>
+<p class="notice"><strong>Dôležité:</strong> Toto je pomocný záznam pre vlastné poznámky, nie oficiálna správa o nehode ani náhrada európskeho záznamu o dopravnej nehode. Pri poistnej udalosti použi formulár svojej poisťovne alebo oficiálny formulár platný v danej krajine.</p>
+</section>
+<div class="footer">VOZIO · Pomôcka pre vodičov. Pri bezprostrednom nebezpečenstve nevyplňuj formulár — volaj tiesňovú linku.</div>
+</div>
+<script>
+document.getElementById('incidentForm').addEventListener('reset',()=>{setTimeout(()=>{},0)});
+const params=new URLSearchParams(location.hash.slice(1));if(location.hash==='#dokumenty')document.getElementById('dokumenty').scrollIntoView();
+</script>
+</body>
+</html>
