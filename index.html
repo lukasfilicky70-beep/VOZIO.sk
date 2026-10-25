@@ -736,47 +736,96 @@ showRoute('alps');
 </script>
 
 <script>
-/* Katalóg značiek a modelov: dynamicky načítaný globálny otvorený katalóg VehiclesDB */
+/* Katalóg značiek a modelov prispôsobený kategórii vozidla */
 (function(){
- const makeSelect=document.getElementById('makeFilter');
- const modelSelect=document.getElementById('modelFilter');
- if(!makeSelect||!modelSelect)return;
- const fallbackMakes=['Acura','Aixam','Alfa Romeo','Aprilia','Aston Martin','Audi','Bentley','BMW','BYD','Cadillac','Chevrolet','Chrysler','Citroën','Cupra','Dacia','Daewoo','Daihatsu','Dodge','DS Automobiles',' Ducati','Ferrari','Fiat','Ford','Genesis','GMC','Honda','Hyundai','Infiniti','Isuzu','Iveco','Jaguar','Jeep','Kawasaki','Kia','KTM','Lamborghini','Lancia','Land Rover','Lexus','Lincoln','Lotus','MAN','Maserati','Mazda','McLaren','Mercedes-Benz','MG','MINI','Mitsubishi','Nissan','Opel','Peugeot','Polestar','Pontiac','Porsche','RAM','Renault','Rolls-Royce','Saab','Seat','Škoda','Smart','Subaru','Suzuki','Tesla','Toyota','Triumph','Volkswagen','Volvo','Yamaha'];
+ const makeSelect=document.getElementById('makeFilter'), modelSelect=document.getElementById('modelFilter'), typeSelect=document.getElementById('type');
+ if(!makeSelect||!modelSelect||!typeSelect)return;
  const normalize=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();
- let catalog=[];
- function fillMakes(makes){
-   const selected=makeSelect.value;
-   makeSelect.innerHTML='<option value="">Všetky značky</option>';
-   makes.sort((a,b)=>a.name.localeCompare(b.name));
-   makes.forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=m.name;makeSelect.appendChild(o)});
-   if(selected)makeSelect.value=selected;
+ const categoryCatalog={
+  'Motorka':{
+   'Aprilia':['RS 660','RSV4','Tuono','Tuareg','Shiver','Dorsoduro'],
+   'BMW Motorrad':['G 310 R','F 750 GS','F 850 GS','F 900 R','R 1250 GS','R 1300 GS','S 1000 RR','R nineT'],
+   'Ducati':['Monster','Panigale V2','Panigale V4','Multistrada','Scrambler','Diavel','Streetfighter'],
+   'Harley-Davidson':['Sportster','Softail','Touring','Pan America','LiveWire'],
+   'Honda':['CBR650R','CB1000R','Africa Twin','NC750X','CB500F','Forza 750','Gold Wing'],
+   'Husqvarna':['Svartpilen 401','Vitpilen 401','Norden 901','701 Enduro'],
+   'Kawasaki':['Ninja 400','Ninja 650','Ninja ZX-6R','Ninja ZX-10R','Z650','Z900','Versys 650'],
+   'KTM':['Duke 390','Duke 790','Duke 990','Adventure 390','890 Adventure','1290 Super Adventure','EXC'],
+   'Suzuki':['GSX-R1000','GSX-8S','V-Strom 650','V-Strom 800','Hayabusa'],
+   'Triumph':['Street Triple','Speed Triple','Tiger 900','Tiger 1200','Bonneville','Trident 660'],
+   'Yamaha':['MT-07','MT-09','R1','R7','Tracer 9','Tenere 700','XMAX','TMAX'],
+   'CFMOTO':['450MT','650MT','800MT','450SR','700CL-X'],
+   'Indian Motorcycle':['Scout','Chief','Chieftain','FTR'],
+   'Royal Enfield':['Classic 350','Meteor 350','Himalayan','Interceptor 650','Continental GT'],
+   'Benelli':['TRK 502','Leoncino 500','TNT 125'],
+   'Moto Guzzi':['V7','V85 TT','Stelvio']
+  },
+  'Karavan':{
+   'Adria':['Altea','Adora','Action','Astella','Alpina','Aviva'],
+   'Bürstner':['Averso','Premio','Belcanto','Elegance','Lyseo'],
+   'Dethleffs':['Aero','Coco','Camper','Nomad','Beduin'],
+   'Fendt':['Bianco','Tendenza','Diamant','Saphir','Apero'],
+   'Hobby':['Excellent','De Luxe','Prestige','Maxia','Beachy'],
+   'Knaus':['Sport','Südwind','Lifestyle','Deseo','Travelino'],
+   'Tabbert':['Da Vinci','Rossini','Pepa','Cellini'],
+   'Weinsberg':['CaraOne','CaraCito','CaraCompact'],
+   'Hymer':['Eriba Touring','Eriba Feeling','Eriba Nova'],
+   'LMC':['Style','Sassino','Musica'],
+   'Sterckeman':['Easy','Evolution','Starlett'],
+   'Trigano':['Silver','Mini Freestyle']
+  },
+  'Príves':{
+   'Brenderup':['Cargo','Premium','Utility','Plywood'],
+   'Humbaur':['HA','HK','HT','Startrailer'],
+   'Ifor Williams':['LM','GD','HB','GX'],
+   'Böckmann':['Classic','Cargo','Portax'],
+   'Eduard':['Basic','Pro'],
+   'Agados':['VZ',' NP','Dingo'],
+   'Temared':['Carplatform','Builder','Carkeeper'],
+   'Neptun':['Pratik','Nordica'],
+   'Saris':['McAlu','King','Black Edition'],
+   'Anssems':['GT','BSX','PSX']
+  }
+ };
+ const fallbackMakes=['Acura','Aixam','Alfa Romeo','Aprilia','Aston Martin','Audi','Bentley','BMW','BYD','Cadillac','Chevrolet','Chrysler','Citroën','Cupra','Dacia','Daewoo','Daihatsu','Dodge','DS Automobiles','Ferrari','Fiat','Ford','Genesis','GMC','Honda','Hyundai','Infiniti','Isuzu','Iveco','Jaguar','Jeep','Kawasaki','Kia','KTM','Lamborghini','Lancia','Land Rover','Lexus','Lincoln','Lotus','MAN','Maserati','Mazda','McLaren','Mercedes-Benz','MG','MINI','Mitsubishi','Nissan','Opel','Peugeot','Polestar','Pontiac','Porsche','RAM','Renault','Rolls-Royce','Saab','Seat','Škoda','Smart','Subaru','Suzuki','Tesla','Toyota','Triumph','Volkswagen','Volvo','Yamaha'];
+ let globalCatalog=[];
+ let usingGlobal=false;
+ function currentCatalog(){
+  const category=typeSelect.value;
+  if(categoryCatalog[category])return Object.entries(categoryCatalog[category]).map(([name,models])=>({name,models}));
+  if(globalCatalog.length)return globalCatalog;
+  return fallbackMakes.map(name=>({name,models:[]}));
+ }
+ function fillMakes(){
+  const old=makeSelect.value, list=currentCatalog().sort((a,b)=>a.name.localeCompare(b.name,'sk'));
+  makeSelect.innerHTML='<option value="">Všetky značky</option>';
+  list.forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=m.name;makeSelect.appendChild(o)});
+  if(list.some(m=>normalize(m.name)===normalize(old)))makeSelect.value=old;
+  else makeSelect.value='';
+  fillModels();
  }
  function fillModels(){
-   const make=makeSelect.value, previous=modelSelect.value;
-   modelSelect.innerHTML='<option value="">Všetky modely</option>';
-   const entry=catalog.find(m=>normalize(m.name)===normalize(make));
-   const models=entry&&Array.isArray(entry.models)?entry.models.map(x=>typeof x==='string'?x:x.name).filter(Boolean):[];
-   [...new Set(models)].sort((a,b)=>a.localeCompare(b)).forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;modelSelect.appendChild(o)});
-   modelSelect.disabled=!make||models.length===0;
-   if(!make){modelSelect.innerHTML='<option value="">Najprv vyber značku</option>';modelSelect.disabled=true}
-   else if(!models.length){modelSelect.innerHTML='<option value="">Modely nie sú dostupné</option>';modelSelect.disabled=true}
-   else if(previous&&models.some(x=>normalize(x)===normalize(previous)))modelSelect.value=previous;
-   modelSelect.dispatchEvent(new Event('change',{bubbles:true}));
+  const make=makeSelect.value, old=modelSelect.value, list=currentCatalog();
+  modelSelect.innerHTML='<option value="">Všetky modely</option>';
+  const entry=list.find(m=>normalize(m.name)===normalize(make));
+  const models=entry&&Array.isArray(entry.models)?entry.models.map(x=>typeof x==='string'?x:x.name).filter(Boolean):[];
+  [...new Set(models)].sort((a,b)=>a.localeCompare(b,'sk')).forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;modelSelect.appendChild(o)});
+  if(!make){modelSelect.innerHTML='<option value="">Najprv vyber značku</option>';modelSelect.disabled=true}
+  else if(!models.length){modelSelect.innerHTML='<option value="">Modely nie sú dostupné</option>';modelSelect.disabled=true}
+  else {modelSelect.disabled=false;if(models.some(x=>normalize(x)===normalize(old)))modelSelect.value=old;}
  }
- makeSelect.addEventListener('change',()=>{modelSelect.value='';fillModels();if(typeof filterVehicles==='function')filterVehicles()});
+ makeSelect.addEventListener('change',()=>{fillModels();if(typeof filterVehicles==='function')filterVehicles()});
  modelSelect.addEventListener('change',()=>{if(typeof filterVehicles==='function')filterVehicles()});
- fillMakes(fallbackMakes.map(name=>({name,models:[]})));
+ typeSelect.addEventListener('change',()=>{makeSelect.value='';modelSelect.value='';fillMakes();if(typeof filterVehicles==='function')filterVehicles()});
+ fillMakes();
  fetch('https://cdn.jsdelivr.net/gh/vehiclesdb/vehiclesdb@latest/dist/vehicles.json')
   .then(res=>{if(!res.ok)throw new Error('Catalog unavailable');return res.json()})
   .then(data=>{
-    const makes=Array.isArray(data)?data:(Array.isArray(data.makes)?data.makes:[]);
-    if(!makes.length)throw new Error('Unexpected catalog format');
-    catalog=makes.map(m=>({name:m.name||m[0],models:m.models||m[1]||[]})).filter(m=>m.name);
-    fillMakes(catalog);
-    fillModels();
-    makeSelect.title='Globálny katalóg značiek a modelov';
-  })
-  .catch(()=>{catalog=fallbackMakes.map(name=>({name,models:[]}));fillMakes(fallbackMakes.map(name=>({name,models:[]})));});
+   const makes=Array.isArray(data)?data:(Array.isArray(data.makes)?data.makes:[]);
+   globalCatalog=makes.map(m=>({name:m.name||m[0],models:m.models||m[1]||[]})).filter(m=>m.name);
+   usingGlobal=globalCatalog.length>0;
+   if(!categoryCatalog[typeSelect.value])fillMakes();
+  }).catch(()=>{});
 })();
 </script>
 
