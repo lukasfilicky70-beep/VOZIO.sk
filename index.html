@@ -230,6 +230,14 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:760px){#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important}#quick-search .unified-search>.field,#quick-search .unified-search>.field:nth-child(4n){border-right:1px solid #d6aa00!important}#quick-search .unified-search>.field:nth-child(2n){border-right:0!important}}
 @media(max-width:420px){#quick-search h3.market-subtitle{font-size:25px!important}#quick-search .unified-search{grid-template-columns:1fr!important}#quick-search .unified-search>.field,#quick-search .unified-search>.field:nth-child(2n),#quick-search .unified-search>.field:nth-child(4n){border-right:0!important}#quick-search .unified-search .search-submit{flex-direction:column}#quick-search .unified-search .search-submit .btn{width:100%!important}}
 
+/* Akcie vyhľadávania sú mimo žltej tabuľky filtrov */
+#quick-search .search-actions-outside{display:flex!important;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:12px}
+#quick-search .search-actions-outside .btn{min-height:44px;padding:12px 20px;font-weight:900}
+#quick-search .search-actions-outside .btn.primary{background:#ffc900!important;color:#111!important;border:1px solid #ffc900!important}
+#quick-search .search-actions-outside .btn.secondary{background:#111!important;color:#fff!important;border:1px solid #555!important}
+#quick-search .unified-search .search-submit{display:none!important}
+@media(max-width:420px){#quick-search .search-actions-outside{display:grid!important;grid-template-columns:1fr}#quick-search .search-actions-outside .btn{width:100%}}
+
 </style>
 </head>
 <body>
@@ -262,8 +270,8 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
   <div class="field"><label for="gearFilter">Prevodovka</label><select id="gearFilter"><option value="">Všetky</option><option value="automat">Automat</option><option value="manuál">Manuál</option></select></div>
   <div class="field"><label for="engineFilter">Motor / kľúčové slovo</label><input id="engineFilter" placeholder="Napr. 2.0, quattro"></div>
   <div class="field"><label for="sort">Zoradiť podľa</label><select id="sort"><option value="recommended">Odporúčané</option><option value="low">Najnižšia cena</option><option value="high">Najvyššia cena</option></select></div>
-  <div class="search-submit"><button class="btn primary search-action" id="searchBtn" type="button">Hľadať vozidlá</button><button class="btn secondary" type="button" id="clearFilters">Vymazať filtre</button></div>
 </div>
+<div class="search-actions-outside"><button class="btn primary search-action" id="searchBtn" type="button">Hľadať vozidlá</button><button class="btn secondary" type="button" id="clearFilters">Vymazať filtre</button></div>
 </section>
 
 <section id="kategorie">
