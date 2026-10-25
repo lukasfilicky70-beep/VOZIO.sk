@@ -238,6 +238,13 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 #quick-search .unified-search .search-submit{display:none!important}
 @media(max-width:420px){#quick-search .search-actions-outside{display:grid!important;grid-template-columns:1fr}#quick-search .search-actions-outside .btn{width:100%}}
 
+/* Každý parameter má samostatný filter */
+#quick-search .unified-search{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#quick-search .unified-search>.field{min-width:0}
+#quick-search .unified-search>.field input,#quick-search .unified-search>.field select{box-sizing:border-box}
+@media(max-width:760px){#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:420px){#quick-search .unified-search{grid-template-columns:1fr!important}}
+
 </style>
 </head>
 <body>
@@ -259,7 +266,9 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 <section id="quick-search" class="wrap">
 <h3 class="market-subtitle">Vyhľadávanie vozidiel</h3>
 <div class="searchbox unified-search">
-  <div class="field"><label for="q">Značka alebo model</label><input id="q" list="vehicleSuggestions" placeholder="Napr. Škoda Octavia"><datalist id="vehicleSuggestions"></datalist></div>
+  <div class="field"><label for="makeFilter">Značka</label><input id="makeFilter" placeholder="Napr. Škoda, BMW"></div>
+  <div class="field"><label for="modelFilter">Model</label><input id="modelFilter" placeholder="Napr. Octavia, X5"></div>
+  <div class="field"><label for="q">Kľúčové slovo</label><input id="q" list="vehicleSuggestions" placeholder="Napr. 4x4, koža"><datalist id="vehicleSuggestions"></datalist></div>
   <div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky kategórie</option><option>Auto</option><option>Motorka</option><option>Karavan</option><option>Príves</option><option>Diely</option><option>Offroad auto</option><option>Offroad diely</option><option>Veterán</option><option>Príslušenstvo</option><option>Pneumatiky</option></select></div>
   <div class="field"><label for="minprice">Cena od (€)</label><input id="minprice" type="number" min="0" placeholder="Bez minima"></div>
   <div class="field"><label for="maxprice">Cena do (€)</label><input id="maxprice" type="number" min="0" placeholder="Bez limitu"></div>
@@ -381,15 +390,16 @@ function updateVehicleSuggestions(){
  q.placeholder=placeholders[selected]||'Značka alebo model z inzerátov…';
 }
 function filterVehicles(){
-const term=q.value.trim().toLocaleLowerCase('sk'),wanted=type.value,limit=Number(maxprice.value||Infinity);
+const term=q.value.trim(),makeTerm=(document.getElementById('makeFilter')?.value||'').trim(),modelTerm=(document.getElementById('modelFilter')?.value||'').trim(),wanted=type.value,limit=Number(maxprice.value||Infinity);
 const minPrice=Number(document.getElementById('minprice')?.value||0),minYear=Number(document.getElementById('minyear')?.value||0),maxYear=Number(document.getElementById('maxyear')?.value||Infinity),maxKm=Number(document.getElementById('maxkm')?.value||Infinity);
-const engineTerm=(document.getElementById('engineFilter')?.value||'').trim().toLocaleLowerCase('sk'),fuel=(document.getElementById('fuelFilter')?.value||'').toLocaleLowerCase('sk'),gear=(document.getElementById('gearFilter')?.value||'').toLocaleLowerCase('sk');
+const engineTerm=(document.getElementById('engineFilter')?.value||'').trim(),fuel=(document.getElementById('fuelFilter')?.value||'').trim(),gear=(document.getElementById('gearFilter')?.value||'').trim();
 const all=[...cards.querySelectorAll('.vehicle')];
 const favorites=new Set(getFavorites());
 all.forEach(card=>{
 const name=(card.dataset.name||'').toLocaleLowerCase('sk'),engine=(card.dataset.engine||'').toLocaleLowerCase('sk'),details=(card.querySelector('.vbody')?.innerText||card.innerText||'').toLocaleLowerCase('sk'),year=Number(card.dataset.year||((details.match(/(?:19|20)\\d{2}/)||[])[0])||0),km=Number(card.dataset.km||((details.match(/([\\d\\s.]+)\\s*km/)||[])[1]||'').replace(/[\\s.]/g,'')||0),price=Number(card.dataset.price||0),searchText=(name+' '+engine+' '+details).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
 const normalize=v=>String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('sk');
-const matches=normalize(searchText).includes(normalize(term))&&(!wanted||card.dataset.type===wanted)&&price<=limit&&price>=minPrice&&year>=minYear&&year<=maxYear&&(!maxKm||km<=maxKm)&&(!engineTerm||normalize(searchText).includes(normalize(engineTerm)))&&(!fuel||normalize(searchText).includes(normalize(fuel)))&&(!gear||normalize(searchText).includes(normalize(gear)))&&(!showFavoritesOnly||favorites.has(String(card.dataset.favoriteId||'')));
+const normalized=normalize(searchText),make=normalize(card.dataset.make||card.dataset.brand||''),model=normalize(card.dataset.model||name),fuelData=normalize(card.dataset.fuel||details),gearData=normalize(card.dataset.gearbox||card.dataset.transmission||details),engineData=normalize(card.dataset.engine||details);
+const matches=(!term||normalized.includes(normalize(term)))&&(!makeTerm||make.includes(normalize(makeTerm))||normalized.includes(normalize(makeTerm)))&&(!modelTerm||model.includes(normalize(modelTerm))||normalized.includes(normalize(modelTerm)))&&(!wanted||card.dataset.type===wanted)&&price<=limit&&price>=minPrice&&(!minYear||year>=minYear)&&(!maxYear||year<=maxYear)&&(!maxKm||km<=maxKm)&&(!engineTerm||engineData.includes(normalize(engineTerm))||normalized.includes(normalize(engineTerm)))&&(!fuel||fuelData.includes(normalize(fuel)))&&(!gear||gearData.includes(normalize(gear)))&&(!showFavoritesOnly||favorites.has(String(card.dataset.favoriteId||'')));
 card.style.display=matches?'':'none';
 });
 const visible=all.filter(card=>card.style.display!=='none');
@@ -404,8 +414,8 @@ document.querySelectorAll(".offroad-filter").forEach(btn=>btn.addEventListener("
 document.getElementById('searchBtn').addEventListener('click',filterVehicles);
 type.addEventListener('change',updateVehicleSuggestions);
 document.getElementById('favoritesToggle').addEventListener('click',()=>{showFavoritesOnly=!showFavoritesOnly;updateFavoritesUI();filterVehicles();document.getElementById('vozidla').scrollIntoView({behavior:'smooth'});});
-[q,type,maxprice,sort,document.getElementById('minprice'),document.getElementById('minyear'),document.getElementById('maxyear'),document.getElementById('maxkm'),document.getElementById('fuelFilter'),document.getElementById('gearFilter'),document.getElementById('engineFilter')].filter(Boolean).forEach(el=>{el.addEventListener('input',filterVehicles);el.addEventListener('change',filterVehicles)});
-document.getElementById('clearFilters').addEventListener('click',()=>{['q','minprice','maxprice','minyear','maxyear','maxkm','engineFilter'].forEach(id=>document.getElementById(id).value='');['type','fuelFilter','gearFilter'].forEach(id=>document.getElementById(id).value='');document.getElementById('sort').value='recommended';showFavoritesOnly=false;updateFavoritesUI();filterVehicles();});
+[q,type,maxprice,sort,document.getElementById('makeFilter'),document.getElementById('modelFilter'),document.getElementById('minprice'),document.getElementById('minyear'),document.getElementById('maxyear'),document.getElementById('maxkm'),document.getElementById('fuelFilter'),document.getElementById('gearFilter'),document.getElementById('engineFilter')].filter(Boolean).forEach(el=>{el.addEventListener('input',filterVehicles);el.addEventListener('change',filterVehicles)});
+document.getElementById('clearFilters').addEventListener('click',()=>{['q','makeFilter','modelFilter','minprice','maxprice','minyear','maxyear','maxkm','engineFilter'].forEach(id=>document.getElementById(id).value='');['type','fuelFilter','gearFilter'].forEach(id=>document.getElementById(id).value='');document.getElementById('sort').value='recommended';showFavoritesOnly=false;updateFavoritesUI();filterVehicles();});
 document.querySelectorAll('.cat').forEach(btn=>btn.addEventListener('click',()=>{
 document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
 btn.classList.add('active');type.value=btn.dataset.cat;filterVehicles();
