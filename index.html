@@ -246,6 +246,20 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:420px){#quick-search .unified-search{grid-template-columns:1fr!important}}
 
 </style>
+<style>/* Oprava rozloženia filtrov: viditeľná, pravidelná mriežka */
+#quick-search{display:block!important;visibility:visible!important;opacity:1!important}
+#quick-search .unified-search{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;padding:18px!important;overflow:visible!important;border-radius:16px!important}
+#quick-search .unified-search>.field{display:block;min-width:0!important;padding:12px!important;border:1px solid #3b454b!important;border-radius:10px!important;background:rgba(255,255,255,.025)!important}
+#quick-search .unified-search>.field.category-hidden{display:none!important}
+#quick-search .unified-search>.field.tire-size-field{display:none!important}
+#quick-search .unified-search>.field.tire-size-field.tire-visible{display:block!important}
+#quick-search .unified-search>.field label{display:block!important;margin:0 0 8px!important;color:#f4f4f4!important;font-size:13px!important;font-weight:800!important}
+#quick-search .unified-search>.field input,#quick-search .unified-search>.field select{width:100%!important;min-width:0!important;box-sizing:border-box!important;min-height:46px!important;padding:11px 12px!important;background:#171c20!important;color:#fff!important;border:1px solid #4b555b!important;border-radius:8px!important}
+#quick-search .search-actions-outside{display:flex!important;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:14px}
+#quick-search .search-actions-outside .btn{min-height:46px;padding:12px 20px;font-weight:900}
+@media(max-width:760px){#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:460px){#quick-search .unified-search{grid-template-columns:1fr!important;padding:12px!important}#quick-search .search-actions-outside{display:grid!important;grid-template-columns:1fr}#quick-search .search-actions-outside .btn{width:100%}}
+</style>
 </head>
 <body>
 <header id="domov">
