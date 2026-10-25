@@ -1039,5 +1039,39 @@ showRoute('alps');
  },true);
 })();
 </script>
+
+<script id="force-listing-open-fix">
+(function(){
+ function activate(){
+  const modal=document.getElementById('detailModal');
+  const list=document.getElementById('vehicleCards');
+  if(!modal||!list)return;
+  window.vozioOpenListing=function(card){
+   if(!card)return;
+   const id=card.getAttribute('data-favorite-id')||'';
+   if(id==='demo-moto'||id==='demo-suv'||id==='demo-camper'){
+    const data={
+     'demo-moto':['Adventure motocykel Yamaha','Motorka',18900,2021,'28 000 km','1 250 cm³ · Manuál','https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80'],
+     'demo-suv':['Športové SUV','Auto',32500,2022,'34 000 km','Automat','https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80'],
+     'demo-camper':['Cestovný karavan','Karavan',24900,2020,'Neuvedené','2 lôžka','https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80']
+    }[id];
+    if(data){showListingDetail({id,title:data[0],type:data[1],price:data[2],year:data[3],km:data[4],engine:data[5],image:data[6],images:[data[6]],description:'Ukážkový inzerát. Pred kúpou si overte stav, históriu a doklady.',location:'Neuvedená',contact:''});return}
+   }
+   if(card.classList.contains('user-vehicle'))return;
+   const image=card.querySelector('img');
+   showListingDetail({id,title:card.querySelector('h3')?.textContent||card.dataset.name||'Inzerát',type:card.dataset.type||'Auto',price:Number(card.dataset.price||0),year:card.dataset.year||'',km:card.dataset.km||'',engine:card.dataset.engine||'',image:image?.src||'',images:image?.src?[image.src]:[],description:'Tento ukážkový inzerát zatiaľ nemá úplné údaje.',location:'Neuvedená',contact:''});
+  };
+  list.querySelectorAll('.vehicle:not(.user-vehicle)').forEach(card=>{
+   card.style.cursor='pointer';
+   card.setAttribute('role','button');
+   card.setAttribute('tabindex','0');
+   card.addEventListener('click',function(e){if(e.target.closest('.favorite-btn'))return;e.preventDefault();e.stopPropagation();window.vozioOpenListing(card)},true);
+   card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){if(e.target.closest('.favorite-btn'))return;e.preventDefault();window.vozioOpenListing(card)}});
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',activate);else activate();
+})();
+</script>
+
 </body>
 </html>
