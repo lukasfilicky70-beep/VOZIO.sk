@@ -1016,7 +1016,6 @@ showRoute('alps');
  };
  function openCard(card){
   if(!card||card.dataset.openingDetail==='1')return;
-  if(card.querySelector('.favorite-btn')&&event?.target?.closest?.('.favorite-btn'))return;
   const id=card.dataset.favoriteId;
   let item=demoListings[id];
   if(!item){
