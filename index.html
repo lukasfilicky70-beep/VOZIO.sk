@@ -287,7 +287,30 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 </div>
 </section>
 
-<section id="quick-search" class="wrap">
+<section id="vehicle-start" class="wrap" aria-label="Vyber kategóriu vozidla">
+<style>
+#vehicle-start{padding:28px 0 14px}
+#vehicle-start .start-title{font-size:clamp(25px,3vw,34px);font-weight:900;margin:0 0 8px}
+#vehicle-start .start-copy{color:#b9c2c7;margin:0 0 18px}
+#vehicle-start .start-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+#vehicle-start .start-card{background:#141b20;border:1px solid #35434a;border-radius:15px;padding:18px 12px;color:#f5f7f8;text-align:center;cursor:pointer;transition:transform .15s,border-color .15s,background .15s;min-height:120px}
+#vehicle-start .start-card:hover,#vehicle-start .start-card.active{border-color:#ffdf00;background:#252716;transform:translateY(-2px)}
+#vehicle-start .start-card .emoji{font-size:30px;display:block;margin-bottom:8px}
+#vehicle-start .start-card strong{display:block;font-size:15px}
+#vehicle-start .start-card small{display:block;color:#aeb9be;margin-top:5px}
+@media(max-width:760px){#vehicle-start .start-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#vehicle-start .start-card:last-child{grid-column:1/-1}}
+</style>
+<h2 class="start-title">Čo hľadáš?</h2>
+<p class="start-copy">Najprv si vyber kategóriu a zobrazia sa ti vhodné značky a modely.</p>
+<div class="start-grid">
+<button class="start-card active" type="button" data-start-category=""><span class="emoji">🚘</span><strong>Všetko</strong><small>Všetky kategórie</small></button>
+<button class="start-card" type="button" data-start-category="Auto"><span class="emoji">🚗</span><strong>Autá</strong><small>Osobné a úžitkové</small></button>
+<button class="start-card" type="button" data-start-category="Motorka"><span class="emoji">🏍️</span><strong>Motorky</strong><small>Motocykle a skútre</small></button>
+<button class="start-card" type="button" data-start-category="Karavan"><span class="emoji">🚐</span><strong>Karavany</strong><small>Obytné a cestovné</small></button>
+<button class="start-card" type="button" data-start-category="Offroad auto"><span class="emoji">🛻</span><strong>Offroad</strong><small>4×4 a terénne vozidlá</small></button>
+</div>
+</section>
+\n<section id="quick-search" class="wrap">
 <h3 class="market-subtitle">Vyhľadávanie vozidiel</h3>
 <div class="searchbox unified-search">
   <div class="field"><label for="makeFilter">Značka</label><select id="makeFilter"><option value="">Načítavam všetky značky…</option></select></div>
@@ -853,5 +876,24 @@ showRoute('alps');
 })();
 </script>
 
-</body>
+<script id="vehicle-start-picker-script">
+(function(){
+ const start=document.getElementById('vehicle-start'), category=document.getElementById('type');
+ if(!start||!category)return;
+ const buttons=[...start.querySelectorAll('[data-start-category]')];
+ function sync(){
+  const selected=category.value;
+  buttons.forEach(b=>{const active=b.dataset.startCategory===selected;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+ }
+ buttons.forEach(b=>b.addEventListener('click',()=>{
+  category.value=b.dataset.startCategory;
+  category.dispatchEvent(new Event('change',{bubbles:true}));
+  sync();
+  document.getElementById('quick-search')?.scrollIntoView({behavior:'smooth',block:'start'});
+ }));
+ category.addEventListener('change',sync);
+ sync();
+})();
+</script>
+\n</body>
 </html>
