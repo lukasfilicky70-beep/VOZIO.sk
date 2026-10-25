@@ -1312,5 +1312,41 @@ showRoute('alps');
 })();
 </script>
 
+
+<script id="reliable-vehicle-search-fix">
+(function(){
+ function norm(value){return String(value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('sk').trim()}
+ function runSearch(){
+  const root=document.getElementById('vehicleCards');
+  if(!root)return;
+  const value=id=>document.getElementById(id)?.value||'';
+  const term=norm(value('q')),brand=norm(value('makeFilter')),model=norm(value('modelFilter')),category=value('type');
+  const minPrice=Number(value('minprice')||0),maxPrice=Number(value('maxprice')||Infinity);
+  const minYear=Number(value('minyear')||0),maxYear=Number(value('maxyear')||Infinity),maxKm=Number(value('maxkm')||Infinity);
+  const engine=norm(value('engineFilter')),fuel=norm(value('fuelFilter')),gear=norm(value('gearFilter'));
+  const width=value('tireWidth'),height=value('tireHeight'),rim=value('tireRim');
+  const cards=[...root.querySelectorAll('.vehicle')];
+  let shown=0;
+  cards.forEach(card=>{
+   const text=norm((card.innerText||'')+' '+(card.dataset.name||'')+' '+(card.dataset.engine||''));
+   const price=Number(card.dataset.price||0);
+   const year=Number(card.dataset.year||((text.match(/(?:19|20)\d{2}/)||[])[0])||0);
+   const km=Number(String(card.dataset.km||((text.match(/([\d\s.]+)\s*km/)||[])[1]||'')).replace(/[\s.]/g,'')||0);
+   const cardBrand=norm(card.dataset.make||card.dataset.brand||'');
+   const cardModel=norm(card.dataset.model||card.dataset.name||'');
+   const matches=(!term||text.includes(term))&&(!brand||cardBrand.includes(brand)||text.includes(brand))&&(!model||cardModel.includes(model)||text.includes(model))&&(!category||card.dataset.type===category)&&price>=minPrice&&price<=maxPrice&&(!minYear||year>=minYear)&&(!maxYear||year<=maxYear)&&(!maxKm||km<=maxKm)&&(!engine||norm(card.dataset.engine||text).includes(engine))&&(!fuel||text.includes(fuel))&&(!gear||text.includes(gear))&&(!width||new RegExp('(?:^|\\D)'+width+'(?:\\D|$)').test(text))&&(!height||new RegExp('(?:/|\\s)'+height+'(?:\\D|$)').test(text))&&(!rim||new RegExp('R\\s?'+rim+'(?:\\D|$)','i').test(text));
+   card.style.display=matches?'':'none';if(matches)shown++;
+  });
+  const count=document.getElementById('resultsCount');if(count)count.textContent=shown+' vozidiel';
+  const empty=document.getElementById('noResults');if(empty)empty.style.display=shown?'none':'block';
+  const listings=document.getElementById('vozidla');if(listings)listings.scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('#searchBtn')){e.preventDefault();runSearch()}},true);
+ document.addEventListener('input',function(e){if(e.target.matches('#q,#makeFilter,#modelFilter,#type,#minprice,#maxprice,#minyear,#maxyear,#maxkm,#engineFilter,#fuelFilter,#gearFilter,#tireWidth,#tireHeight,#tireRim'))runSearch()});
+ document.addEventListener('change',function(e){if(e.target.matches('#q,#makeFilter,#modelFilter,#type,#minprice,#maxprice,#minyear,#maxyear,#maxkm,#engineFilter,#fuelFilter,#gearFilter,#tireWidth,#tireHeight,#tireRim'))runSearch()});
+ document.addEventListener('click',function(e){if(e.target.closest('#clearFilters'))setTimeout(runSearch,0)});
+})();
+</script>
+
 </body>
 </html>
