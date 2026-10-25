@@ -260,6 +260,11 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:760px){#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:460px){#quick-search .unified-search{grid-template-columns:1fr!important;padding:12px!important}#quick-search .search-actions-outside{display:grid!important;grid-template-columns:1fr}#quick-search .search-actions-outside .btn{width:100%}}
 </style>
+<style>/* Tlačidlá Hľadať a Vymazať sú súčasťou panelu filtrov */
+#quick-search .search-actions-outside.inside-search-panel{grid-column:1/-1;display:flex!important;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;margin:0;padding:14px 0 0;border-top:1px solid #3b454b}
+#quick-search .unified-search .search-submit{display:none!important}
+@media(max-width:460px){#quick-search .search-actions-outside.inside-search-panel{display:grid!important;grid-template-columns:1fr}#quick-search .search-actions-outside.inside-search-panel .btn{width:100%}}
+</style>
 </head>
 <body>
 <header id="domov">
@@ -356,8 +361,8 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
   <div class="field"><label for="gearFilter">Prevodovka</label><select id="gearFilter"><option value="">Všetky</option><option value="automat">Automat</option><option value="manuál">Manuál</option></select></div>
   <div class="field"><label for="engineFilter">Motor</label><select id="engineFilter"><option value="">Všetky motory</option><option value="1.0">1.0</option><option value="1.2">1.2</option><option value="1.4">1.4</option><option value="1.5">1.5</option><option value="1.6">1.6</option><option value="1.8">1.8</option><option value="2.0">2.0</option><option value="2.5">2.5</option><option value="3.0">3.0</option><option value="elektro">Elektromotor</option><option value="quattro">4x4 / quattro</option></select></div>
   <div class="field"><label for="sort">Zoradiť podľa</label><select id="sort"><option value="recommended">Odporúčané</option><option value="low">Najnižšia cena</option><option value="high">Najvyššia cena</option></select></div>
+<div class="search-actions-outside inside-search-panel"><button class="btn primary search-action" id="searchBtn" type="button">Hľadať vozidlá</button><button class="btn secondary" type="button" id="clearFilters">Vymazať filtre</button></div>
 </div>
-<div class="search-actions-outside"><button class="btn primary search-action" id="searchBtn" type="button">Hľadať vozidlá</button><button class="btn secondary" type="button" id="clearFilters">Vymazať filtre</button></div>
 </section>
 
 <section id="kategorie">
