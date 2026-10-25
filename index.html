@@ -215,9 +215,13 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 <button class="btn primary search-action" id="searchBtn">Hľadať</button>
 </div>
 <h3 class="market-subtitle">Podrobnejšie filtre</h3><div class="advanced-filters">
+<div class="field"><label for="minprice">Cena od (€)</label><input id="minprice" type="number" min="0" placeholder="Bez minima"></div>
 <div class="field"><label for="minyear">Rok od</label><input id="minyear" type="number" min="1950" max="2027" placeholder="Napr. 2018"></div>
+<div class="field"><label for="maxyear">Rok do</label><input id="maxyear" type="number" min="1950" max="2027" placeholder="Bez limitu"></div>
 <div class="field"><label for="maxkm">Max. kilometre</label><input id="maxkm" type="number" min="0" placeholder="Napr. 150000"></div>
-<div class="field"><label for="engineFilter">Palivo / prevodovka / motor</label><input id="engineFilter" placeholder="Napr. diesel, automat"></div>
+<div class="field"><label for="fuelFilter">Palivo</label><select id="fuelFilter"><option value="">Všetky palivá</option><option value="benzín">Benzín</option><option value="diesel">Diesel</option><option value="elektro">Elektro</option><option value="hybrid">Hybrid</option><option value="plug-in">Plug-in hybrid</option><option value="lpg">LPG</option><option value="cng">CNG</option></select></div>
+<div class="field"><label for="gearFilter">Prevodovka</label><select id="gearFilter"><option value="">Všetky</option><option value="automat">Automat</option><option value="manuál">Manuál</option></select></div>
+<div class="field"><label for="engineFilter">Motor / kľúčové slovo</label><input id="engineFilter" placeholder="Napr. 2.0, quattro"></div>
 </div>
 
 </section>
@@ -234,7 +238,7 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 
 <div class="profile-panel" id="profilePanel" hidden><div class="profile-tools"><button class="profile-icon" type="button" id="profileToggle" aria-expanded="false" aria-label="Môj profil" title="Môj profil">♙</button><button class="profile-icon" type="button" id="messagesToggle" aria-expanded="false" aria-label="Moje správy" title="Moje správy">✉</button><span class="profile-hint">Profil a správy</span></div><div class="profile-content" id="profileContent" hidden><div class="head"><div><h3 style="margin:0">Môj profil</h3><p>Spravuj svoje inzeráty na jednom mieste.</p></div><button class="btn secondary" id="showAllListings" type="button">Všetky inzeráty</button></div><div id="myListings" class="cards"></div><p class="modal-note" id="myListingsNote"></p><div id="messagesContent" hidden><h3>Moje správy</h3><div id="myMessages" class="review-list"></div></div></div></div>
 <div style="height:18px"></div>
-<div class="buttons market-actions" style="margin-bottom:14px"><button class="btn secondary" id="favoritesToggle" type="button" aria-pressed="false">♡ Zobraziť obľúbené</button><span class="modal-note" id="favoritesCount">0 obľúbených inzerátov</span></div>
+<div class="buttons market-actions" style="margin-bottom:14px"><button class="btn secondary" id="favoritesToggle" type="button" aria-pressed="false">♡ Zobraziť obľúbené</button><span class="modal-note" id="favoritesCount">0 obľúbených inzerátov</span><span class="modal-note" id="resultsCount" aria-live="polite">Načítavam vozidlá…</span></div>
 <div class="cards" id="vehicleCards">
 <article class="vehicle" data-type="Motorka" data-price="18900" data-name="Adventure motocykel Yamaha" data-favorite-id="demo-moto">
 <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80" alt="Motocykel na ceste" loading="lazy"><button class="favorite-btn" type="button" onclick="event.preventDefault();event.stopPropagation();try{const k='vozio_favorites_v1',id=String(this.dataset.favoriteId),a=JSON.parse(localStorage.getItem(k)||'[]').map(String),n=a.includes(id)?a.filter(x=>x!==id):[...a,id];localStorage.setItem(k,JSON.stringify(n));this.textContent=n.includes(id)?'♥':'♡';this.classList.toggle('active',n.includes(id));const c=document.getElementById('favoritesCount');if(c)c.textContent=n.length+' obľúbených inzerátov';if(typeof updateFavoritesUI==='function')updateFavoritesUI();if(typeof filterVehicles==='function'&&showFavoritesOnly)filterVehicles()}catch(e){alert('Obľúbené sa nepodarilo uložiť. Skús iný prehliadač.')}" data-favorite-id="demo-moto" aria-label="Pridať medzi obľúbené">♡</button>
@@ -329,12 +333,14 @@ function updateVehicleSuggestions(){
 }
 function filterVehicles(){
 const term=q.value.trim().toLocaleLowerCase('sk'),wanted=type.value,limit=Number(maxprice.value);
-const minYear=Number(document.getElementById('minyear')?.value||0),maxKm=Number(document.getElementById('maxkm')?.value||Infinity),engineTerm=(document.getElementById('engineFilter')?.value||'').trim().toLocaleLowerCase('sk');
+const minPrice=Number(document.getElementById('minprice')?.value||0),minYear=Number(document.getElementById('minyear')?.value||0),maxYear=Number(document.getElementById('maxyear')?.value||Infinity),maxKm=Number(document.getElementById('maxkm')?.value||Infinity);
+const engineTerm=(document.getElementById('engineFilter')?.value||'').trim().toLocaleLowerCase('sk'),fuel=(document.getElementById('fuelFilter')?.value||'').toLocaleLowerCase('sk'),gear=(document.getElementById('gearFilter')?.value||'').toLocaleLowerCase('sk');
 const all=[...cards.querySelectorAll('.vehicle')];
 const favorites=new Set(getFavorites());
 all.forEach(card=>{
-const name=(card.dataset.name||'').toLocaleLowerCase('sk'),engine=(card.dataset.engine||'').toLocaleLowerCase('sk');
-const matches=name.includes(term)&&(!wanted||card.dataset.type===wanted)&&Number(card.dataset.price)<=limit&&Number(card.dataset.year||0)>=minYear&&Number(card.dataset.km||0)<=maxKm&&(!engineTerm||engine.includes(engineTerm)||name.includes(engineTerm))&&(!showFavoritesOnly||favorites.has(String(card.dataset.favoriteId||'')));
+const name=(card.dataset.name||'').toLocaleLowerCase('sk'),engine=(card.dataset.engine||'').toLocaleLowerCase('sk'),details=(card.querySelector('.vbody')?.innerText||card.innerText||'').toLocaleLowerCase('sk'),year=Number(card.dataset.year||((details.match(/(?:19|20)\\d{2}/)||[])[0])||0),km=Number(card.dataset.km||((details.match(/([\\d\\s.]+)\\s*km/)||[])[1]||'').replace(/[\\s.]/g,'')||0),price=Number(card.dataset.price||0),searchText=(name+' '+engine+' '+details).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+const normalize=v=>String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('sk');
+const matches=normalize(searchText).includes(normalize(term))&&(!wanted||card.dataset.type===wanted)&&price<=limit&&price>=minPrice&&year>=minYear&&year<=maxYear&&(!maxKm||km<=maxKm)&&(!engineTerm||normalize(searchText).includes(normalize(engineTerm)))&&(!fuel||normalize(searchText).includes(normalize(fuel)))&&(!gear||normalize(searchText).includes(normalize(gear)))&&(!showFavoritesOnly||favorites.has(String(card.dataset.favoriteId||'')));
 card.style.display=matches?'':'none';
 });
 const visible=all.filter(card=>card.style.display!=='none');
@@ -342,13 +348,14 @@ if(sort.value==='low')visible.sort((a,b)=>Number(a.dataset.price)-Number(b.datas
 if(sort.value==='high')visible.sort((a,b)=>Number(b.dataset.price)-Number(a.dataset.price));
 visible.forEach(card=>cards.appendChild(card));
 noResults.style.display=visible.length?'none':'block';
+const count=document.getElementById('resultsCount');if(count)count.textContent=visible.length+' vozidiel';
 }
 document.addEventListener('click',e=>{const btn=e.target.closest('.favorite-btn[data-favorite-id]');if(!btn)return;e.preventDefault();e.stopPropagation();toggleFavoriteId(btn.dataset.favoriteId);});
 document.querySelectorAll(".offroad-filter").forEach(btn=>btn.addEventListener("click",()=>{document.getElementById("q").value=btn.dataset.search;document.getElementById("type").value="";filterVehicles();document.getElementById("vozidla").scrollIntoView({behavior:"smooth"});}));
 document.getElementById('searchBtn').addEventListener('click',filterVehicles);
 type.addEventListener('change',updateVehicleSuggestions);
 document.getElementById('favoritesToggle').addEventListener('click',()=>{showFavoritesOnly=!showFavoritesOnly;updateFavoritesUI();filterVehicles();document.getElementById('vozidla').scrollIntoView({behavior:'smooth'});});
-[q,type,maxprice,sort,document.getElementById('minyear'),document.getElementById('maxkm'),document.getElementById('engineFilter')].filter(Boolean).forEach(el=>el.addEventListener('input',filterVehicles));
+[q,type,maxprice,sort,document.getElementById('minprice'),document.getElementById('minyear'),document.getElementById('maxyear'),document.getElementById('maxkm'),document.getElementById('fuelFilter'),document.getElementById('gearFilter'),document.getElementById('engineFilter')].filter(Boolean).forEach(el=>{el.addEventListener('input',filterVehicles);el.addEventListener('change',filterVehicles)});
 document.querySelectorAll('.cat').forEach(btn=>btn.addEventListener('click',()=>{
 document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
 btn.classList.add('active');type.value=btn.dataset.cat;filterVehicles();
