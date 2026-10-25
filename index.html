@@ -818,8 +818,8 @@ document.getElementById('loginBtn').addEventListener('click',loginUser);
 document.getElementById('logoutBtn').addEventListener('click',async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);updateAuthUI(null)});
 supabaseClient.auth.getSession().then(({data})=>{updateAuthUI(data.session);setTimeout(()=>renderInbox(),0)}).catch(error=>{console.error('Supabase session error:',error);document.getElementById('authStatus').textContent='Nepodarilo sa overiť prihlásenie. Obnov stránku.'});
 supabaseClient.auth.onAuthStateChange((_event,session)=>{updateAuthUI(session);setTimeout(()=>renderInbox(),0)});
-document.getElementById('navAdd').addEventListener('click',()=>{
- if(!currentUser){const auth=document.querySelector('.auth-panel');if(auth){auth.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('authEmail')?.focus({preventScroll:true});document.getElementById('authStatus').textContent='Pre pridanie inzerátu sa najprv prihlás alebo si vytvor účet.';}return;}
+document.getElementById('navAdd').addEventListener('click',e=>{
+ e.preventDefault();
  document.getElementById('openAdd').click();
 });
 document.getElementById('openAdd').addEventListener('click',async()=>{if(!currentUser){const button=document.getElementById('openAdd');button.disabled=true;const oldText=button.textContent;button.textContent='Pripravujem formulár…';try{const sessionResult=await supabaseClient.auth.getSession();if(sessionResult.data?.session){currentUser=sessionResult.data.session.user;updateAuthUI(sessionResult.data.session)}else{const guestResult=await supabaseClient.auth.signInAnonymously();if(guestResult.error)throw guestResult.error;currentUser=guestResult.data.user;updateAuthUI(guestResult.data.session)}}catch(e){alert('Nepodarilo sa spustiť pridanie bez registrácie. V Supabase musí byť povolené anonymné prihlasovanie (Authentication → Sign In / Providers → Anonymous). Detail: '+(e.message||String(e)));button.disabled=false;button.textContent=oldText;return}finally{button.disabled=false;button.textContent=oldText}}editingListingId=null;document.getElementById('listingForm').reset();listingPhotoItems.forEach(i=>{if(i.objectUrl)URL.revokeObjectURL(i.objectUrl)});listingPhotoItems=[];listingPhotoActive=0;renderListingPhotoWorkbench();document.getElementById('addTitle').textContent='＋ Pridať vozidlo';document.querySelector('#listingForm button[type="submit"]').textContent='Uložiť inzerát';openModal('addModal')});
@@ -1219,16 +1219,11 @@ showRoute('alps');
 
 <script id="home-add-listing-cta-handler">
 (function(){
- function handleAdd(){
-  if(window.currentUser){const button=document.getElementById('openAdd');if(button&&!button.disabled){button.click();return}}
-  const auth=document.querySelector('.auth-panel');
-  const status=document.getElementById('authStatus');
-  if(auth){auth.scrollIntoView({behavior:'smooth',block:'center'});if(status)status.textContent='Pre pridanie inzerátu sa najprv prihlás alebo si vytvor účet. Po prihlásení klikni znova na „Pridať inzerát“.';setTimeout(()=>document.getElementById('authEmail')?.focus({preventScroll:true}),350);return}
-  const listings=document.getElementById('vozidla');if(listings)listings.scrollIntoView({behavior:'smooth'});
- }
  document.addEventListener('click',function(e){
   if(!e.target.closest('#homeAddListing'))return;
-  e.preventDefault();handleAdd();
+  e.preventDefault();
+  const button=document.getElementById('openAdd');
+  if(button)button.click();
  });
 })();
 </script>
