@@ -200,6 +200,22 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:760px){.unified-search{grid-template-columns:repeat(2,minmax(0,1fr))}.unified-search>.field{padding:11px;border-right:1px solid #303030}.unified-search>.field:nth-child(2n){border-right:0}.unified-search .search-submit{grid-column:1/-1}.unified-search .search-submit .btn{flex:1;min-width:0}}
 @media(max-width:420px){.unified-search{grid-template-columns:1fr}.unified-search>.field,.unified-search>.field:nth-child(2n){border-right:0}.unified-search .search-submit{flex-direction:column}.unified-search .search-submit .btn{width:100%}}
 
+/* Žltý vyhľadávací panel VOZIO – výrazný nadpis a kontrastné polia */
+#quick-search{padding-top:26px;padding-bottom:30px}
+#quick-search>.market-subtitle{display:block!important;visibility:visible!important;opacity:1!important;color:#ffc900!important;font-size:clamp(24px,3vw,32px)!important;font-weight:900!important;line-height:1.2!important;margin:0 0 14px!important;letter-spacing:-.02em}
+#quick-search .unified-search{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:0!important;padding:0!important;overflow:hidden;border-radius:16px;background:#ffc900!important;border:2px solid #ffc900!important;box-shadow:0 14px 36px #0005}
+#quick-search .unified-search>.field{padding:14px 15px!important;border-right:1px solid #d9a900!important;border-bottom:1px solid #d9a900!important;min-width:0}
+#quick-search .unified-search>.field:nth-child(4n){border-right:0!important}
+#quick-search .unified-search>.field label{display:block!important;color:#171300!important;font-size:12px!important;font-weight:850!important;letter-spacing:.01em;margin:0 0 7px!important}
+#quick-search .unified-search>.field input,#quick-search .unified-search>.field select{width:100%;min-width:0;display:block;background:#fff!important;border:1px solid #d4a500!important;border-radius:8px!important;padding:11px 10px!important;color:#161616!important;outline:none;min-height:42px}
+#quick-search .unified-search>.field input::placeholder{color:#777}
+#quick-search .unified-search>.field input:focus,#quick-search .unified-search>.field select:focus{border-color:#171300!important;box-shadow:0 0 0 2px #17130022}
+#quick-search .unified-search .search-submit{grid-column:1/-1;display:flex;gap:10px;align-items:center;justify-content:flex-end;padding:14px 16px;background:#ffc900!important}
+#quick-search .unified-search .search-submit .btn{min-width:150px;background:#111!important;color:#ffc900!important;border:1px solid #111!important;font-weight:900}
+#quick-search .unified-search .search-submit .btn.secondary{background:#fff!important;color:#171300!important;border:1px solid #d4a500!important}
+@media(max-width:760px){#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important}#quick-search .unified-search>.field{padding:11px!important;border-right:1px solid #d9a900!important}#quick-search .unified-search>.field:nth-child(2n){border-right:0!important}#quick-search .unified-search .search-submit{grid-column:1/-1}}
+@media(max-width:420px){#quick-search .unified-search{grid-template-columns:1fr!important}#quick-search .unified-search>.field,#quick-search .unified-search>.field:nth-child(2n){border-right:0!important}#quick-search .unified-search .search-submit{flex-direction:column}#quick-search .unified-search .search-submit .btn{width:100%}}
+
 </style>
 </head>
 <body>
