@@ -849,9 +849,21 @@ showRoute('alps');
  const fallbackMakes=['Acura','Aixam','Alfa Romeo','Aprilia','Aston Martin','Audi','Bentley','BMW','BYD','Cadillac','Chevrolet','Chrysler','Citroën','Cupra','Dacia','Daewoo','Daihatsu','Dodge','DS Automobiles','Ferrari','Fiat','Ford','Genesis','GMC','Honda','Hyundai','Infiniti','Isuzu','Iveco','Jaguar','Jeep','Kawasaki','Kia','KTM','Lamborghini','Lancia','Land Rover','Lexus','Lincoln','Lotus','MAN','Maserati','Mazda','McLaren','Mercedes-Benz','MG','MINI','Mitsubishi','Nissan','Opel','Peugeot','Polestar','Pontiac','Porsche','RAM','Renault','Rolls-Royce','Saab','Seat','Škoda','Smart','Subaru','Suzuki','Tesla','Toyota','Triumph','Volkswagen','Volvo','Yamaha'];
  let globalCatalog=[];
  let usingGlobal=false;
+ const carOnlyMakes=['Acura','Alfa Romeo','Aston Martin','Audi','Bentley','BMW','BYD','Cadillac','Chevrolet','Chrysler','Citroën','Cupra','Dacia','Daewoo','Daihatsu','Dodge','DS Automobiles','Ferrari','Fiat','Ford','Genesis','GMC','Hyundai','Infiniti','Isuzu','Jaguar','Jeep','Kia','Lada','Lamborghini','Lancia','Land Rover','Lexus','Lincoln','Lotus','Maserati','Mazda','McLaren','Mercedes-Benz','MG','MINI','Mitsubishi','Nissan','Opel','Peugeot','Polestar','Pontiac','Porsche','RAM','Renault','Rolls-Royce','Saab','Seat','Škoda','Smart','Subaru','Suzuki','Tesla','Toyota','Volkswagen','Volvo'];
+ const motorcycleMakes=['Aprilia','BMW Motorrad','Benelli','Bimota','BSA','CFMOTO','Ducati','Harley-Davidson','Honda','Husqvarna','Indian Motorcycle','Kawasaki','KTM','Moto Guzzi','MV Agusta','Piaggio','Royal Enfield','Suzuki','Triumph','Yamaha','Zero Motorcycles'];
+ const caravanMakes=['Adria','Bürstner','Dethleffs','Fendt','Hobby','Hymer','Knaus','LMC','Sterckeman','Tabbert','Trigano','Weinsberg'];
+ const trailerMakes=['Agados','Anssems','Böckmann','Brenderup','Eduard','Humbaur','Ifor Williams','Neptun','Saris','Temared'];
+ const tireMakes=['Bridgestone','Continental','Dunlop','Falken','Firestone','Goodyear','Hankook','Kleber','Kumho','Michelin','Nexen','Nokian Tyres','Pirelli','Toyo','Uniroyal','Vredestein','Yokohama'];
+ function subsetCatalog(names){
+  const base=globalCatalog.length?globalCatalog:fallbackMakes.map(name=>({name,models:[]}));
+  return names.map(name=>base.find(m=>normalize(m.name)===normalize(name))||({name,models:[]}));
+ }
  function currentCatalog(){
   const category=typeSelect.value;
   if(categoryCatalog[category])return Object.entries(categoryCatalog[category]).map(([name,models])=>({name,models}));
+  if(category==='Auto'||category==='Offroad auto'||category==='Veterán')return subsetCatalog(carOnlyMakes);
+  if(category==='Pneumatiky')return tireMakes.map(name=>({name,models:[]}));
+  if(category==='Diely'||category==='Offroad diely'||category==='Príslušenstvo')return subsetCatalog([...new Set([...carOnlyMakes,...motorcycleMakes])]);
   if(globalCatalog.length)return globalCatalog;
   return fallbackMakes.map(name=>({name,models:[]}));
  }
