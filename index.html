@@ -301,6 +301,7 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:760px){#vehicle-start .start-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#vehicle-start .start-card:last-child{grid-column:auto}}
 #quick-search .category-search-title{font-size:22px;font-weight:900;color:#ffdf00;margin:0 0 14px}
 #quick-search .field.category-hidden{display:none!important}
+#quick-search .tire-size-field{display:none}#quick-search .tire-size-field.tire-visible{display:block!important}
 #quick-search .unified-search{background:transparent!important;border:1px solid #ffdf00!important;box-shadow:0 10px 28px #0005}
 #quick-search .unified-search>.field{background:transparent!important;border-color:#363d41!important}
 #quick-search .unified-search>.field label{color:#f4f4f4!important}
@@ -329,6 +330,9 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
   <div class="field"><label for="modelFilter">Model</label><select id="modelFilter" disabled><option value="">Najprv vyber značku</option></select></div>
   <div class="field"><label for="q">Kľúčové slovo</label><input id="q" list="vehicleSuggestions" placeholder="Napr. 4x4, koža"><datalist id="vehicleSuggestions"></datalist></div>
   <div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky kategórie</option><option>Auto</option><option>Motorka</option><option>Karavan</option><option>Príves</option><option>Diely</option><option>Offroad auto</option><option>Offroad diely</option><option>Veterán</option><option>Príslušenstvo</option><option>Pneumatiky</option></select></div>
+  <div class="field tire-size-field"><label for="tireWidth">Šírka pneumatiky</label><select id="tireWidth"><option value="">Všetky šírky</option><option value="125">125 mm</option><option value="135">135 mm</option><option value="145">145 mm</option><option value="155">155 mm</option><option value="165">165 mm</option><option value="175">175 mm</option><option value="185">185 mm</option><option value="195">195 mm</option><option value="205">205 mm</option><option value="215">215 mm</option><option value="225">225 mm</option><option value="235">235 mm</option><option value="245">245 mm</option><option value="255">255 mm</option><option value="265">265 mm</option><option value="275">275 mm</option><option value="285">285 mm</option><option value="295">295 mm</option><option value="305">305 mm</option><option value="315">315 mm</option><option value="325">325 mm</option><option value="335">335 mm</option><option value="345">345 mm</option><option value="355">355 mm</option><option value="365">365 mm</option></select></div>
+  <div class="field tire-size-field"><label for="tireHeight">Výška / profil</label><select id="tireHeight"><option value="">Všetky profily</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option><option value="45">45</option><option value="50">50</option><option value="55">55</option><option value="60">60</option><option value="65">65</option><option value="70">70</option><option value="75">75</option><option value="80">80</option><option value="85">85</option></select></div>
+  <div class="field tire-size-field"><label for="tireRim">Veľkosť disku (R)</label><select id="tireRim"><option value="">Všetky veľkosti</option><option value="10">R10</option><option value="12">R12</option><option value="13">R13</option><option value="14">R14</option><option value="15">R15</option><option value="16">R16</option><option value="17">R17</option><option value="18">R18</option><option value="19">R19</option><option value="20">R20</option><option value="21">R21</option><option value="22">R22</option><option value="23">R23</option><option value="24">R24</option></select></div>
   <div class="field"><label for="minprice">Cena od (€)</label><select id="minprice"><option value="">Bez minima</option><option value="1000">1 000 €</option><option value="3000">3 000 €</option><option value="5000">5 000 €</option><option value="10000">10 000 €</option><option value="15000">15 000 €</option><option value="20000">20 000 €</option><option value="30000">30 000 €</option><option value="50000">50 000 €</option></select></div>
   <div class="field"><label for="maxprice">Cena do (€)</label><select id="maxprice"><option value="">Bez limitu</option><option value="1000">1 000 €</option><option value="3000">3 000 €</option><option value="5000">5 000 €</option><option value="10000">10 000 €</option><option value="15000">15 000 €</option><option value="20000">20 000 €</option><option value="30000">30 000 €</option><option value="50000">50 000 €</option><option value="75000">75 000 €</option><option value="100000">100 000 €</option></select></div>
   <div class="field"><label for="minyear">Rok od</label><select id="minyear"><option value="">Ľubovoľný rok</option><option value="1990">1990</option><option value="2000">2000</option><option value="2005">2005</option><option value="2010">2010</option><option value="2015">2015</option><option value="2018">2018</option><option value="2020">2020</option><option value="2022">2022</option><option value="2024">2024</option></select></div>
@@ -452,13 +456,14 @@ function filterVehicles(){
 const term=q.value.trim(),makeTerm=(document.getElementById('makeFilter')?.value||'').trim(),modelTerm=(document.getElementById('modelFilter')?.value||'').trim(),wanted=type.value,limit=Number(maxprice.value||Infinity);
 const minPrice=Number(document.getElementById('minprice')?.value||0),minYear=Number(document.getElementById('minyear')?.value||0),maxYear=Number(document.getElementById('maxyear')?.value||Infinity),maxKm=Number(document.getElementById('maxkm')?.value||Infinity);
 const engineTerm=(document.getElementById('engineFilter')?.value||'').trim(),fuel=(document.getElementById('fuelFilter')?.value||'').trim(),gear=(document.getElementById('gearFilter')?.value||'').trim();
+const tireWidth=document.getElementById('tireWidth')?.value||'',tireHeight=document.getElementById('tireHeight')?.value||'',tireRim=document.getElementById('tireRim')?.value||'';
 const all=[...cards.querySelectorAll('.vehicle')];
 const favorites=new Set(getFavorites());
 all.forEach(card=>{
 const name=(card.dataset.name||'').toLocaleLowerCase('sk'),engine=(card.dataset.engine||'').toLocaleLowerCase('sk'),details=(card.querySelector('.vbody')?.innerText||card.innerText||'').toLocaleLowerCase('sk'),year=Number(card.dataset.year||((details.match(/(?:19|20)\\d{2}/)||[])[0])||0),km=Number(card.dataset.km||((details.match(/([\\d\\s.]+)\\s*km/)||[])[1]||'').replace(/[\\s.]/g,'')||0),price=Number(card.dataset.price||0),searchText=(name+' '+engine+' '+details).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
 const normalize=v=>String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('sk');
 const normalized=normalize(searchText),make=normalize(card.dataset.make||card.dataset.brand||''),model=normalize(card.dataset.model||name),fuelData=normalize(card.dataset.fuel||details),gearData=normalize(card.dataset.gearbox||card.dataset.transmission||details),engineData=normalize(card.dataset.engine||details);
-const matches=(!term||normalized.includes(normalize(term)))&&(!makeTerm||make.includes(normalize(makeTerm))||normalized.includes(normalize(makeTerm)))&&(!modelTerm||model.includes(normalize(modelTerm))||normalized.includes(normalize(modelTerm)))&&(!wanted||card.dataset.type===wanted)&&price<=limit&&price>=minPrice&&(!minYear||year>=minYear)&&(!maxYear||year<=maxYear)&&(!maxKm||km<=maxKm)&&(!engineTerm||engineData.includes(normalize(engineTerm))||normalized.includes(normalize(engineTerm)))&&(!fuel||fuelData.includes(normalize(fuel)))&&(!gear||gearData.includes(normalize(gear)))&&(!showFavoritesOnly||favorites.has(String(card.dataset.favoriteId||'')));
+const matches=(!term||normalized.includes(normalize(term)))&&(!makeTerm||make.includes(normalize(makeTerm))||normalized.includes(normalize(makeTerm)))&&(!modelTerm||model.includes(normalize(modelTerm))||normalized.includes(normalize(modelTerm)))&&(!wanted||card.dataset.type===wanted)&&price<=limit&&price>=minPrice&&(!minYear||year>=minYear)&&(!maxYear||year<=maxYear)&&(!maxKm||km<=maxKm)&&(!engineTerm||engineData.includes(normalize(engineTerm))||normalized.includes(normalize(engineTerm)))&&(!fuel||fuelData.includes(normalize(fuel)))&&(!gear||gearData.includes(normalize(gear)))&&(!tireWidth||new RegExp('(?:^|\\D)'+tireWidth+'(?:\\D|$)').test(details))&&(!tireHeight||new RegExp('(?:/|\\s)'+tireHeight+'(?:\\D|$)').test(details))&&(!tireRim||new RegExp('R\\s?'+tireRim+'(?:\\D|$)','i').test(details))&&(!showFavoritesOnly||favorites.has(String(card.dataset.favoriteId||'')));
 card.style.display=matches?'':'none';
 });
 const visible=all.filter(card=>card.style.display!=='none');
@@ -473,8 +478,8 @@ document.querySelectorAll(".offroad-filter").forEach(btn=>btn.addEventListener("
 document.getElementById('searchBtn').addEventListener('click',filterVehicles);
 type.addEventListener('change',updateVehicleSuggestions);
 document.getElementById('favoritesToggle').addEventListener('click',()=>{showFavoritesOnly=!showFavoritesOnly;updateFavoritesUI();filterVehicles();document.getElementById('vozidla').scrollIntoView({behavior:'smooth'});});
-[q,type,maxprice,sort,document.getElementById('makeFilter'),document.getElementById('modelFilter'),document.getElementById('minprice'),document.getElementById('minyear'),document.getElementById('maxyear'),document.getElementById('maxkm'),document.getElementById('fuelFilter'),document.getElementById('gearFilter'),document.getElementById('engineFilter')].filter(Boolean).forEach(el=>{el.addEventListener('input',filterVehicles);el.addEventListener('change',filterVehicles)});
-document.getElementById('clearFilters').addEventListener('click',()=>{['q','makeFilter','modelFilter','minprice','maxprice','minyear','maxyear','maxkm','engineFilter'].forEach(id=>document.getElementById(id).value='');['type','fuelFilter','gearFilter'].forEach(id=>document.getElementById(id).value='');document.getElementById('sort').value='recommended';showFavoritesOnly=false;updateFavoritesUI();filterVehicles();});
+[q,type,maxprice,sort,document.getElementById('makeFilter'),document.getElementById('modelFilter'),document.getElementById('minprice'),document.getElementById('minyear'),document.getElementById('maxyear'),document.getElementById('maxkm'),document.getElementById('fuelFilter'),document.getElementById('gearFilter'),document.getElementById('engineFilter'),document.getElementById('tireWidth'),document.getElementById('tireHeight'),document.getElementById('tireRim')].filter(Boolean).forEach(el=>{el.addEventListener('input',filterVehicles);el.addEventListener('change',filterVehicles)});
+document.getElementById('clearFilters').addEventListener('click',()=>{['q','makeFilter','modelFilter','minprice','maxprice','minyear','maxyear','maxkm','engineFilter','tireWidth','tireHeight','tireRim'].forEach(id=>document.getElementById(id).value='');['type','fuelFilter','gearFilter'].forEach(id=>document.getElementById(id).value='');document.getElementById('sort').value='recommended';showFavoritesOnly=false;updateFavoritesUI();filterVehicles();});
 document.querySelectorAll('.cat').forEach(btn=>btn.addEventListener('click',()=>{
 document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
 btn.classList.add('active');type.value=btn.dataset.cat;filterVehicles();
@@ -908,6 +913,8 @@ showRoute('alps');
  const buttons=[...start.querySelectorAll('[data-start-category]')];
  const title=document.getElementById('categorySearchTitle'),subtitle=document.getElementById('categorySearchSubtitle');
  const fields=[...search.querySelectorAll('.unified-search>.field')];
+ const tireFields=[...search.querySelectorAll('.tire-size-field')];
+ const tireControls=['tireWidth','tireHeight','tireRim'];
  const labels={ '':'Všetky kategórie','Auto':'Vyhľadávanie áut','Motorka':'Vyhľadávanie motoriek','Karavan':'Vyhľadávanie karavanov','Príves':'Vyhľadávanie prívesov','Diely':'Vyhľadávanie dielov','Offroad auto':'Vyhľadávanie offroad áut','Offroad diely':'Vyhľadávanie offroad dielov','Veterán':'Vyhľadávanie veteránov','Príslušenstvo':'Vyhľadávanie príslušenstva','Pneumatiky':'Vyhľadávanie pneumatík'};
  const configs={
   'Auto':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','maxkm','fuelFilter','gearFilter','engineFilter','sort'],
@@ -919,7 +926,7 @@ showRoute('alps');
   'Offroad diely':['makeFilter','modelFilter','q','minprice','maxprice','sort'],
   'Veterán':['makeFilter','modelFilter','q','minprice','maxprice','minyear','maxyear','sort'],
   'Príslušenstvo':['makeFilter','modelFilter','q','minprice','maxprice','sort'],
-  'Pneumatiky':['q','minprice','maxprice','sort']
+  'Pneumatiky':['q','tireWidth','tireHeight','tireRim','minprice','maxprice','sort']
  };
  function sync(){
   const selected=category.value;
@@ -934,6 +941,7 @@ showRoute('alps');
     const visible=control.id==='type'||shown.includes(control.id);
     field.classList.toggle('category-hidden',!visible);
   });
+  tireFields.forEach(field=>field.classList.toggle('tire-visible',selected==='Pneumatiky'));
  }
  buttons.forEach(b=>b.addEventListener('click',()=>{
   category.value=b.dataset.startCategory;
