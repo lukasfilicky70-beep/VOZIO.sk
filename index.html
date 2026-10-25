@@ -266,8 +266,8 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 <section id="quick-search" class="wrap">
 <h3 class="market-subtitle">Vyhľadávanie vozidiel</h3>
 <div class="searchbox unified-search">
-  <div class="field"><label for="makeFilter">Značka</label><select id="makeFilter"><option value="">Všetky značky</option><option>Škoda</option><option>Volkswagen</option><option>BMW</option><option>Mercedes-Benz</option><option>Audi</option><option> Toyota</option><option>Hyundai</option><option>Kia</option><option>Ford</option><option>Peugeot</option><option>Renault</option><option>Dacia</option><option>Volvo</option><option>Opel</option><option>Honda</option><option>Yamaha</option><option>KTM</option><option>Honda</option><option>Fiat</option><option>Jeep</option><option>Land Rover</option><option>Tesla</option><option>Iná značka</option></select></div>
-  <div class="field"><label for="modelFilter">Model</label><select id="modelFilter"><option value="">Všetky modely</option><option>Octavia</option><option>Fabia</option><option>Superb</option><option>Kodiaq</option><option>Golf</option><option>Passat</option><option>Tiguan</option><option>3 Series</option><option>5 Series</option><option>X3</option><option>X5</option><option>A4</option><option>A6</option><option>Q5</option><option>C-Class</option><option>E-Class</option><option>Model 3</option><option>Model Y</option><option>Iný model</option></select></div>
+  <div class="field"><label for="makeFilter">Značka</label><select id="makeFilter"><option value="">Načítavam všetky značky…</option></select></div>
+  <div class="field"><label for="modelFilter">Model</label><select id="modelFilter" disabled><option value="">Najprv vyber značku</option></select></div>
   <div class="field"><label for="q">Kľúčové slovo</label><input id="q" list="vehicleSuggestions" placeholder="Napr. 4x4, koža"><datalist id="vehicleSuggestions"></datalist></div>
   <div class="field"><label for="type">Kategória</label><select id="type"><option value="">Všetky kategórie</option><option>Auto</option><option>Motorka</option><option>Karavan</option><option>Príves</option><option>Diely</option><option>Offroad auto</option><option>Offroad diely</option><option>Veterán</option><option>Príslušenstvo</option><option>Pneumatiky</option></select></div>
   <div class="field"><label for="minprice">Cena od (€)</label><select id="minprice"><option value="">Bez minima</option><option value="1000">1 000 €</option><option value="3000">3 000 €</option><option value="5000">5 000 €</option><option value="10000">10 000 €</option><option value="15000">15 000 €</option><option value="20000">20 000 €</option><option value="30000">30 000 €</option><option value="50000">50 000 €</option></select></div>
@@ -734,5 +734,51 @@ document.querySelectorAll('.route').forEach(btn=>btn.addEventListener('click',()
 }));
 showRoute('alps');
 </script>
+
+<script>
+/* Katalóg značiek a modelov: dynamicky načítaný globálny otvorený katalóg VehiclesDB */
+(function(){
+ const makeSelect=document.getElementById('makeFilter');
+ const modelSelect=document.getElementById('modelFilter');
+ if(!makeSelect||!modelSelect)return;
+ const fallbackMakes=['Acura','Aixam','Alfa Romeo','Aprilia','Aston Martin','Audi','Bentley','BMW','BYD','Cadillac','Chevrolet','Chrysler','Citroën','Cupra','Dacia','Daewoo','Daihatsu','Dodge','DS Automobiles',' Ducati','Ferrari','Fiat','Ford','Genesis','GMC','Honda','Hyundai','Infiniti','Isuzu','Iveco','Jaguar','Jeep','Kawasaki','Kia','KTM','Lamborghini','Lancia','Land Rover','Lexus','Lincoln','Lotus','MAN','Maserati','Mazda','McLaren','Mercedes-Benz','MG','MINI','Mitsubishi','Nissan','Opel','Peugeot','Polestar','Pontiac','Porsche','RAM','Renault','Rolls-Royce','Saab','Seat','Škoda','Smart','Subaru','Suzuki','Tesla','Toyota','Triumph','Volkswagen','Volvo','Yamaha'];
+ const normalize=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase();
+ let catalog=[];
+ function fillMakes(makes){
+   const selected=makeSelect.value;
+   makeSelect.innerHTML='<option value="">Všetky značky</option>';
+   makes.sort((a,b)=>a.name.localeCompare(b.name));
+   makes.forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=m.name;makeSelect.appendChild(o)});
+   if(selected)makeSelect.value=selected;
+ }
+ function fillModels(){
+   const make=makeSelect.value, previous=modelSelect.value;
+   modelSelect.innerHTML='<option value="">Všetky modely</option>';
+   const entry=catalog.find(m=>normalize(m.name)===normalize(make));
+   const models=entry&&Array.isArray(entry.models)?entry.models.map(x=>typeof x==='string'?x:x.name).filter(Boolean):[];
+   [...new Set(models)].sort((a,b)=>a.localeCompare(b)).forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;modelSelect.appendChild(o)});
+   modelSelect.disabled=!make||models.length===0;
+   if(!make){modelSelect.innerHTML='<option value="">Najprv vyber značku</option>';modelSelect.disabled=true}
+   else if(!models.length){modelSelect.innerHTML='<option value="">Modely nie sú dostupné</option>';modelSelect.disabled=true}
+   else if(previous&&models.some(x=>normalize(x)===normalize(previous)))modelSelect.value=previous;
+   modelSelect.dispatchEvent(new Event('change',{bubbles:true}));
+ }
+ makeSelect.addEventListener('change',()=>{modelSelect.value='';fillModels();if(typeof filterVehicles==='function')filterVehicles()});
+ modelSelect.addEventListener('change',()=>{if(typeof filterVehicles==='function')filterVehicles()});
+ fillMakes(fallbackMakes.map(name=>({name,models:[]})));
+ fetch('https://cdn.jsdelivr.net/gh/vehiclesdb/vehiclesdb@latest/dist/vehicles.json')
+  .then(res=>{if(!res.ok)throw new Error('Catalog unavailable');return res.json()})
+  .then(data=>{
+    const makes=Array.isArray(data)?data:(Array.isArray(data.makes)?data.makes:[]);
+    if(!makes.length)throw new Error('Unexpected catalog format');
+    catalog=makes.map(m=>({name:m.name||m[0],models:m.models||m[1]||[]})).filter(m=>m.name);
+    fillMakes(catalog);
+    fillModels();
+    makeSelect.title='Globálny katalóg značiek a modelov';
+  })
+  .catch(()=>{catalog=fallbackMakes.map(name=>({name,models:[]}));fillMakes(fallbackMakes.map(name=>({name,models:[]})));});
+})();
+</script>
+
 </body>
 </html>
