@@ -1098,7 +1098,7 @@ showRoute('alps');
 
 <script id="detail-close-fix">
 (function(){
- function closeDetail(){const modal=document.getElementById('detailModal');if(modal){modal.classList.remove('open');modal.style.display='none';modal.setAttribute('aria-hidden','true')}}
+ function closeDetail(){const modal=document.getElementById('detailModal');if(modal){modal.classList.remove('open');modal.style.display='';modal.setAttribute('aria-hidden','true')}}
  document.addEventListener('click',function(e){
   const button=e.target.closest('#detailModal [data-close="detailModal"],#detailModal .close-modal');
   if(button){e.preventDefault();e.stopPropagation();closeDetail();return}
@@ -1107,6 +1107,30 @@ showRoute('alps');
  },true);
  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDetail()});
  window.addEventListener('load',function(){const modal=document.getElementById('detailModal');if(modal)modal.setAttribute('aria-hidden',modal.classList.contains('open')?'false':'true')});
+})();
+</script>
+
+
+<script id="explore-category-navigation">
+(function(){
+ const destinations={
+  'Marketplace':()=>{location.hash='vozidla';document.getElementById('vozidla')?.scrollIntoView({behavior:'smooth'});},
+  'Veterány':()=>{location.hash='vozidla';document.getElementById('vozidla')?.scrollIntoView({behavior:'smooth'});const f=document.getElementById('typeFilter');if(f){f.value='Veterán';f.dispatchEvent(new Event('change',{bubbles:true}));}else{const b=document.querySelector('[data-start-category="Veterán"]');b?.click();}},
+  'Drive':()=>{location.href='./drive-meter.html';},
+  'Charge':()=>{window.open('https://www.google.com/maps/search/nab%C3%ADjacie+stanice+pre+elektromobily/','_blank','noopener');},
+  'Camping':()=>{window.open('https://www.google.com/maps/search/kemp+stellplatz/','_blank','noopener');},
+  'Race & Tracks':()=>{window.open('https://www.google.com/maps/search/okruh+pre+aut%C3%A1/','_blank','noopener');},
+  'Service & Shops':()=>{document.getElementById('sluzby')?.scrollIntoView({behavior:'smooth'});if(!document.getElementById('sluzby'))location.hash='sluzby';},
+  'Photo Guide':()=>{const target=document.getElementById('vozidla');target?.scrollIntoView({behavior:'smooth'});location.hash='vozidla';alert('Photo Guide: Fotografuj vozidlo za denného svetla, odfoť všetky strany, interiér, prístrojovú dosku, kilometre a prípadné poškodenia. Pred zverejnením skontroluj, či na fotkách nie sú osobné údaje.');}
+ };
+ document.addEventListener('click',function(e){
+  const tile=e.target.closest('#kategorie .cat');
+  if(!tile||tile.tagName==='A')return;
+  const label=tile.querySelector('span')?.childNodes?.[0]?.textContent?.trim();
+  const action=destinations[label];
+  if(!action)return;
+  e.preventDefault();e.stopImmediatePropagation();action();
+ },true);
 })();
 </script>
 
