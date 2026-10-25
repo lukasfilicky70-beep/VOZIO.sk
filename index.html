@@ -1284,10 +1284,21 @@ showRoute('alps');
 <script id="emergency-open-listing-form">
 (function(){
  document.addEventListener('click',function(e){
+  const close=e.target.closest('#addModal [data-close="addModal"], #addModal .close-modal');
+  if(close){
+   e.preventDefault();
+   const modal=document.getElementById('addModal');
+   if(modal){modal.classList.remove('open');modal.style.removeProperty('display');modal.style.removeProperty('visibility');modal.style.removeProperty('opacity');modal.setAttribute('aria-hidden','true');}
+   document.body.style.removeProperty('overflow');
+   return;
+  }
+  const modal=document.getElementById('addModal');
+  if(e.target===modal){
+   modal.classList.remove('open');modal.style.removeProperty('display');modal.style.removeProperty('visibility');modal.style.removeProperty('opacity');modal.setAttribute('aria-hidden','true');document.body.style.removeProperty('overflow');return;
+  }
   const trigger=e.target.closest('#openAdd, #homeAddListing, #navAdd');
   if(!trigger)return;
   e.preventDefault();
-  const modal=document.getElementById('addModal');
   if(!modal)return;
   modal.classList.add('open');
   modal.style.display='flex';
