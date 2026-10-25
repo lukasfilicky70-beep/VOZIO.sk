@@ -265,6 +265,19 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 #quick-search .unified-search .search-submit{display:none!important}
 @media(max-width:460px){#quick-search .search-actions-outside.inside-search-panel{display:grid!important;grid-template-columns:1fr}#quick-search .search-actions-outside.inside-search-panel .btn{width:100%}}
 </style>
+<style>
+/* Oprava vzhľadu vyhľadávania: centrovanie, bez prekrývania a horizontálneho pretekania */
+#quick-search.wrap{width:min(1240px,calc(100% - 32px))!important;max-width:1240px!important;margin:0 auto!important;padding:34px 0!important;display:block!important;overflow:visible!important}
+#quick-search #categorySearchTitle{display:block!important;position:static!important;margin:0 0 8px!important;padding:0!important;font-size:clamp(24px,3vw,34px)!important;line-height:1.2!important;color:#f5f7f8!important;max-width:100%!important}
+#quick-search #categorySearchSubtitle{display:block!important;position:static!important;margin:0 0 18px!important;padding:0!important;font-size:clamp(16px,2vw,22px)!important;line-height:1.35!important;color:#ffdf00!important;max-width:100%!important;overflow-wrap:anywhere}
+#quick-search .unified-search{width:100%!important;max-width:100%!important;min-width:0!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;gap:12px!important;padding:16px!important;margin:0!important;overflow:hidden!important}
+#quick-search .unified-search>.field{min-width:0!important;width:100%!important;max-width:100%!important;overflow:hidden}
+#quick-search .unified-search>.field label{font-size:14px!important;line-height:1.3!important;min-height:18px}
+#quick-search .unified-search>.field input,#quick-search .unified-search>.field select{width:100%!important;max-width:100%!important;min-width:0!important;font-size:16px!important;min-height:48px!important}
+#quick-search .search-actions-outside.inside-search-panel{grid-column:1/-1!important;width:100%!important;min-width:0!important;box-sizing:border-box!important}
+@media(max-width:760px){#quick-search.wrap{width:calc(100% - 24px)!important;padding:24px 0!important}#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:12px!important}}
+@media(max-width:460px){#quick-search.wrap{width:calc(100% - 20px)!important}#quick-search .unified-search{grid-template-columns:1fr!important}#quick-search .search-actions-outside.inside-search-panel{grid-column:1!important}}
+</style>
 </head>
 <body>
 <header id="domov">
