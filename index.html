@@ -278,6 +278,25 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:760px){#quick-search.wrap{width:calc(100% - 24px)!important;padding:24px 0!important}#quick-search .unified-search{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:12px!important}}
 @media(max-width:460px){#quick-search.wrap{width:calc(100% - 20px)!important}#quick-search .unified-search{grid-template-columns:1fr!important}#quick-search .search-actions-outside.inside-search-panel{grid-column:1!important}}
 </style>
+<style>
+/* Detail inzerátu – prehľadný, plnohodnotný detail */
+#detailModal{align-items:flex-start!important;padding:24px!important}
+#detailModal .modal-panel{width:min(920px,100%)!important;max-height:calc(100vh - 48px)!important;padding:clamp(16px,3vw,28px)!important;border-radius:20px!important;background:#101519!important;border-color:#3c484e!important}
+#detailModal .modal-head{position:sticky;top:-1px;z-index:5;margin:-4px 0 18px;padding:8px 0 14px;background:#101519;border-bottom:1px solid #303a40}
+#detailModal #detailTitle{font-size:clamp(22px,3vw,32px)!important;line-height:1.2;color:#fff;overflow-wrap:anywhere}
+#detailModal .detail-image{display:block;width:100%;height:clamp(220px,42vw,460px)!important;max-height:none!important;object-fit:contain!important;background:#080b0e;border:1px solid #303a40;border-radius:14px}
+#detailModal .detail-price{font-size:clamp(26px,4vw,36px)!important;margin:18px 0 12px!important}
+#detailModal .detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+#detailModal .detail-item{min-width:0;background:#171e23!important;border-color:#344149!important}
+#detailModal .detail-item small{font-size:12px!important;color:#aeb9bf!important}
+#detailModal .detail-item strong{display:block;overflow-wrap:anywhere;color:#f5f7f8;line-height:1.45}
+#detailModal #detailContent>p{white-space:pre-line;color:#d4dcdf;font-size:15px;line-height:1.8!important;background:#171e23;border:1px solid #303a40;border-radius:12px;padding:16px}
+#detailModal .gallery img{height:100px!important;width:130px!important;flex:0 0 auto;object-fit:cover;border-radius:10px}
+#detailModal .community-panel,#detailModal .safety-note{margin-top:18px!important;padding:16px!important;border:1px solid #344149!important;border-radius:12px!important;background:#171e23!important}
+#detailModal .community-form textarea{width:100%;box-sizing:border-box;background:#080d10;color:#fff;border:1px solid #46545b;border-radius:9px;padding:12px}
+#detailModal #detailContent>.btn{margin-top:14px;margin-right:8px}
+@media(max-width:520px){#detailModal{padding:8px!important}#detailModal .modal-panel{max-height:calc(100vh - 16px)!important;padding:14px!important}#detailModal .detail-grid{grid-template-columns:1fr!important}}
+</style>
 </head>
 <body>
 <header id="domov">
@@ -640,7 +659,8 @@ function showListingDetail(item){
  const price=document.createElement('div');price.className='detail-price';price.textContent=formatPrice(item.price);
  const desc=document.createElement('p');desc.style.lineHeight='1.7';desc.textContent=item.description||'Predajca zatiaľ nepridal podrobný popis.';
  const grid=document.createElement('div');grid.className='detail-grid';
- [['Kategória',item.type],['Rok výroby',item.year||'Neuvedené'],['Kilometre',item.km?Number(item.km).toLocaleString('sk-SK')+' km':'Neuvedené'],['Motor / prevodovka',item.engine||'Neuvedené'],['Lokalita',item.location||'Neuvedená'],['Kontakt predajcu',item.contact||'Neuvedený']].forEach(([label,value])=>{
+ const detailFields=[['Kategória',item.type],['Značka / model',item.title],['Cena',formatPrice(item.price)],['Rok výroby',item.year||'Neuvedené'],['Kilometre',item.km!==''&&item.km!==null&&item.km!==undefined?Number(item.km).toLocaleString('sk-SK')+' km':'Neuvedené'],['Motor / prevodovka',item.engine||'Neuvedené'],['Lokalita',item.location||'Neuvedená'],['Kontakt predajcu',item.contact||'Neuvedený']];
+ detailFields.forEach(([label,value])=>{
   const box=document.createElement('div');box.className='detail-item';const small=document.createElement('small');small.textContent=label;const strong=document.createElement('strong');strong.textContent=value;box.append(small,strong);grid.appendChild(box);
  });
  content.append(img);const gallery=(item.images||[]).slice(1);if(gallery.length){const galleryEl=document.createElement('div');galleryEl.className='gallery';gallery.forEach(src=>{const photo=document.createElement('img');photo.src=src;photo.alt='Fotografia – '+item.title;photo.loading='lazy';photo.onerror=()=>photo.remove();photo.addEventListener('click',()=>{img.src=src;img.scrollIntoView({behavior:'smooth',block:'nearest'})});galleryEl.appendChild(photo)});content.appendChild(galleryEl)}content.append(price,grid,desc);
