@@ -525,8 +525,8 @@ button,a,input,select,textarea{touch-action:manipulation}
     <div class="field"><label for="authPassword">Heslo</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Aspoň 6 znakov"></div>
   </div>
   <div class="buttons" style="margin-top:12px">
-    <button class="btn primary" id="registerBtn" type="button" onclick="if(typeof registerUser==='function'){registerUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Vytvoriť účet</button>
-    <button class="btn secondary" id="loginBtn" type="button" onclick="if(typeof loginUser==='function'){loginUser()}else{document.getElementById('authStatus').textContent='Chyba skriptu stránky. Obnov stránku a skús znova.'}">Prihlásiť sa</button>
+    <button class="btn primary" id="registerBtn" type="button" >Vytvoriť účet</button>
+    <button class="btn secondary" id="loginBtn" type="button" >Prihlásiť sa</button>
     <button class="btn secondary" id="logoutBtn" type="button" hidden>Odhlásiť sa</button>
   </div>
 </div>
@@ -1229,6 +1229,48 @@ showRoute('alps');
  document.addEventListener('click',function(e){
   if(!e.target.closest('#homeAddListing'))return;
   e.preventDefault();handleAdd();
+ });
+})();
+</script>
+
+
+<script id="auth-global-handler-fix">
+(function(){
+ function status(message){const el=document.getElementById('authStatus');if(el)el.textContent=message}
+ function getClient(){
+  if(window.supabaseClient)return window.supabaseClient;
+  if(window.supabase&&typeof window.supabase.createClient==='function'){
+   window.supabaseClient=window.supabase.createClient('https://awuuzsewhswgjtdonoqj.supabase.co','sb_publishable_7ZmwDwfiaRY_i-UJPSPLXg_l8AWy8AS');
+   return window.supabaseClient;
+  }
+  throw new Error('Prihlasovacia knižnica sa nenačítala. Skontroluj internet a obnov stránku.');
+ }
+ async function login(){
+  const email=document.getElementById('authEmail')?.value.trim(),password=document.getElementById('authPassword')?.value;
+  if(!email||!password){status('Zadaj e-mail aj heslo.');return}
+  const button=document.getElementById('loginBtn');if(button)button.disabled=true;
+  status('Prihlasujem…');
+  try{
+   const client=getClient();const {data,error}=await client.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   status('Prihlásenie úspešné: '+(data.user?.email||email));
+   if(typeof window.updateAuthUI==='function')window.updateAuthUI(data.session);
+   document.getElementById('openAdd')?.removeAttribute('disabled');
+   document.getElementById('addModal')?.scrollIntoView({block:'nearest'});
+  }catch(err){status('Prihlásenie zlyhalo: '+(err.message||String(err)))}
+  finally{if(button)button.disabled=false}
+ }
+ async function register(){
+  const email=document.getElementById('authEmail')?.value.trim(),password=document.getElementById('authPassword')?.value;
+  if(!email||!password||password.length<6){status('Zadaj platný e-mail a heslo s dĺžkou aspoň 6 znakov.');return}
+  status('Registrujem účet…');
+  try{const {error}=await getClient().auth.signUp({email,password});if(error)throw error;status('Registrácia odoslaná. Skontroluj e-mail a potvrď účet, ak je to požadované.')}
+  catch(err){status('Registrácia zlyhala: '+(err.message||String(err)))}
+ }
+ window.vozioLogin=login;window.vozioRegister=register;
+ document.addEventListener('click',function(e){
+  if(e.target.closest('#loginBtn')){e.preventDefault();login()}
+  if(e.target.closest('#registerBtn')){e.preventDefault();register()}
  });
 })();
 </script>
