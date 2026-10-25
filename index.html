@@ -1006,5 +1006,27 @@ showRoute('alps');
  sync();
 })();
 </script>
-\n</body>
+\n<script>
+/* Kliknutie na všetky inzeráty vrátane ukážkových kariet */
+document.addEventListener('DOMContentLoaded',function(){
+ const demoListings={
+  'demo-moto':{id:'demo-moto',title:'Adventure motocykel Yamaha',type:'Motorka',price:18900,year:2021,km:28000,engine:'1 250 cm³ · Manuál',location:'Neuvedená',contact:'',description:'Ukážkový inzerát motocykla. Pred kúpou si overte servisnú históriu, VIN, technický stav a doklady. Ide o ilustračný príklad, nie potvrdenú ponuku.',image:'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80',images:['https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=900&q=80']},
+  'demo-suv':{id:'demo-suv',title:'Športové SUV',type:'Auto',price:32500,year:2022,km:34000,engine:'Automat',location:'Neuvedená',contact:'',description:'Ukážkový inzerát športového SUV. Pred kúpou si overte servisnú históriu, VIN, výbavu a technický stav. Ide o ilustračný príklad, nie potvrdenú ponuku.',image:'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80',images:['https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80']},
+  'demo-camper':{id:'demo-camper',title:'Cestovný karavan',type:'Karavan',price:24900,year:2020,km:'',engine:'2 lôžka',location:'Neuvedená',contact:'',description:'Ukážkový inzerát cestovného karavanu. Pred kúpou skontrolujte vlhkosť, elektroinštaláciu, servis a doklady. Ide o ilustračný príklad, nie potvrdenú ponuku.',image:'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80',images:['https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80']}
+ };
+ const list=document.getElementById('vehicleCards');if(!list||list.dataset.detailClickReady)return;list.dataset.detailClickReady='1';
+ list.addEventListener('click',function(e){
+  if(e.target.closest('.favorite-btn'))return;
+  const card=e.target.closest('.vehicle');if(!card)return;
+  const id=card.dataset.favoriteId;
+  if(id&&demoListings[id]){e.preventDefault();showListingDetail(demoListings[id]);return}
+  if(card.classList.contains('user-vehicle'))return;
+  const title=card.dataset.name||card.querySelector('h3')?.textContent||'Inzerát';
+  const price=Number(card.dataset.price||0),type=card.dataset.type||'Auto',img=card.querySelector('img');
+  e.preventDefault();
+  showListingDetail({id:id||title,title,type,price,year:card.dataset.year||'',km:card.dataset.km||'',engine:card.dataset.engine||'',location:'Neuvedená',contact:'',description:'Tento ukážkový inzerát zatiaľ nemá ďalšie údaje. Predajca by mal doplniť kompletný popis, stav, výbavu a kontakt.',image:img?.src||'',images:img?.src?[img.src]:[]});
+ });
+});
+</script>
+</body>
 </html>
