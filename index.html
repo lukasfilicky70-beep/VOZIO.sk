@@ -377,6 +377,13 @@ button,a,input,select,textarea{touch-action:manipulation}
 }
 </style>
 
+<style id="visible-add-listing-cta">
+#quick-search .add-listing-cta{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0 4px;padding:18px 20px;border:1px solid #5a4b00;border-radius:14px;background:linear-gradient(110deg,#292300,#141414 75%)}
+#quick-search .add-listing-cta h3{margin:0 0 5px;color:#fff;font-size:clamp(17px,2.2vw,22px)}
+#quick-search .add-listing-cta p{margin:0;color:#c6c6c6;font-size:13px;line-height:1.45}
+#quick-search .add-listing-cta .btn{flex:0 0 auto;white-space:nowrap;background:#ffc900;color:#111;border:1px solid #ffc900;min-height:46px}
+@media(max-width:560px){#quick-search .add-listing-cta{align-items:stretch;flex-direction:column;padding:15px;gap:12px}#quick-search .add-listing-cta .btn{width:100%;white-space:normal}}
+</style>
 </head>
 <body>
 <header id="domov">
@@ -475,6 +482,8 @@ button,a,input,select,textarea{touch-action:manipulation}
   <div class="field"><label for="sort">Zoradiť podľa</label><select id="sort"><option value="recommended">Odporúčané</option><option value="low">Najnižšia cena</option><option value="high">Najvyššia cena</option></select></div>
 <div class="search-actions-outside inside-search-panel"><button class="btn primary search-action" id="searchBtn" type="button">Hľadať vozidlá</button><button class="btn secondary" type="button" id="clearFilters">Vymazať filtre</button></div>
 </div>
+
+<div class="add-listing-cta"><div><h3>Chceš predať svoje vozidlo?</h3><p>Pridaj inzerát jednoducho aj z mobilu a oslov záujemcov.</p></div><button class="btn primary" type="button" id="homeAddListing">＋ Pridať inzerát</button></div>
 </section>
 
 <section id="kategorie">
@@ -1202,6 +1211,20 @@ showRoute('alps');
   if(!action)return;
   e.preventDefault();e.stopImmediatePropagation();action();
  },true);
+})();
+</script>
+
+<script id="home-add-listing-cta-handler">
+(function(){
+ document.addEventListener('click',function(e){
+  if(!e.target.closest('#homeAddListing'))return;
+  e.preventDefault();
+  const button=document.getElementById('openAdd')||document.getElementById('navAdd');
+  if(button){button.click();return}
+  const modal=document.getElementById('addModal');
+  if(modal){modal.classList.add('open');modal.style.display='';return}
+  location.hash='vozidla';
+ });
 })();
 </script>
 
