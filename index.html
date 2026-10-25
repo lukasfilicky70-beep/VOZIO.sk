@@ -263,6 +263,30 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 </div>
 </header>
 <main class="wrap">
+
+<section id="qr-vozio" class="wrap" aria-label="QR kód VOZIO">
+<style>
+#qr-vozio{margin:24px auto 34px}
+#qr-vozio .qr-card{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px;border:1px solid #3c3c3c;border-radius:18px;background:linear-gradient(135deg,#171717,#242424);color:#fff}
+#qr-vozio h2{margin:0 0 8px;font-size:clamp(22px,3vw,30px)}
+#qr-vozio p{margin:0 0 14px;color:#d5d5d5;max-width:520px;line-height:1.5}
+#qr-vozio .qr-code{width:170px;height:170px;flex:0 0 170px;background:#fff;border-radius:12px;padding:8px;box-sizing:border-box}
+#qr-vozio .qr-code img{width:100%;height:100%;display:block}
+#qr-vozio .qr-url{color:#ffc900;font-weight:800;overflow-wrap:anywhere}
+@media(max-width:560px){#qr-vozio .qr-card{flex-direction:column;text-align:center}#qr-vozio .qr-code{width:190px;height:190px;flex-basis:190px}}
+</style>
+<div class="qr-card">
+ <div>
+  <h2>📱 Otvor VOZIO cez QR kód</h2>
+  <p>Naskenuj QR kód fotoaparátom v mobile a otvorí sa stránka VOZIO. Kód môžeš tiež vytlačiť alebo zdieľať.</p>
+  <div class="qr-url">https://lukasfilicky70-beep.github.io/VOZIO.sk/</div>
+ </div>
+ <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&amp;data=https%3A%2F%2Flukasfilicky70-beep.github.io%2FVOZIO.sk%2F" target="_blank" rel="noopener" aria-label="Otvoriť QR kód VOZIO vo veľkom formáte">
+  <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&amp;data=https%3A%2F%2Flukasfilicky70-beep.github.io%2FVOZIO.sk%2F" alt="QR kód na otvorenie webovej stránky VOZIO" loading="lazy">
+ </a>
+</div>
+</section>
+
 <section id="quick-search" class="wrap">
 <h3 class="market-subtitle">Vyhľadávanie vozidiel</h3>
 <div class="searchbox unified-search">
