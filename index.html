@@ -298,6 +298,14 @@ header:after{background:linear-gradient(90deg,#050505f2 0%,#050505b8 34%,#050505
 @media(max-width:520px){#detailModal{padding:8px!important}#detailModal .modal-panel{max-height:calc(100vh - 16px)!important;padding:14px!important}#detailModal .detail-grid{grid-template-columns:1fr!important}}
 </style>
 <style>#detailModal .modal-panel{position:relative}#detailModal .close-modal{display:inline-flex!important;align-items:center;justify-content:center;min-width:46px;min-height:46px;font-size:23px;font-weight:900;flex-shrink:0;z-index:20;cursor:pointer;background:#252d32!important;border:1px solid #65727a!important;color:#fff!important}#detailModal .seller-contact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0;padding:16px;background:#171e23;border:1px solid #3b484f;border-radius:12px}#detailModal .seller-contact h3{grid-column:1/-1;margin:0 0 4px}#detailModal .seller-contact .detail-item{overflow-wrap:anywhere}#detailModal .seller-contact a{color:#ffdf00;text-decoration:underline;overflow-wrap:anywhere}@media(max-width:520px){#detailModal .seller-contact{grid-template-columns:1fr}}</style>
+<style>
+/* Detail modal: vždy viditeľné a klikateľné zatvorenie */
+#detailModal{z-index:2147483000!important;pointer-events:auto!important}
+#detailModal .modal-panel{position:relative!important}
+#detailModal .modal-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;position:sticky!important;top:0!important;z-index:2147483001!important;background:#101519!important}
+#detailModal .close-modal{position:relative!important;display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:2147483002!important;flex:0 0 48px!important;width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;margin:0!important;padding:0!important;border:2px solid #ffdf00!important;border-radius:12px!important;background:#ffdf00!important;color:#080b0e!important;font-size:26px!important;font-weight:1000!important;line-height:1!important;cursor:pointer!important;box-shadow:0 0 0 3px #0008!important}
+#detailModal .close-modal:hover{transform:scale(1.04);filter:brightness(1.08)}
+</style>
 </head>
 <body>
 <header id="domov">
@@ -1084,6 +1092,21 @@ showRoute('alps');
   });
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',activate);else activate();
+})();
+</script>
+
+
+<script id="detail-close-fix">
+(function(){
+ function closeDetail(){const modal=document.getElementById('detailModal');if(modal){modal.classList.remove('open');modal.style.display='none';modal.setAttribute('aria-hidden','true')}}
+ document.addEventListener('click',function(e){
+  const button=e.target.closest('#detailModal [data-close="detailModal"],#detailModal .close-modal');
+  if(button){e.preventDefault();e.stopPropagation();closeDetail();return}
+  const modal=document.getElementById('detailModal');
+  if(modal&&e.target===modal&&modal.classList.contains('open'))closeDetail();
+ },true);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDetail()});
+ window.addEventListener('load',function(){const modal=document.getElementById('detailModal');if(modal)modal.setAttribute('aria-hidden',modal.classList.contains('open')?'false':'true')});
 })();
 </script>
 
