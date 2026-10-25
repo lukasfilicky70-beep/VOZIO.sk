@@ -1280,5 +1280,26 @@ showRoute('alps');
 })();
 </script>
 
+
+<script id="emergency-open-listing-form">
+(function(){
+ document.addEventListener('click',function(e){
+  const trigger=e.target.closest('#openAdd, #homeAddListing, #navAdd');
+  if(!trigger)return;
+  e.preventDefault();
+  const modal=document.getElementById('addModal');
+  if(!modal)return;
+  modal.classList.add('open');
+  modal.style.display='flex';
+  modal.style.visibility='visible';
+  modal.style.opacity='1';
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  const title=document.getElementById('addTitle');
+  if(title)title.textContent='＋ Pridať vozidlo';
+ },true);
+})();
+</script>
+
 </body>
 </html>
