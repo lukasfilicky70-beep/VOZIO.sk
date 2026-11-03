@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080b0e">
+<meta name="theme-color" content="#f5f7f8">
 <title>VOZIO — Všetko pre motoristov</title>
 <meta name="description" content="VOZIO — vozidlá, motoristické služby a trasy na jednom mieste.">
 <link rel="preconnect" href="https://images.unsplash.com">
@@ -1347,6 +1347,39 @@ showRoute('alps');
  document.addEventListener('click',function(e){if(e.target.closest('#clearFilters'))setTimeout(runSearch,0)});
 })();
 </script>
+
+
+<style id="vozio-light-theme">
+:root{--bg:#f5f7f8;--panel:#ffffff;--panel2:#edf1f3;--line:#d7dfe3;--white:#172127;--muted:#64727a;--green:#15966d}
+html,body{background:#f5f7f8;color:#172127}
+body{background:#f5f7f8;color:#172127}
+header{border-bottom-color:#d7dfe3}
+header:after{background:linear-gradient(90deg,#071014e8 0%,#071014a8 50%,#07101435 100%),linear-gradient(0deg,#f5f7f8,transparent 70%)}
+.nav a{color:#fff}
+.stats .stat{background:linear-gradient(140deg,#fff,#edf2f4);border-color:#d7dfe3}
+.stat span,.head p,.details,.feature p,.route span,.banner p,footer{color:#64727a}
+.searchbox,.cat,.vehicle,.feature,.route,.profile-panel{background:#fff;border-color:#d7dfe3;color:#172127}
+.cat:hover,.cat.active{background:#fff8cc;border-color:#d8bd00}
+.field label{color:#53636c}
+.field input,.field select,.listing-form textarea,.listing-form input,.listing-form select{background:#fff;border:1px solid #cbd5da;color:#172127}
+.field input::placeholder,.listing-form input::placeholder,.listing-form textarea::placeholder{color:#87949b}
+.chip{background:#f0f3f4;border-color:#d7dfe3;color:#46545b}
+.no-results{color:#64727a;border-color:#cbd5da}
+.feature{background:linear-gradient(145deg,#fff,#f0f4f5)}
+.route{color:#172127}
+.route:hover,.route.active{border-color:#c9ad00;background:#fffbea}
+.banner{background:linear-gradient(110deg,#fff8d6,#f0f4f5);border-color:#e1d58a}
+.foot strong{color:#172127}
+.modal{background:#17212799}
+.modal-panel{background:#fff;border-color:#d7dfe3;color:#172127}
+.modal-note{color:#64727a}
+.close-modal{background:#f0f3f4;border-color:#cbd5da;color:#172127}
+.secondary{background:#fff;border:1px solid #cbd5da;color:#172127}
+.photo-stage,.photo-strip,.photo-tools{color:#172127}
+.profile-tools button,.profile-panel button{color:#172127}
+#map{background:#edf1f3;border-color:#d7dfe3}
+footer{border-top-color:#d7dfe3}
+</style>
 
 </body>
 </html>
